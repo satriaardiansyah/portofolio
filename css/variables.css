@@ -1,0 +1,17 @@
+:root {
+  --bg: #09090f;
+  --bg-soft: #0e0e17;
+  --panel: #14141f;
+  --text: #f6f5fb;
+  --muted: #9793a8;
+  --muted-2: #524f63;
+  --line: #24222f;
+
+  --cyan: #45e8d4;
+  --purple: #9b6bff;
+  --pink: #ff5c8a;
+  --amber: #ffb84d;
+
+  --grad-brand: linear-gradient(115deg, var(--cyan) 0%, var(--purple) 52%, var(--pink) 100%);
+  --grad-warm: linear-gradient(115deg, var(--pink), var(--amber));
+}
