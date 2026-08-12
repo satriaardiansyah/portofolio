@@ -4,11 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!termBody) return;
 
   const lines = [
-    { p: 'satria@live', t: '~/streams', o: 'npm run dev' },
-    { out: '✓ ready in 340ms — server listening on :3000' },
-    { p: 'satria@live', t: '~/streams', o: 'git commit -m "fix overlay glitch"' },
-    { out: '✓ 1 file changed, chat is happy' },
-    { p: 'satria@live', t: '~/streams', o: 'echo "makasih udah nonton & donasinya!"' }
+    { p: 'satria@live', t: '~/gaming', o: 'obs-studio --start-streaming' },
+    { out: '✓ Live Broadcast Active — 1080p60 FPS Game Stream' },
+    { p: 'satria@live', t: '~/schedule', o: 'echo "Jadwal Stream Harian: 19:30 - 21:00 WIB"' },
+    { out: '✓ Live Game Stream setiap hari pukul 19:30 - 21:00 WIB' },
+    { p: 'satria@live', t: '~/community', o: 'join https://discord.com/invite/6DZVuFBm9' },
+    { out: '✓ Terhubung ke Discord Komunitas & TikTok @yabidev' },
+    { p: 'satria@live', t: '~/gaming', o: 'echo "Makasih udah nonton & mabar!"' }
   ];
 
   let li = 0;
