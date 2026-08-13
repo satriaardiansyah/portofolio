@@ -71,7 +71,7 @@
     <section class="hero wrap">
       <div class="hero-kicker">
         <span class="blink">●</span>
-        Indonesia — <span id="current-date"></span>, WIB
+        Indonesia — <span id="current-date"></span>
       </div>
       <h1 class="hero-title" id="heroTitle">
         <div class="line"><span>YABI</span></div>
@@ -169,12 +169,12 @@
       <div class="work-grid reveal">
         <!-- PROYEK 01: Company Profile -->
         <a class="proj-card" href="#" data-title="Company Profile Website" data-type="IMG"
-          data-preview="assets/company-profile.png" data-year="2026"
+          data-preview="assets/company-profile-2.png" data-year="2026"
           data-stack="Next.js · Tailwind CSS · Framer Motion"
           data-desc="Website profil perusahaan modern & interaktif dengan antarmuka futuristik, animasi smooth, katalog produk/layanan terstruktur, serta integrasi formulir kontak & CMS."
           data-demo="https://example.com/company-profile" data-github="https://github.com/satriaardiansyah/company-profile">
           <div class="proj-media grad-a">
-            <img src="assets/company-profile.png" alt="Company Profile Website" class="proj-img" loading="lazy">
+            <img src="assets/company-profile-2.png" alt="Company Profile Website" class="proj-img" loading="lazy">
             <div class="proj-browser"><span></span><span></span><span></span></div>
             <div class="proj-badge">IMG</div>
           </div>
@@ -223,12 +223,12 @@
 
         <!-- PROYEK 04: CMS -->
         <a class="proj-card" href="#" data-title="Modular Headless CMS" data-type="IMG"
-          data-preview="assets/cms.png" data-year="2025"
+          data-preview="assets/cms-2.png" data-year="2025"
           data-stack="Next.js · Headless CMS · GraphQL · Redis"
           data-desc="Platform Content Management System (CMS) modular berkecepatan tinggi untuk penerbitan berita digital, manajemen media multi-penulis, serta API GraphQL terdesentralisasi."
           data-demo="https://example.com/cms" data-github="https://github.com/satriaardiansyah/modular-cms">
           <div class="proj-media grad-d">
-            <img src="assets/cms.png" alt="Modular Headless CMS" class="proj-img" loading="lazy">
+            <img src="assets/cms-2.png" alt="Modular Headless CMS" class="proj-img" loading="lazy">
             <div class="proj-browser"><span></span><span></span><span></span></div>
             <div class="proj-badge">IMG</div>
           </div>
@@ -437,25 +437,67 @@
               <span class="widget-icon">🏆</span>
               <div>
                 <h4>Leaderboard Donatur</h4>
-                <p>Top supporters & pahlawan siaran langsung</p>
+
               </div>
             </div>
-            <span class="widget-badge neon-pink"><span class="blink">●</span> LIVE</span>
+            <!-- <span class="widget-badge neon-pink"><span class="blink">●</span> LIVE</span> -->
           </div>
-          <div class="widget-frame-container leaderboard-frame-wrap">
-            <div class="leaderboard-preview-box">
-              <div class="lb-icon-crown">👑</div>
-              <h5>Papan Peringkat Donatur</h5>
-              <p>Lihat daftar donatur teratas dan dukungan yang masuk secara langsung saat stream berjalan.</p>
-              <a href="https://saweria.co/widgets/leaderboard?streamKey=0d738c73d8f293ee274a1a43da215e22"
-                target="_blank" rel="noopener" class="donate-btn lb-btn">
-                <span>🏆</span> Buka Saweria Leaderboard ↗
-              </a>
+
+          <div class="leaderboard-list">
+            <!-- Rank 1 -->
+            <div class="lb-item rank-1">
+              <div class="lb-left">
+                <span class="rank-badge rank-1-badge">🥇 1</span>
+                <div class="lb-avatar rank-1-avatar">SK</div>
+                <div class="lb-user-details">
+                  <span class="lb-name">Sambung kata</span>
+                  <span class="lb-crown-badge">👑 Top 1</span>
+                </div>
+              </div>
+              <span class="lb-amount rank-1-amount">Rp 300.000</span>
+            </div>
+
+            <!-- Rank 2 -->
+            <div class="lb-item rank-2">
+              <div class="lb-left">
+                <span class="rank-badge rank-2-badge">🥈 2</span>
+                <div class="lb-avatar rank-2-avatar">SS</div>
+                <div class="lb-user-details">
+                  <span class="lb-name">Sss</span>
+                </div>
+              </div>
+              <span class="lb-amount rank-2-amount">Rp 100.000</span>
+            </div>
+
+            <!-- Rank 3 -->
+            <div class="lb-item rank-3">
+              <div class="lb-left">
+                <span class="rank-badge rank-3-badge">🥉 3</span>
+                <div class="lb-avatar rank-3-avatar">VN</div>
+                <div class="lb-user-details">
+                  <span class="lb-name">Vanya</span>
+                </div>
+              </div>
+              <span class="lb-amount rank-3-amount">Rp 100.000</span>
+            </div>
+
+            <!-- Rank 4 -->
+            <div class="lb-item rank-4">
+              <div class="lb-left">
+                <span class="rank-badge rank-4-badge">4</span>
+                <div class="lb-avatar rank-4-avatar">VG</div>
+                <div class="lb-user-details">
+                  <span class="lb-name">Virgi</span>
+                </div>
+              </div>
+              <span class="lb-amount rank-4-amount">Rp 50.000</span>
             </div>
           </div>
+
           <div class="widget-footer-link">
-            <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="saweria-link-btn">Jadi
-              Donatur Berikutnya ↗</a>
+            <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="lb-action-btn">
+              <span>♥</span> Jadi Donatur Berikutnya ↗
+            </a>
           </div>
         </div>
       </div>
@@ -463,13 +505,13 @@
       <!-- Goal Box -->
       <div class="goal-box reveal">
         <div class="goal-top">
-          <h4>Target Alat Siaran: Kamera & Mic Baru</h4>
-          <span class="pct">64%</span>
+          <h4>Target Goal Donasi Stream & Tooling</h4>
+          <span class="pct">45%</span>
         </div>
         <div class="goal-bar">
-          <div class="goal-fill"></div>
+          <div class="goal-fill" style="width: 45%;"></div>
         </div>
-        <div class="goal-note">Rp 6.400.000 terkumpul dari target Rp 10.000.000 — terima kasih banyak buat semua
+        <div class="goal-note">Rp 450.000 terkumpul dari target Rp 1.000.000 — terima kasih banyak buat semua
           dukungannya! 🙏</div>
       </div>
     </section>
