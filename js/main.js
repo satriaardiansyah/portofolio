@@ -5,12 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
     heroTitle.classList.add('in');
   }
 
-  // Active navigation link tracking on scroll
+  // Active navigation link tracking on scroll (Desktop only)
   const navLinks = document.querySelectorAll('nav.desktop-nav a');
   const sections = document.querySelectorAll('section[id]');
+  let isTicking = false;
 
   function updateActiveNav() {
-    let scrollPosition = window.scrollY + 200;
+    // Only run if desktop navigation is visible to save mobile CPU/GPU
+    if (window.innerWidth <= 900 || !navLinks.length) return;
+
+    const scrollPosition = window.scrollY + 200;
 
     sections.forEach((section) => {
       const sectionTop = section.offsetTop;
@@ -34,6 +38,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  // Throttled scroll listener using requestAnimationFrame to prevent scroll jank
+  window.addEventListener('scroll', () => {
+    if (!isTicking) {
+      window.requestAnimationFrame(() => {
+        updateActiveNav();
+        isTicking = false;
+      });
+      isTicking = true;
+    }
+  }, { passive: true });
+
   updateActiveNav();
 });

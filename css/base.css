@@ -6,6 +6,7 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 ::selection {
@@ -18,8 +19,10 @@ body {
   color: var(--text);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   cursor: none;
 }
+
 
 @media (max-width: 900px) {
   body {

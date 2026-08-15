@@ -1,5 +1,10 @@
-// Custom cursor (desktop only)
+// Custom cursor (desktop with fine pointer only)
 document.addEventListener('DOMContentLoaded', () => {
+  // Disable cursor script completely on mobile / touch-only devices
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    return;
+  }
+
   const dot = document.getElementById('cursor-dot');
   const ring = document.getElementById('cursor-ring');
   
@@ -11,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mx = e.clientX;
     my = e.clientY;
     dot.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
-  });
+  }, { passive: true });
 
   function ringLoop() {
     rx += (mx - rx) * 0.16;
@@ -35,4 +40,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
 
