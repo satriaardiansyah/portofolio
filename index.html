@@ -7,6 +7,7 @@
   <title>Yabi Dev — Web Developer & Game Streamer</title>
   <meta name="description"
     content="Portofolio Yabi Dev, web developer dan game streamer. Membangun produk digital di siang hari, siaran game di malam hari.">
+  <link rel="icon" type="image/png" href="assets/icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -31,14 +32,12 @@
     <div class="logo">YABI<span>.</span>DEV</div>
     <div class="nav-right">
       <nav class="desktop-nav">
-        <a href="#work">Proyek</a>
+        <a href="#hero" class="active">Beranda</a>
         <a href="#about">Tentang</a>
-        <a href="#stream">Live</a>
-        <a href="#support">Dukung</a>
+        <a href="#work">Proyek</a>
+        <a href="#stream">Blog</a>
         <a href="#contact">Kontak</a>
       </nav>
-      <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="donate-btn desktop-only"><span
-          class="heart">♥</span> Donasi</a>
       <button class="burger" id="burger" aria-label="Buka menu">
         <span></span><span></span><span></span>
       </button>
@@ -49,46 +48,137 @@
   <div class="mobile-menu" id="mobileMenu">
     <button class="menu-close" id="menuClose" aria-label="Tutup menu">✕</button>
     <nav>
-      <a href="#work">Proyek <span class="mono" style="font-size:14px;opacity:.6;">01</span></a>
-      <a href="#about">Tentang <span class="mono" style="font-size:14px;opacity:.6;">02</span></a>
-      <a href="#stream">Live <span class="mono" style="font-size:14px;opacity:.6;">03</span></a>
-      <a href="#support">Dukung <span class="mono" style="font-size:14px;opacity:.6;">04</span></a>
+      <a href="#hero">Beranda <span class="mono" style="font-size:14px;opacity:.6;">01</span></a>
+      <a href="#work">Proyek <span class="mono" style="font-size:14px;opacity:.6;">02</span></a>
+      <a href="#about">Tentang <span class="mono" style="font-size:14px;opacity:.6;">03</span></a>
+      <a href="#stream">Blog <span class="mono" style="font-size:14px;opacity:.6;">04</span></a>
+      <a href="#contact">Kontak <span class="mono" style="font-size:14px;opacity:.6;">05</span></a>
     </nav>
     <div class="m-foot">
       <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="donate-btn"><span
           class="heart">♥</span> Kirim Donasi</a>
       <div class="m-social">
+        <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener">GitHub</a>
+        <!-- <a href="https://www.linkedin.com/in/satria-ardiansyah/" target="_blank" rel="noopener">LinkedIn</a> -->
         <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord</a>
         <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok</a>
-        <a href="mailto:hirosayurus@gmail.com">Email</a>
-        <a href="#">YouTube</a>
+        <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube</a>
       </div>
     </div>
   </div>
 
   <main>
     <!-- HERO SECTION -->
-    <section class="hero wrap">
-      <div class="hero-kicker">
-        <span class="blink">●</span>
-        Indonesia — <span id="current-date"></span>
+    <section class="hero wrap" id="hero">
+      <!-- Ambient decorative cosmic particles -->
+      <div class="hero-particles" aria-hidden="true">
+        <span class="hero-dot dot-1"></span>
+        <span class="hero-dot dot-2"></span>
+        <span class="hero-dot dot-3"></span>
+        <span class="hero-dot dot-4"></span>
+        <span class="hero-dot dot-5"></span>
       </div>
-      <h1 class="hero-title" id="heroTitle">
-        <div class="line"><span>YABI</span></div>
-        <div class="line"><span class="grad-text">DEVELOPER</span></div>
-        <!-- <div class="line"><span>Builds & Broadcasts</span></div> -->
-      </h1>
-      <div class="hero-foot">
-        <p class="hero-role">Saya <b>Yabi Dev</b> — web developer yang membangun produk digital di siang hari, dan game
-          streamer yang menyiarkan live gameplay di malam hari. Dua layar, satu passion.</p>
-        <div class="hero-ctas">
-          <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="donate-btn"><span
-              class="heart">♥</span> Dukung Lewat Donasi</a>
-          <a href="#work" class="btn-ghost">Lihat Proyek →</a>
+
+      <div class="hero-grid">
+        <!-- Left Column: Intro & CTAs -->
+        <div class="hero-content">
+          <!-- Status Pill Badge -->
+          <div class="hero-status-pill">
+            <span class="status-pulse-dot"></span>
+            <span>TERSEDIA UNTUK PROYEK BARU</span>
+          </div>
+
+          <!-- Hero Main Title -->
+          <h1 class="hero-main-title" id="heroTitle">
+            <span class="hero-title-top">YABI</span>
+            <span class="hero-title-gradient">DEVELOPER</span>
+          </h1>
+
+          <!-- Hero Bio & Tagline -->
+          <p class="hero-bio">
+            Saya <b>Yabi Dev</b> — web developer yang membangun produk digital di siang hari, dan game streamer yang menyiarkan live gameplay di malam hari.
+          </p>
+          <p class="hero-tagline">
+            Dua layar, <span class="passion-text">satu passion.</span>
+          </p>
+
+          <!-- Hero Actions -->
+          <div class="hero-cta-buttons">
+            <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="btn-donate-neon">
+              <span class="heart-icon">♥</span> DUKUNG LEWAT DONASI
+            </a>
+            <a href="#work" class="btn-project-ghost">
+              LIHAT PROYEK <span class="arrow-icon">→</span>
+            </a>
+          </div>
+
+          <!-- Hero Social Icons Strip -->
+          <div class="hero-socials">
+            <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener" aria-label="GitHub" class="hero-social-btn">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/satria-ardiansyah/" target="_blank" rel="noopener" aria-label="LinkedIn" class="hero-social-btn">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+            </a>
+            <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener" aria-label="Instagram" class="hero-social-btn">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+            <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener" aria-label="TikTok" class="hero-social-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.33 0 .64.06.94.16V9.07a6.28 6.28 0 0 0-.94-.07 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.75a8.16 8.16 0 0 0 4.77 1.52V6.82a4.85 4.85 0 0 1-1.01-.13z"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener" aria-label="YouTube" class="hero-social-btn">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><polygon points="10 15 15 12 10 9 10 15"></polygon></svg>
+            </a>
+            <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener" aria-label="Discord" class="hero-social-btn">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column: Visual Showcase -->
+        <div class="hero-visual-col">
+          <div class="hero-ambient-glow"></div>
+          <div class="hero-code-neon-badge">&lt;/&gt;</div>
+          <div class="hero-img-wrapper">
+            <img src="assets/profileku.png" alt="Yabi Dev - Profile" class="hero-profile-img" width="520" height="520" loading="eager">
+          </div>
         </div>
       </div>
-      <div class="scroll-cue" style="margin-top:36px;">
-        <div class="bar"></div> Scroll
+
+      <!-- Hero Bottom Stats Bar (Integrated 4-Column Card) -->
+      <div class="hero-stats-card">
+        <div class="hero-stat-box">
+          <div class="hero-stat-icon icon-code">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          </div>
+          <div class="hero-stat-num">10+</div>
+          <div class="hero-stat-title">Proyek Selesai</div>
+        </div>
+
+        <div class="hero-stat-box">
+          <div class="hero-stat-icon icon-stream">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="4"></rect><line x1="6" y1="12" x2="10" y2="12"></line><line x1="8" y1="10" x2="8" y2="14"></line><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line></svg>
+          </div>
+          <div class="hero-stat-num">100+</div>
+          <div class="hero-stat-title">Jam Streaming</div>
+        </div>
+
+        <div class="hero-stat-box">
+          <div class="hero-stat-icon icon-followers">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div class="hero-stat-num">1K+</div>
+          <div class="hero-stat-title">Followers</div>
+        </div>
+
+        <div class="hero-stat-box">
+          <div class="hero-stat-icon icon-passion">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fb7185" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+          </div>
+          <div class="hero-stat-num">∞</div>
+          <div class="hero-stat-title">Semangat</div>
+        </div>
       </div>
     </section>
 
@@ -148,31 +238,12 @@
             hiburan gaming yang interaktif dan komunitas yang hangat.</p>
         </div>
       </div>
-
-      <div class="stat-row reveal">
-        <div class="stat">
-          <div class="num"><span>40</span>+</div>
-          <div class="label">Proyek Selesai</div>
-        </div>
-        <div class="stat">
-          <div class="num"><span>3</span>Thn+</div>
-          <div class="label">Pengalaman Coding</div>
-        </div>
-        <div class="stat">
-          <div class="num"><span>200</span>+</div>
-          <div class="label">Jam Siaran</div>
-        </div>
-        <div class="stat">
-          <div class="num"><span>15</span>K+</div>
-          <div class="label">Total Pengikut</div>
-        </div>
-      </div>
     </section>
 
     <!-- WORK SECTION -->
     <section class="work wrap" id="work">
       <div class="sec-head reveal">
-        <h2>PROYEK REAL</h2>
+        <h2>PROYEK</h2>
         <p>Kumpulan proyek nyata yang telah saya selesaikan — dari aplikasi enterprise, sistem manajemen kesehatan,
           hingga platform digital modern.</p>
       </div>
@@ -301,11 +372,11 @@
 
         <!-- PROYEK 08: ERP -->
         <a class="proj-card" href="#" data-title="ERP — Enterprise Resource Planning" data-type="IMG"
-          data-preview="assets/erp.png" data-year="2024" data-stack="Next.js · NestJS · PostgreSQL · Docker"
+          data-preview="assets/proyek-  erp.png" data-year="2024" data-stack="Next.js · NestJS · PostgreSQL · Docker"
           data-desc="Solusi ERP skala besar untuk otomatisasi rantai pasokan, pengadaan barang, akuntansi keuangan, pengelolaan inventaris gudang, serta analitik bisnis terpusat."
           data-demo="https://example.com/erp" data-github="https://github.com/satriaardiansyah/erp-system">
           <div class="proj-media grad-c">
-            <img src="assets/erp.png" alt="ERP Solution" class="proj-img" loading="lazy">
+            <img src="assets/proyek-erp.png" alt="ERP Solution" class="proj-img" loading="lazy">
             <div class="proj-browser"><span></span><span></span><span></span></div>
             <div class="proj-badge">IMG</div>
           </div>
@@ -662,6 +733,8 @@
               <h4>Komunitas & Sosmed</h4>
               <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord Community ↗</a>
               <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok @yabidev ↗</a>
+              <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram @satriaardiansyah_ ↗</a>
+              <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube @satriaardiansyah2265 ↗</a>
               <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener">Saweria Donasi ↗</a>
               <a href="mailto:hirosayurus@gmail.com">Email Direct ↗</a>
             </div>
@@ -671,10 +744,12 @@
         <div class="footer-bottom">
           <div class="credit">© 2026 <b>Yabi Dev</b> — Web Developer & Game Streamer. All rights reserved.</div>
           <div class="footer-social-links">
-            <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener"
-              aria-label="Discord">Discord</a>
+            <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a>
+            <a href="https://www.linkedin.com/in/satria-ardiansyah/" target="_blank" rel="noopener" aria-label="LinkedIn">LinkedIn</a>
+            <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener" aria-label="Discord">Discord</a>
+            <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
             <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener" aria-label="TikTok">TikTok</a>
-            <a href="mailto:hirosayurus@gmail.com" aria-label="Gmail">Gmail</a>
+            <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener" aria-label="YouTube">YouTube</a>
           </div>
         </div>
       </footer>
@@ -683,7 +758,9 @@
 
   <!-- Floating Mobile Donate Button -->
   <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="float-donate"
-    aria-label="Donasi">♥</a>
+    aria-label="Donasi Saweria">
+    <img src="assets/icon.png" alt="Donasi Saweria" class="float-donate-img" width="56" height="56">
+  </a>
 
   <!-- Modal Preview Popup -->
   <div class="modal-backdrop" id="previewModal" aria-hidden="true">
@@ -709,10 +786,10 @@
 
         <div class="modal-actions">
           <a href="#" target="_blank" rel="noopener" class="donate-btn" id="modalDemoLink">
-            <span>🌐</span> Live Demo
+            <!-- <span>🌐</span> Live Demo -->
           </a>
           <a href="#" target="_blank" rel="noopener" class="btn-ghost" id="modalGithubLink">
-            <span>💻</span> Source Code
+            <!-- <span>💻</span> Source Code -->
           </a>
         </div>
       </div>

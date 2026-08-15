@@ -1,17 +1,21 @@
 :root {
-  --bg: #09090f;
-  --bg-soft: #0e0e17;
-  --panel: #14141f;
+  --bg: #070510;
+  --bg-soft: #0e0c1b;
+  --panel: #141224;
   --text: #f6f5fb;
   --muted: #9793a8;
   --muted-2: #524f63;
-  --line: #24222f;
+  --line: #242038;
 
   --cyan: #45e8d4;
   --purple: #9b6bff;
   --pink: #ff5c8a;
   --amber: #ffb84d;
+  --blue-neon: #60a5fa;
 
   --grad-brand: linear-gradient(115deg, var(--cyan) 0%, var(--purple) 52%, var(--pink) 100%);
+  --grad-hero-title: linear-gradient(90deg, #60a5fa 0%, #a855f7 35%, #ec4899 75%, #ff2a7a 100%);
+  --grad-neon-btn: linear-gradient(135deg, #9333ea 0%, #e11d48 55%, #f43f5e 100%);
   --grad-warm: linear-gradient(115deg, var(--pink), var(--amber));
 }
+

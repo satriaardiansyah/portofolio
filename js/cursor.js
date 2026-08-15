@@ -21,9 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   ringLoop();
 
-  document.querySelectorAll('a, .proj-card').forEach((el) => {
+  document.querySelectorAll('a, button, .proj-card, .hero-social-btn').forEach((el) => {
     el.addEventListener('mouseenter', () => {
-      if (el.classList.contains('donate-btn') || el.closest('.support-card')) {
+      if (el.classList.contains('donate-btn') || el.classList.contains('btn-donate-neon') || el.closest('.support-card')) {
         ring.classList.add('hot-donate');
       } else {
         ring.classList.add('hot');
@@ -35,3 +35,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
