@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Turnamen Komunitas — Yabi Dev</title>
+  <meta name="description"
+    content="Halaman registrasi pendaftaran peserta Turnamen Komunitas Yabi Dev serta daftar tim yang telah terdaftar.">
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tournament.css">
+</head>
+
+<body>
+
+  <!-- Ambient Background Blobs -->
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+
+  <!-- Custom Pointer Cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Header / Navigation -->
+  <header>
+    <a href="index.html" class="logo" style="text-decoration:none; color:inherit;">YABI<span>.</span>DEV</a>
+    <div class="nav-right">
+      <nav class="desktop-nav">
+        <a href="index.html">Beranda</a>
+        <a href="index.html#about">Tentang</a>
+        <a href="index.html#work">Proyek</a>
+        <a href="index.html#stream">Blog</a>
+        <a href="turnamen.html" class="active active-link">Turnamen <span class="nav-tag">HOT</span></a>
+        <a href="index.html#contact">Kontak</a>
+      </nav>
+      <button class="burger" id="burger" aria-label="Buka menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Overlay Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="menu-close" id="menuClose" aria-label="Tutup menu">✕</button>
+    <nav>
+      <a href="index.html">Beranda <span class="mono" style="font-size:14px;opacity:.6;">01</span></a>
+      <a href="index.html#work">Proyek <span class="mono" style="font-size:14px;opacity:.6;">02</span></a>
+      <a href="index.html#about">Tentang <span class="mono" style="font-size:14px;opacity:.6;">03</span></a>
+      <a href="index.html#stream">Blog <span class="mono" style="font-size:14px;opacity:.6;">04</span></a>
+      <a href="turnamen.html" style="color:var(--cyan);">Turnamen 🏆 <span class="mono" style="font-size:14px;opacity:.8;">NEW</span></a>
+      <a href="index.html#contact">Kontak <span class="mono" style="font-size:14px;opacity:.6;">05</span></a>
+    </nav>
+    <div class="m-foot">
+      <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="donate-btn"><span
+          class="heart">♥</span> Kirim Donasi</a>
+      <div class="m-social">
+        <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord</a>
+        <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok</a>
+        <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- TOURNAMENT HERO -->
+    <section class="tourney-hero wrap">
+      <div class="tourney-hero-grid">
+        <div>
+          <div class="tourney-badge-row">
+            <span class="status-badge-open">
+              <span class="status-dot-pulse"></span> REGISTRASI DIBUKA
+            </span>
+            <span class="season-tag mono">SEASON 01 • COMMUNITY CUP</span>
+          </div>
+
+          <h1 class="tourney-title">
+            YABIDEV <br>
+            <span class="grad-text">COMMUNITY TOURNAMENT</span>
+          </h1>
+
+          <p class="tourney-desc">
+            Ajang kompetisi esports & gaming bagi seluruh komunitas Yabi Dev! Daftarkan squad terbaikmu, raih total hadiah, dan unjuk kebolehan live di streaming.
+          </p>
+
+          <div style="display:flex; gap:16px; flex-wrap:wrap;">
+            <a href="#tab-register" class="donate-btn" onclick="document.querySelector('[data-target=\'tab-register\']').click();">
+              <span>✍️</span> Daftar Sekarang
+            </a>
+            <a href="#tab-participants" class="btn-ghost" onclick="document.querySelector('[data-target=\'tab-participants\']').click();">
+              <span>🏆</span> Lihat Tim Terdaftar
+            </a>
+          </div>
+        </div>
+
+        <!-- Highlight Meta Box -->
+        <div class="tourney-meta-box">
+          <div class="meta-stats-grid">
+            <div class="meta-item">
+              <span class="meta-label">Prize Pool Total</span>
+              <span class="meta-val amber">Rp 1.500.000+</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Mode Pertandingan</span>
+              <span class="meta-val cyan">5v5 Custom Room</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Tim Terdaftar</span>
+              <span class="meta-val pink" id="heroRegisteredCount">3</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Sisa Slot Tersedia</span>
+              <span class="meta-val" id="heroRemainingSlots">29</span>
+            </div>
+          </div>
+
+          <div class="meta-footer">
+            <span>📢 Koordinasi Room: <b>Discord Server</b></span>
+            <span class="mono" style="color:var(--cyan);">FREE ENTRY</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABS CONTROLLER -->
+    <section class="wrap">
+      <div class="tabs-wrapper">
+        <div class="tabs-nav" role="tablist">
+          <button class="tab-btn active" data-target="tab-register" role="tab" aria-selected="true">
+            <span>📝</span> Formulir Registrasi
+          </button>
+          <button class="tab-btn" data-target="tab-participants" role="tab" aria-selected="false">
+            <span>🏆</span> Peserta Terdaftar
+            <span class="tab-badge-count" id="tabBadgeCount">3</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= TAB 1: FORM REGISTRASI ================= -->
+      <div class="tab-content active" id="tab-register" role="tabpanel">
+        <div class="reg-container">
+          <div class="reg-header">
+            <h2>Pendaftaran Tim Turnamen</h2>
+            <p>Silakan isi data tim dan kontak Anda secara lengkap dan akurat untuk verifikasi slot turnamen.</p>
+          </div>
+
+          <form id="tournamentForm" class="reg-form" novalidate>
+            <!-- Nama Tim -->
+            <div class="form-group">
+              <label for="teamName">Nama Tim <span class="req">*</span></label>
+              <div class="input-with-icon">
+                <span class="input-icon">🛡️</span>
+                <input type="text" id="teamName" class="form-input" placeholder="Contoh: CYBER VIPERS ESPORTS" required autocomplete="off">
+              </div>
+              <span class="form-hint">Nama tim yang akan ditampilkan pada bracket dan stream overlay.</span>
+            </div>
+
+            <!-- Peserta / Roster -->
+            <div class="form-group">
+              <label for="playerNames">Peserta / Lineup Tim <span class="req">*</span></label>
+              <div class="input-with-icon">
+                <span class="input-icon">👥</span>
+                <input type="text" id="playerNames" class="form-input" placeholder="Contoh: Riko (C), Kevin, Aldo, Dika, Farhan" required autocomplete="off">
+              </div>
+              <span class="form-hint">Sebutkan nama anggota/pemain (beri tanda (C) untuk Kapten tim).</span>
+            </div>
+
+            <div class="form-grid-2">
+              <!-- Usn Game -->
+              <div class="form-group">
+                <label for="gameId">Usn Game / In-Game ID <span class="req">*</span></label>
+                <div class="input-with-icon">
+                  <span class="input-icon">🎮</span>
+                  <input type="text" id="gameId" class="form-input" placeholder="Contoh: ViperX#ID1 / 129384729" required autocomplete="off">
+                </div>
+                <span class="form-hint">In-game nickname & ID kapten/perwakilan.</span>
+              </div>
+
+              <!-- Usn Discord -->
+              <div class="form-group">
+                <label for="discordTag">Usn Discord <span class="req">*</span></label>
+                <div class="input-with-icon">
+                  <span class="input-icon">💬</span>
+                  <input type="text" id="discordTag" class="form-input" placeholder="Contoh: satria_viper#1337 / @satria" required autocomplete="off">
+                </div>
+                <span class="form-hint">Untuk undangan ke Discord room koordinasi match.</span>
+              </div>
+            </div>
+
+            <!-- Saran untuk YabiDev -->
+            <div class="form-group">
+              <label for="suggestions">Saran untuk YabiDev</label>
+              <textarea id="suggestions" class="form-textarea" placeholder="Tuliskan saran, masukan, ide game berikutnya, atau pesan penyemangat untuk YabiDev..."></textarea>
+              <span class="form-hint">Opsional — Masukan Anda sangat berharga untuk kemajuan stream & turnamen!</span>
+            </div>
+
+            <!-- Ketentuan Singkat -->
+            <div class="guidelines-box">
+              <h4>📋 Informasi Penting</h4>
+              <ul>
+                <li>Pastikan Discord aktif agar panitia dapat mengonfirmasi slot dan membagikan jadwal room.</li>
+                <li>Pendaftaran gratis tanpa dipungut biaya apapun (Free Entry).</li>
+                <li>Dilarang menggunakan cheat / script pihak ketiga (Diskualifikasi permanen).</li>
+              </ul>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="regSubmitBtn" class="reg-submit-btn">
+              <span>🚀</span> Submit & Daftar Turnamen Sekarang
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ================= TAB 2: DAFTAR PESERTA TERDAFTAR ================= -->
+      <div class="tab-content" id="tab-participants" role="tabpanel">
+        <div class="participants-container">
+          
+          <!-- Toolbar (Search & Stats) -->
+          <div class="participants-toolbar">
+            <div class="search-box-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="participantSearch" class="search-input" placeholder="Cari nama tim, peserta, ID game, discord...">
+            </div>
+
+            <div class="participants-stats-pills">
+              <span class="stat-pill" id="searchCountLabel">Menampilkan <b>3</b> tim terdaftar</span>
+              <span class="stat-pill">Format: <b>Bracket Eliminasi</b></span>
+            </div>
+          </div>
+
+          <!-- Teams Grid Cards Container -->
+          <div class="teams-grid" id="teamsGrid">
+            <!-- Dynamic Team Cards Injected By js/tournament.js -->
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer wrap" style="border-top:1px solid rgba(255,255,255,0.06); padding:40px 0; margin-top:60px;">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="logo">YABI<span>.</span>DEV</div>
+          <p class="footer-desc">Komunitas gamer dan developer Indonesia. Gabung dan bertanding bersama di turnamen berkala Yabi Dev.</p>
+          <div class="footer-status">
+            <span class="status-dot"></span> Turnamen Komunitas Aktif
+          </div>
+        </div>
+
+        <div class="footer-nav-group">
+          <div class="footer-col">
+            <h4>Navigasi</h4>
+            <a href="index.html">Beranda</a>
+            <a href="index.html#about">Tentang</a>
+            <a href="index.html#work">Proyek</a>
+            <a href="index.html#stream">Blog</a>
+            <a href="turnamen.html" class="active-link">Turnamen <span class="nav-tag">HOT</span></a>
+            <a href="index.html#contact">Kontak</a>
+          </div>
+
+          <div class="footer-col">
+            <h4>Komunitas & Sosmed</h4>
+            <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord Community ↗</a>
+            <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok @yabidev ↗</a>
+            <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram @satriaardiansyah_ ↗</a>
+            <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube @satriaardiansyah2265 ↗</a>
+            <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener">Saweria Donasi ↗</a>
+            <a href="mailto:hirosayurus@gmail.com">Email Direct ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="credit">© 2026 <b>Yabi Dev</b> — Tournament Hub. All rights reserved.</div>
+        <div class="footer-social-links">
+          <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord</a>
+          <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok</a>
+          <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube</a>
+          <a href="mailto:hirosayurus@gmail.com">Email</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- SUCCESS POPUP MODAL -->
+  <div class="success-modal" id="successModal" role="dialog" aria-modal="true" aria-labelledby="modalSuccessTitle">
+    <div class="success-card">
+      <div class="success-icon-wrap">🎉</div>
+      <h3 id="modalSuccessTitle">Registrasi Berhasil!</h3>
+      <p>Tim Anda telah resmi didaftarkan dalam Turnamen Komunitas Yabi Dev. Data telah tersimpan di sistem.</p>
+
+      <div class="success-summary-box">
+        <div class="summary-row">
+          <span>NAMA TIM</span>
+          <span id="modalSummaryTeam">-</span>
+        </div>
+        <div class="summary-row">
+          <span>NOMOR SLOT</span>
+          <span id="modalSummarySlot" style="color:var(--cyan);">-</span>
+        </div>
+        <div class="summary-row">
+          <span>DISCORD KAPTIEN</span>
+          <span id="modalSummaryDiscord" style="color:#8bb2ff;">-</span>
+        </div>
+      </div>
+
+      <div class="success-modal-actions">
+        <button type="button" id="modalViewListBtn" class="donate-btn" style="justify-content:center;">
+          <span>🏆</span> Lihat di Daftar Peserta
+        </button>
+        <button type="button" id="modalSuccessClose" class="btn-ghost" style="justify-content:center;">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Mobile Donate Button -->
+  <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="float-donate"
+    aria-label="Donasi Saweria">
+    <img src="assets/icon.png" alt="Donasi Saweria" class="float-donate-img" width="56" height="56">
+  </a>
+
+  <!-- JavaScript Modules -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/cursor.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/tournament.js"></script>
+</body>
+
+</html>

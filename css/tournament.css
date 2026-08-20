@@ -1,0 +1,821 @@
+/* ==========================================================================
+   TOURNAMENT MODULE STYLES - YABIDEV
+   ========================================================================== */
+
+/* ---------- Navbar Tournament Badge ---------- */
+.nav-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--pink);
+  color: #fff;
+  vertical-align: middle;
+  margin-left: 4px;
+  letter-spacing: 0.05em;
+  animation: pulseTag 2s infinite ease-in-out;
+}
+
+@keyframes pulseTag {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.desktop-nav a.active-link,
+.footer-col a.active-link {
+  color: var(--cyan) !important;
+}
+
+.desktop-nav a.active-link::after {
+  width: 100% !important;
+}
+
+/* ---------- Tournament Hero Section ---------- */
+.tourney-hero {
+  padding-top: 130px;
+  padding-bottom: 40px;
+  position: relative;
+}
+
+.tourney-hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.tourney-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.status-badge-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(69, 232, 212, 0.1);
+  border: 1px solid rgba(69, 232, 212, 0.35);
+  border-radius: 30px;
+  color: var(--cyan);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status-dot-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+  animation: pulseDot 1.6s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+}
+
+.season-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tourney-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(34px, 5.5vw, 62px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.tourney-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 580px;
+  margin-bottom: 30px;
+}
+
+/* Hero Stats / Highlight Cards */
+.tourney-meta-box {
+  background: rgba(20, 20, 31, 0.65);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.tourney-meta-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--grad-brand);
+}
+
+.meta-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.meta-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.meta-val.cyan { color: var(--cyan); }
+.meta-val.pink { color: var(--pink); }
+.meta-val.amber { color: var(--amber); }
+
+.meta-footer {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- Tab Navigation Switcher ---------- */
+.tabs-wrapper {
+  margin-top: 30px;
+  margin-bottom: 36px;
+  display: flex;
+  justify-content: center;
+}
+
+.tabs-nav {
+  display: inline-flex;
+  background: rgba(14, 14, 23, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px;
+  border-radius: 50px;
+  backdrop-filter: blur(12px);
+  gap: 8px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 40px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  color: #fff;
+}
+
+.tab-btn.active {
+  background: var(--panel);
+  color: #fff;
+  border: 1px solid rgba(69, 232, 212, 0.4);
+  box-shadow: 0 4px 20px rgba(69, 232, 212, 0.15);
+}
+
+.tab-badge-count {
+  background: rgba(69, 232, 212, 0.2);
+  color: var(--cyan);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+/* ---------- Tab Contents ---------- */
+.tab-content {
+  display: none;
+  animation: fadeInTab 0.35s ease forwards;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeInTab {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Registration Form Section ---------- */
+.reg-container {
+  max-width: 860px;
+  margin: 0 auto 80px auto;
+  background: rgba(20, 20, 31, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  backdrop-filter: blur(16px);
+  padding: 40px;
+  position: relative;
+}
+
+.reg-container::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: var(--grad-brand);
+  border-radius: 2px;
+}
+
+.reg-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.reg-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.reg-header p {
+  color: var(--muted);
+  font-size: 14px;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.reg-form .form-group {
+  margin-bottom: 24px;
+}
+
+.reg-form label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reg-form label .req {
+  color: var(--pink);
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  font-size: 16px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.reg-form .form-input {
+  padding-left: 48px;
+}
+
+.reg-form .form-textarea {
+  padding-top: 14px;
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--muted-2);
+  margin-top: 6px;
+  font-family: 'Inter', sans-serif;
+}
+
+.guidelines-box {
+  background: rgba(14, 14, 23, 0.6);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 28px;
+}
+
+.guidelines-box h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--amber);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.guidelines-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.guidelines-box li {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.guidelines-box li::before {
+  content: '▸';
+  color: var(--cyan);
+}
+
+.reg-submit-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 16px 24px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  color: #0a0a0f;
+  background: var(--grad-brand);
+  background-size: 200% 200%;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(69, 232, 212, 0.25);
+}
+
+.reg-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(69, 232, 212, 0.4);
+}
+
+.reg-submit-btn:active {
+  transform: translateY(0);
+}
+
+.reg-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- Registered Teams / Participants Section ---------- */
+.participants-container {
+  max-width: 1180px;
+  margin: 0 auto 80px auto;
+}
+
+.participants-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 30px;
+  background: rgba(20, 20, 31, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px 24px;
+  backdrop-filter: blur(12px);
+}
+
+.search-box-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+  max-width: 440px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 10px 18px 10px 42px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: var(--cyan);
+  background: rgba(69, 232, 212, 0.04);
+  box-shadow: 0 0 14px rgba(69, 232, 212, 0.2);
+}
+
+.participants-stats-pills {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+}
+
+.stat-pill b {
+  color: #fff;
+}
+
+/* Teams Grid */
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.team-card {
+  background: rgba(20, 20, 31, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 24px;
+  backdrop-filter: blur(14px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  transition: all 0.35s ease;
+  overflow: hidden;
+}
+
+.team-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(69, 232, 212, 0.35);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), 0 0 20px rgba(69, 232, 212, 0.1);
+}
+
+.team-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.team-slot-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: rgba(69, 232, 212, 0.15);
+  color: var(--cyan);
+  border: 1px solid rgba(69, 232, 212, 0.3);
+}
+
+.team-status-verified {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(155, 107, 255, 0.15);
+  color: var(--purple);
+  border: 1px solid rgba(155, 107, 255, 0.3);
+}
+
+.team-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 6px;
+  line-height: 1.2;
+}
+
+.team-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 14px 0;
+}
+
+.team-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.team-info-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted-2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.team-info-val {
+  font-weight: 500;
+  color: var(--text);
+  max-width: 200px;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-info-val.discord {
+  color: #8bb2ff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.team-info-val.game-id {
+  color: var(--amber);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.team-saran-box {
+  background: rgba(14, 14, 23, 0.5);
+  border-left: 2px solid var(--pink);
+  padding: 10px 14px;
+  border-radius: 4px 8px 8px 4px;
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.team-saran-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--pink);
+  font-style: normal;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.team-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted-2);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Empty State */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(20, 20, 31, 0.4);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+}
+
+.empty-icon {
+  font-size: 40px;
+  margin-bottom: 14px;
+  opacity: 0.6;
+}
+
+.empty-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.empty-desc {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ---------- Registration Success Modal ---------- */
+.success-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(9, 9, 15, 0.85);
+  backdrop-filter: blur(12px);
+}
+
+.success-modal.open {
+  display: flex;
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.success-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--panel);
+  border: 1px solid rgba(69, 232, 212, 0.35);
+  border-radius: 24px;
+  padding: 36px 30px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(69, 232, 212, 0.2);
+  transform: scale(0.95);
+  animation: modalScaleUp 0.3s ease forwards;
+}
+
+@keyframes modalScaleUp {
+  to { transform: scale(1); }
+}
+
+.success-icon-wrap {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(69, 232, 212, 0.15);
+  border: 2px solid var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 0 20px rgba(69, 232, 212, 0.3);
+}
+
+.success-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.success-card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.success-summary-box {
+  background: rgba(14, 14, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px 18px;
+  text-align: left;
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.summary-row:last-child {
+  margin-bottom: 0;
+}
+
+.summary-row span:first-child {
+  color: var(--muted-2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.summary-row span:last-child {
+  font-weight: 600;
+  color: #fff;
+}
+
+.success-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- Responsive Adjustments ---------- */
+@media (max-width: 900px) {
+  .tourney-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .reg-container {
+    padding: 28px 20px;
+  }
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .tourney-hero {
+    padding-top: 100px;
+  }
+
+  .tabs-nav {
+    width: 100%;
+    display: flex;
+  }
+
+  .tab-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .teams-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .participants-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box-wrap {
+    max-width: 100%;
+  }
+
+  .participants-stats-pills {
+    justify-content: space-between;
+  }
+}
