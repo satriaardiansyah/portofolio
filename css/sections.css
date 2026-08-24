@@ -390,6 +390,33 @@ nav.desktop-nav a.active::after {
   color: #ffffff;
 }
 
+.btn-tournament-neon {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: 50px;
+  background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+  color: #ffffff;
+  box-shadow: 0 0 28px rgba(6, 182, 212, 0.5), 0 0 10px rgba(59, 130, 246, 0.4);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.btn-tournament-neon:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 45px rgba(6, 182, 212, 0.8), 0 0 20px rgba(139, 92, 246, 0.6);
+  color: #ffffff;
+}
+
+.btn-tournament-neon .trophy-icon {
+  font-size: 14px;
+}
+
 .btn-project-ghost {
   display: inline-flex;
   align-items: center;
