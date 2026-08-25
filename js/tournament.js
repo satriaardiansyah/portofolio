@@ -1,11 +1,12 @@
 /**
  * TOURNAMENT MODULE LOGIC - YABIDEV & SUPABASE
  * Mengelola tab switcher, pendaftaran peserta terintegrasi Supabase,
- * realtime listener, live search filter, dan feedback modal.
+ * realtime listener, live search filter, slot limiter (Max 8 Tim), dan feedback modal.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // --- KONFIGURASI SUPABASE ---
+  // --- KONFIGURASI SUPABASE & TURNAMEN ---
+  const MAX_SLOTS = 8; // Batas maksimal tim turnamen
   const SUPABASE_PROJECT_URL = 'https://jvhdbzxhmhqmsgjvsylp.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_WQnVqx7Oai2ScoW18pZxow_ThBNl9-4';
   const TABLE_NAME = 'tournament_registrations';
@@ -28,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'team-1',
       slot: '#01',
       teamName: 'CYBER VIPERS',
-      playerNames: 'Satria "Viper" (C), Kevin, Rizky, Dimas, Aris',
-      gameId: 'ViperX#ID1',
+      playerNames: 'Satria "Viper" (C), Vanya',
+      gameId: 'ViperX#ID1, Vanya77',
       discordTag: 'viper_satria#1337',
       suggestions: 'Semoga turnamennya diadakan rutin tiap bulan dan ada live streaming dengan caster!',
       registeredAt: '18 Agu 2026, 14:20',
@@ -39,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'team-2',
       slot: '#02',
       teamName: 'NEON PROTOCOL',
-      playerNames: 'Farhan (C), Brian, Zidan, Farel, Gilang',
-      gameId: 'NeonBlade#889',
+      playerNames: 'Farhan (C), Brian',
+      gameId: 'NeonBlade#889, Briann',
       discordTag: 'farhan_neon',
       suggestions: 'Mungkin bisa ditambah sesi fun match antar penonton streaming bang Yabi.',
       registeredAt: '19 Agu 2026, 19:45',
@@ -50,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'team-3',
       slot: '#03',
       teamName: 'SHADOW APEX',
-      playerNames: 'Aldo "Apex" (C), Tio, Rama, Daffa, Rendy',
-      gameId: 'ShadowRey#991',
+      playerNames: 'Aldo "Apex" (C), Cindy',
+      gameId: 'ShadowRey#991, CindyX',
       discordTag: 'aldo_apex#5501',
       suggestions: 'Keren banget web portofolio dan sistem daftarnya! Good luck bang Yabi.',
       registeredAt: '20 Agu 2026, 10:15',
@@ -220,9 +221,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabBadgeCount = document.getElementById('tabBadgeCount');
   const heroRegisteredCount = document.getElementById('heroRegisteredCount');
   const heroRemainingSlots = document.getElementById('heroRemainingSlots');
+  const tourneyStatusBadge = document.getElementById('tourneyStatusBadge');
 
   const registrationForm = document.getElementById('tournamentForm');
   const submitBtn = document.getElementById('regSubmitBtn');
+  const slotFullBanner = document.getElementById('slotFullBanner');
+  const btnViewFullParticipants = document.getElementById('btnViewFullParticipants');
+  const regSlotCountText = document.getElementById('regSlotCountText');
+  const regHeaderDesc = document.getElementById('regHeaderDesc');
+  const formInputs = registrationForm ? registrationForm.querySelectorAll('input, textarea') : [];
+
   const teamsGrid = document.getElementById('teamsGrid');
   const searchInput = document.getElementById('participantSearch');
   const searchCountLabel = document.getElementById('searchCountLabel');
@@ -263,6 +271,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  if (btnViewFullParticipants) {
+    btnViewFullParticipants.addEventListener('click', () => {
+      switchTab('tab-participants');
+      const container = document.getElementById('tab-participants');
+      if (container) {
+        container.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  }
+
   // Handle URL hash awal
   if (window.location.hash) {
     const hash = window.location.hash.replace('#', '');
@@ -273,16 +291,69 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- Render UI Cards ---
+  // --- Render UI Cards & Update Status Limit ---
   function renderCards(list, filterKeyword = '') {
-    const totalSlots = 32;
+    const totalSlots = MAX_SLOTS;
     const registeredTotal = list.length;
     const remainingSlots = Math.max(0, totalSlots - registeredTotal);
+    const isFull = registeredTotal >= totalSlots;
 
-    // Update counters
-    if (tabBadgeCount) tabBadgeCount.textContent = registeredTotal;
-    if (heroRegisteredCount) heroRegisteredCount.textContent = registeredTotal;
-    if (heroRemainingSlots) heroRemainingSlots.textContent = remainingSlots;
+    // 1. Update counters di Hero & Nav
+    if (tabBadgeCount) tabBadgeCount.textContent = `${registeredTotal}/${totalSlots}`;
+    if (heroRegisteredCount) heroRegisteredCount.textContent = `${registeredTotal} / ${totalSlots}`;
+    
+    if (heroRemainingSlots) {
+      if (isFull) {
+        heroRemainingSlots.innerHTML = `<span style="color:var(--pink); font-weight:700;">0 (Penuh)</span>`;
+      } else {
+        heroRemainingSlots.textContent = `${remainingSlots} Slot`;
+      }
+    }
+
+    // 2. Update Badge Status Turnamen (Buka / Penuh)
+    if (tourneyStatusBadge) {
+      if (isFull) {
+        tourneyStatusBadge.className = 'status-badge-closed';
+        tourneyStatusBadge.innerHTML = `<span class="status-dot-closed"></span> REGISTRASI DITUTUP (SLOT PENUH)`;
+      } else {
+        tourneyStatusBadge.className = 'status-badge-open';
+        tourneyStatusBadge.innerHTML = `<span class="status-dot-pulse"></span> REGISTRASI DIBUKA`;
+      }
+    }
+
+    // 3. Update Banner Informasi Slot Penuh di Formulir
+    if (slotFullBanner) {
+      slotFullBanner.style.display = isFull ? 'flex' : 'none';
+    }
+
+    if (regSlotCountText) {
+      regSlotCountText.innerHTML = `${registeredTotal} / ${totalSlots} Tim ${isFull ? '<span style="color:var(--pink);">(PENUH)</span>' : ''}`;
+    }
+
+    if (regHeaderDesc) {
+      if (isFull) {
+        regHeaderDesc.innerHTML = `<span style="color:#ff85a1; font-weight:600;">⚠️ Pendaftaran telah ditutup karena kuota maksimal ${totalSlots} tim sudah terpenuhi.</span>`;
+      } else {
+        regHeaderDesc.textContent = 'Silakan isi data tim dan kontak Anda secara lengkap. Tim harus beranggotakan 1 Laki-laki dan 1 Perempuan.';
+      }
+    }
+
+    // 4. Update Form Inputs & Submit Button Disabled State
+    formInputs.forEach((input) => {
+      input.disabled = isFull;
+    });
+
+    if (submitBtn) {
+      if (isFull) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('btn-slot-full');
+        submitBtn.innerHTML = `<span>🔒</span> Pendaftaran Ditutup (Slot Penuh ${registeredTotal}/${totalSlots})`;
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('btn-slot-full');
+        submitBtn.innerHTML = `<span>🚀</span> Submit & Daftar Turnamen Sekarang`;
+      }
+    }
 
     if (!teamsGrid) return;
 
@@ -298,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (searchCountLabel) {
-      searchCountLabel.innerHTML = `Menampilkan <b>${filtered.length}</b> dari <b>${registeredTotal}</b> tim terdaftar`;
+      searchCountLabel.innerHTML = `Menampilkan <b>${filtered.length}</b> dari <b>${registeredTotal}</b> tim terdaftar (Maks. ${totalSlots})`;
     }
 
     if (filtered.length === 0) {
@@ -370,6 +441,12 @@ document.addEventListener('DOMContentLoaded', () => {
     registrationForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      // Guard jika slot sudah penuh
+      if (currentParticipantsList.length >= MAX_SLOTS) {
+        alert(`Mohon maaf, kuota pendaftaran turnamen telah penuh (Maksimal ${MAX_SLOTS} tim). Pendaftaran telah ditutup.`);
+        return;
+      }
+
       const teamName = document.getElementById('teamName')?.value || '';
       const playerNames = document.getElementById('playerNames')?.value || '';
       const gameId = document.getElementById('gameId')?.value || '';
@@ -384,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // UI Loading State
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML = `<span>⏳</span> Menyimpan ke Database Supabase...`;
+        submitBtn.innerHTML = `<span>⏳</span> Menyimpan ke Database...`;
       }
 
       try {
@@ -418,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
               'Terjadi kendala koneksi ke database. Pastikan tabel tournament_registrations sudah dibuat di Supabase.')
         );
       } finally {
-        if (submitBtn) {
+        if (submitBtn && currentParticipantsList.length < MAX_SLOTS) {
           submitBtn.disabled = false;
           submitBtn.innerHTML = `<span>🚀</span> Submit & Daftar Turnamen Sekarang`;
         }

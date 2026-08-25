@@ -878,6 +878,107 @@ nav.desktop-nav a.active::after {
 .work-grid a:nth-child(5n+5):hover .proj-title { color: var(--amber); }
 .proj-stack { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: .03em; }
 
+/* Show More Projects Controls */
+.work-more-wrap {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-more-projects {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(20, 20, 31, 0.75);
+  border: 1px solid rgba(69, 232, 212, 0.35);
+  border-radius: 50px;
+  padding: 14px 32px;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(69, 232, 212, 0.1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-more-projects::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(69, 232, 212, 0.15), rgba(155, 107, 255, 0.15));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-more-projects:hover {
+  transform: translateY(-3px);
+  border-color: var(--cyan);
+  box-shadow: 0 8px 30px rgba(69, 232, 212, 0.25), 0 0 25px rgba(69, 232, 212, 0.2);
+  color: var(--cyan);
+}
+
+.btn-more-projects:hover::before {
+  opacity: 1;
+}
+
+.btn-more-projects:active {
+  transform: translateY(0);
+}
+
+.btn-more-icon {
+  font-size: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-more-text {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-more-arrow {
+  display: inline-block;
+  font-size: 14px;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.btn-more-projects:hover .btn-more-arrow {
+  transform: translateY(2px);
+}
+
+.btn-more-projects[aria-expanded="true"]:hover .btn-more-arrow {
+  transform: translateY(-2px);
+}
+
+.proj-card.proj-hidden {
+  display: none !important;
+}
+
+.proj-card.proj-visible {
+  display: block !important;
+  animation: fadeInProjCard 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInProjCard {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* ---------- Support / Saweria section ---------- */
 .support { padding-bottom: 100px; }
 

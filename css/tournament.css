@@ -78,6 +78,30 @@
   animation: pulseDot 1.6s infinite ease-in-out;
 }
 
+.status-badge-closed {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(255, 75, 130, 0.12);
+  border: 1px solid rgba(255, 75, 130, 0.4);
+  border-radius: 30px;
+  color: var(--pink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status-dot-closed {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 10px var(--pink);
+}
+
 @keyframes pulseDot {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.4); opacity: 0.5; }
@@ -253,6 +277,82 @@
   position: relative;
 }
 
+/* Slot Full Notification Banner */
+.slot-full-banner {
+  background: linear-gradient(135deg, rgba(255, 75, 130, 0.15), rgba(20, 20, 31, 0.95));
+  border: 1px solid rgba(255, 75, 130, 0.4);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  box-shadow: 0 8px 30px rgba(255, 75, 130, 0.15);
+  animation: fadeInTab 0.4s ease;
+}
+
+.slot-full-banner-icon {
+  font-size: 24px;
+  line-height: 1;
+  background: rgba(255, 75, 130, 0.2);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 75, 130, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-full-banner-content {
+  flex: 1;
+}
+
+.slot-full-banner-content h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff708f;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-full-banner-content p {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.slot-full-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(255, 75, 130, 0.2);
+  border: 1px solid rgba(255, 75, 130, 0.5);
+  border-radius: 20px;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.slot-full-banner-btn:hover {
+  background: var(--pink);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 75, 130, 0.4);
+}
+
+.reg-slot-badge-wrap {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+}
+
 .reg-container::before {
   content: '';
   position: absolute;
@@ -409,10 +509,24 @@
   transform: translateY(0);
 }
 
-.reg-submit-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+.reg-form input:disabled,
+.reg-form textarea:disabled {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  cursor: not-allowed !important;
+  user-select: none;
+}
+
+.reg-submit-btn:disabled,
+.reg-submit-btn.btn-slot-full {
+  background: rgba(255, 75, 130, 0.12) !important;
+  border: 1px solid rgba(255, 75, 130, 0.35) !important;
+  color: #ff85a1 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+  opacity: 0.85;
 }
 
 /* ---------- Registered Teams / Participants Section ---------- */

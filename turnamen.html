@@ -76,10 +76,10 @@
       <div class="tourney-hero-grid">
         <div>
           <div class="tourney-badge-row">
-            <span class="status-badge-open">
-              <span class="status-dot-pulse"></span> REGISTRASI DIBUKA
+            <span class="status-badge-open" id="tourneyStatusBadge">
+              <span class="status-dot-pulse" id="tourneyStatusDot"></span> <span id="tourneyStatusText">REGISTRASI DIBUKA</span>
             </span>
-            <span class="season-tag mono"></span>
+            <span class="season-tag mono">2VS2 MODE BRUTAL</span>
           </div>
 
           <h1 class="tourney-title">
@@ -91,11 +91,11 @@
           </p>
 
           <div style="display:flex; gap:16px; flex-wrap:wrap;">
-            <a href="#tab-register" class="donate-btn" onclick="document.querySelector('[data-target=\'tab-register\']').click();">
+            <a href="#tab-register" class="donate-btn" id="heroDaftarBtn" onclick="document.querySelector('[data-target=\'tab-register\']').click();">
               <span>✍️</span> Daftar Sekarang
             </a>
             <a href="#tab-participants" class="btn-ghost" onclick="document.querySelector('[data-target=\'tab-participants\']').click();">
-              <span>🏆</span> Lihat Tim Terdaftar
+              <span>🏆</span> Lihat Tim
             </a>
           </div>
         </div>
@@ -113,17 +113,17 @@
             </div>
             <div class="meta-item">
               <span class="meta-label">Tim Terdaftar</span>
-              <span class="meta-val pink" id="heroRegisteredCount">3</span>
+              <span class="meta-val pink" id="heroRegisteredCount">3 / 8</span>
             </div>
             <div class="meta-item">
               <span class="meta-label">Sisa Slot Tersedia</span>
-              <span class="meta-val" id="heroRemainingSlots">29</span>
+              <span class="meta-val" id="heroRemainingSlots">5 Slot</span>
             </div>
           </div>
 
           <div class="meta-footer">
             <span>📢 Koordinasi Room: <b>Discord Server</b></span>
-            <span class="mono" style="color:var(--cyan);">FREE ENTRY</span>
+            <span class="mono" style="color:var(--cyan);">FREE ENTRY (MAX 8 TIM)</span>
           </div>
         </div>
       </div>
@@ -138,7 +138,7 @@
           </button>
           <button class="tab-btn" data-target="tab-participants" role="tab" aria-selected="false">
             <span>🏆</span> Peserta Terdaftar
-            <span class="tab-badge-count" id="tabBadgeCount">3</span>
+            <span class="tab-badge-count" id="tabBadgeCount">3/8</span>
           </button>
         </div>
       </div>
@@ -146,9 +146,25 @@
       <!-- ================= TAB 1: FORM REGISTRASI ================= -->
       <div class="tab-content active" id="tab-register" role="tabpanel">
         <div class="reg-container">
+          
+          <!-- Banner Notifikasi Jika Slot Penuh (Dikontrol otomatis oleh JS) -->
+          <div id="slotFullBanner" class="slot-full-banner" style="display: none;">
+            <div class="slot-full-banner-icon">🔒</div>
+            <div class="slot-full-banner-content">
+              <h4>Pendaftaran Ditutup — Slot Sudah Penuh (8/8 Tim)</h4>
+              <p>Kuota pendaftaran turnamen sebanyak 8 tim telah terpenuhi. Tombol pendaftaran telah dinonaktifkan. Anda masih dapat memantau daftar peserta terdaftar atau memantau Discord untuk jadwal turnamen berikutnya!</p>
+              <button type="button" class="slot-full-banner-btn" id="btnViewFullParticipants">
+                <span>🏆</span> Lihat Peserta Terdaftar
+              </button>
+            </div>
+          </div>
+
           <div class="reg-header">
+            <div class="reg-slot-badge-wrap">
+              <span class="stat-pill" id="regSlotIndicator">Slot Terisi: <b id="regSlotCountText">3 / 8 Tim</b></span>
+            </div>
             <h2>Pendaftaran Tim Turnamen</h2>
-            <p>Silakan isi data tim dan kontak Anda secara lengkap dan akurat untuk verifikasi slot turnamen.</p>
+            <p id="regHeaderDesc">Silakan isi data tim dan kontak Anda secara lengkap. Tim harus beranggotakan 1 Laki-laki dan 1 Perempuan.</p>
           </div>
 
           <form id="tournamentForm" class="reg-form" novalidate>
@@ -157,9 +173,9 @@
               <label for="teamName">Nama Tim <span class="req">*</span></label>
               <div class="input-with-icon">
                 <span class="input-icon">🛡️</span>
-                <input type="text" id="teamName" class="form-input" placeholder="Contoh: CYBER VIPERS ESPORTS" required autocomplete="off">
+                <input type="text" id="teamName" class="form-input" placeholder="Contoh: EVOS MIAW" required autocomplete="off">
               </div>
-              <span class="form-hint">Nama tim yang akan ditampilkan pada bracket dan stream overlay.</span>
+              <span class="form-hint">Nama tim</span>
             </div>
 
             <!-- Peserta / Roster -->
@@ -167,9 +183,9 @@
               <label for="playerNames">Peserta / Lineup Tim <span class="req">*</span></label>
               <div class="input-with-icon">
                 <span class="input-icon">👥</span>
-                <input type="text" id="playerNames" class="form-input" placeholder="Contoh: Riko (C), Kevin, Aldo, Dika, Farhan" required autocomplete="off">
+                <input type="text" id="playerNames" class="form-input" placeholder="Contoh: Yabi (C), Vanya" required autocomplete="off">
               </div>
-              <span class="form-hint">Sebutkan nama anggota/pemain (beri tanda (C) untuk Kapten tim).</span>
+              <span class="form-hint">Sebutkan nama anggota/pemain (1 laki-laki & 1 perempuan, beri tanda (C) untuk Kapten tim).</span>
             </div>
 
             <div class="form-grid-2">
@@ -178,9 +194,9 @@
                 <label for="gameId">Usn Game / In-Game ID <span class="req">*</span></label>
                 <div class="input-with-icon">
                   <span class="input-icon">🎮</span>
-                  <input type="text" id="gameId" class="form-input" placeholder="Contoh: ViperX#ID1 / 129384729" required autocomplete="off">
+                  <input type="text" id="gameId" class="form-input" placeholder="Contoh: Yabi2304, Vaerelaa" required autocomplete="off">
                 </div>
-                <span class="form-hint">In-game nickname & ID kapten/perwakilan.</span>
+                <span class="form-hint">In-game nickname.</span>
               </div>
 
               <!-- Usn Discord -->
@@ -188,7 +204,7 @@
                 <label for="discordTag">Usn Discord <span class="req">*</span></label>
                 <div class="input-with-icon">
                   <span class="input-icon">💬</span>
-                  <input type="text" id="discordTag" class="form-input" placeholder="Contoh: satria_viper#1337 / @satria" required autocomplete="off">
+                  <input type="text" id="discordTag" class="form-input" placeholder="Contoh: satria_viper" required autocomplete="off">
                 </div>
                 <span class="form-hint">Untuk undangan ke Discord room koordinasi match.</span>
               </div>
@@ -206,7 +222,9 @@
               <h4>📋 Informasi Penting</h4>
               <ul>
                 <li>Pendaftaran gratis tanpa dipungut biaya apapun (Free Entry).</li>
-                <li>Dilarang menggunakan cheat</li>
+                <li>Satu tim harus beranggotakan 1 laki-laki dan 1 perempuan.</li>
+                <li>Dilarang menggunakan cheat/script.</li>
+                <li>Keputusan wasit tidak dapat diganggu gugat, mendaftar berarti menyetujui peraturan yang berlaku.</li>
               </ul>
             </div>
 
@@ -229,10 +247,10 @@
               <input type="text" id="participantSearch" class="search-input" placeholder="Cari nama tim, peserta, ID game, discord...">
             </div>
 
-            <div class="participants-stats-pills">
+            <!-- <div class="participants-stats-pills">
               <span class="stat-pill" id="searchCountLabel">Menampilkan <b>3</b> tim terdaftar</span>
               <span class="stat-pill">Format: <b>Bracket Eliminasi</b></span>
-            </div>
+            </div> -->
           </div>
 
           <!-- Teams Grid Cards Container -->
