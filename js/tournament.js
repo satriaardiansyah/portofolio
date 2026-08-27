@@ -6,7 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // --- KONFIGURASI SUPABASE & TURNAMEN ---
-  const MAX_SLOTS = 8; // Batas maksimal tim turnamen
+  const MAX_SLOTS = 10; // Batas maksimal tim turnamen
   const SUPABASE_PROJECT_URL = 'https://jvhdbzxhmhqmsgjvsylp.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_WQnVqx7Oai2ScoW18pZxow_ThBNl9-4';
   const TABLE_NAME = 'tournament_registrations';
