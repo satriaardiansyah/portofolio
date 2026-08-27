@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Bracket Tournament 10 Tim — Yabi Dev</title>
+  <meta name="description"
+    content="Bagan & Jadwal Bracket Pertandingan Turnamen Roblox Sambung Kata 2 VS 2 Komunitas Yabi Dev. Sistem Single Elimination 10 Tim otomatis.">
+  <link rel="icon" type="image/png" href="../assets/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/tournament.css">
+  <link rel="stylesheet" href="../css/bracket.css">
+</head>
+
+<body class="bracket-page">
+
+  <!-- Ambient Background Blobs -->
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+
+  <!-- Custom Pointer Cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Header / Navigation -->
+  <header>
+    <a href="../index.html" class="logo" style="text-decoration:none; color:inherit;">YABI<span>.</span>DEV</a>
+    <div class="nav-right">
+      <nav class="desktop-nav">
+        <a href="../index.html">Beranda</a>
+        <a href="../index.html#about">Tentang</a>
+        <a href="../index.html#work">Proyek</a>
+        <a href="../index.html#stream">Blog</a>
+        <a href="../turnamen.html">Turnamen <span class="nav-tag">HOT</span></a>
+        <a href="../index.html#contact">Kontak</a>
+      </nav>
+      <button class="burger" id="burger" aria-label="Buka menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Overlay Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="menu-close" id="menuClose" aria-label="Tutup menu">✕</button>
+    <nav>
+      <a href="../index.html">Beranda <span class="mono" style="font-size:14px;opacity:.6;">01</span></a>
+      <a href="../index.html#work">Proyek <span class="mono" style="font-size:14px;opacity:.6;">02</span></a>
+      <a href="../index.html#about">Tentang <span class="mono" style="font-size:14px;opacity:.6;">03</span></a>
+      <a href="../index.html#stream">Blog <span class="mono" style="font-size:14px;opacity:.6;">04</span></a>
+      <a href="../turnamen.html" style="color:var(--cyan);">Turnamen 🏆 <span class="mono" style="font-size:14px;opacity:.8;">HOT</span></a>
+      <a href="../index.html#contact">Kontak <span class="mono" style="font-size:14px;opacity:.6;">05</span></a>
+    </nav>
+    <div class="m-foot">
+      <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="donate-btn"><span
+          class="heart">♥</span> Kirim Donasi</a>
+      <div class="m-social">
+        <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord</a>
+        <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok</a>
+        <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- BRACKET HERO & HEADER -->
+    <section class="bracket-hero wrap">
+      <div class="bracket-header-card">
+        <div class="bracket-top-meta">
+          <div class="bracket-badge-group">
+            <span class="status-badge-open">
+              <span class="status-dot-pulse"></span> BAGAN TOURNAMENT LIVE
+            </span>
+            <span class="season-tag mono">10 TIM SINGLE ELIMINATION</span>
+          </div>
+          <div class="admin-mode-pill active">
+            <span>⚡</span> AUTO-SYNC SUPABASE
+          </div>
+        </div>
+
+        <h1 class="bracket-title">
+          <span class="grad-text">BRACKET TOURNAMENT SAMBUNG KATA 2 VS 2</span>
+        </h1>
+
+        <p class="bracket-desc">
+          Bagan eliminasi resmi 10 slot turnamen Yabi Dev. Dilengkapi babak Play-In pendahuluan, Quarter Final, Semi Final, hingga Grand Final perebutan takhta Juara!
+        </p>
+
+        <!-- Stats Counter Strip -->
+        <div class="bracket-stats-strip">
+          <div class="b-stat-card">
+            <span class="b-stat-label">Format Turnamen</span>
+            <span class="b-stat-value" style="color:var(--cyan);">10 Tim Single Elimination</span>
+          </div>
+          <div class="b-stat-card">
+            <span class="b-stat-label">Tim Terdaftar</span>
+            <span class="b-stat-value" id="bStatRegistered">10 / 10 Tim</span>
+          </div>
+          <div class="b-stat-card">
+            <span class="b-stat-label">Total Pertandingan Selesai</span>
+            <span class="b-stat-value" style="color:var(--pink);" id="bStatCompleted">0 / 9 Match</span>
+          </div>
+          <div class="b-stat-card">
+            <span class="b-stat-label">Match Berlangsung</span>
+            <span class="b-stat-value" style="color:var(--amber);" id="bStatLive">0 Pertandingan</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BRACKET INTERACTIVE CONTROLS TOOLBAR -->
+    <section class="wrap">
+      <div class="bracket-toolbar-wrap">
+        <div class="bracket-toolbar">
+          <div class="toolbar-left">
+            <button type="button" class="tool-btn" id="btnSyncParticipants" title="Ambil tim terbaru dari database Supabase">
+              <span>🔄</span> Sinkron Peserta
+            </button>
+            <button type="button" class="tool-btn tool-btn-danger" id="btnResetBracket" title="Reset skor & pertandingan ke posisi awal">
+              <span>🗑️</span> Reset Bracket
+            </button>
+          </div>
+
+          <div class="toolbar-right">
+            <!-- Zoom Controls -->
+            <button type="button" class="tool-btn" id="zoomOutBtn" aria-label="Zoom Out">🔍−</button>
+            <span class="zoom-badge" id="zoomBadge">100%</span>
+            <button type="button" class="tool-btn" id="zoomInBtn" aria-label="Zoom In">🔍+</button>
+            <button type="button" class="tool-btn" id="zoomResetBtn" title="Reset Zoom">Fit 100%</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BRACKET STAGES VIEWPORT -->
+      <div class="bracket-viewport-wrapper">
+        <div class="bracket-scroll-container" id="bracketScrollContainer">
+          <div class="bracket-canvas" id="bracketCanvas">
+            
+            <!-- SVG Overlay for Connecting Lines -->
+            <svg class="bracket-svg-overlay" id="bracketSvg"></svg>
+
+            <!-- 5 Columns Stage Grid -->
+            <div class="bracket-stages-grid">
+              
+              <!-- 1. Babak Pendahuluan / Play-In -->
+              <div class="bracket-stage-col stage-playin">
+                <div class="stage-header">
+                  <div class="stage-title">Play-In</div>
+                  <div class="stage-subtitle">2 Pertandingan</div>
+                </div>
+                <div class="stage-matches-container" id="stagePlayinMatches">
+                  <!-- Dynamically rendered -->
+                </div>
+              </div>
+
+              <!-- 2. Quarter Final (8 Tim) -->
+              <div class="bracket-stage-col stage-quarter">
+                <div class="stage-header">
+                  <div class="stage-title">Quarter Final</div>
+                  <div class="stage-subtitle">4 Pertandingan</div>
+                </div>
+                <div class="stage-matches-container" id="stageQuarterMatches">
+                  <!-- Dynamically rendered -->
+                </div>
+              </div>
+
+              <!-- 3. Semi Final (4 Tim) -->
+              <div class="bracket-stage-col stage-semi">
+                <div class="stage-header">
+                  <div class="stage-title">Semi Final</div>
+                  <div class="stage-subtitle">2 Pertandingan</div>
+                </div>
+                <div class="stage-matches-container" id="stageSemiMatches">
+                  <!-- Dynamically rendered -->
+                </div>
+              </div>
+
+              <!-- 4. Grand Final -->
+              <div class="bracket-stage-col stage-final">
+                <div class="stage-header final-header">
+                  <div class="stage-title" style="color:var(--amber);">Grand Final</div>
+                  <div class="stage-subtitle" style="color:#ffd180;">Perebutan Juara</div>
+                </div>
+                <div class="stage-matches-container" id="stageFinalMatches">
+                  <!-- Dynamically rendered -->
+                </div>
+              </div>
+
+              <!-- 5. Champion Podium -->
+              <div class="bracket-stage-col stage-champion">
+                <div class="stage-header" style="border-color:rgba(255, 184, 77, 0.5); background:rgba(255, 184, 77, 0.15);">
+                  <div class="stage-title" style="color:var(--amber);">🏆 Champion</div>
+                  <div class="stage-subtitle">Pemenang Turnamen</div>
+                </div>
+                <div class="stage-matches-container" id="stageChampionShowcase">
+                  <!-- Dynamically rendered -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer wrap" style="border-top:1px solid rgba(255,255,255,0.06); padding:40px 0; margin-top:40px;">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="logo">YABI<span>.</span>DEV</div>
+          <p class="footer-desc">Komunitas gamer dan developer Indonesia. Pantau jalannya bracket dan live streaming turnamen.</p>
+          <div class="footer-status">
+            <span class="status-dot"></span> Turnamen Komunitas Aktif
+          </div>
+        </div>
+
+        <div class="footer-nav-group">
+          <div class="footer-col">
+            <h4>Navigasi</h4>
+            <a href="../index.html">Beranda</a>
+            <a href="../index.html#about">Tentang</a>
+            <a href="../index.html#work">Proyek</a>
+            <a href="../index.html#stream">Blog</a>
+            <a href="../turnamen.html">Turnamen HOT</a>
+            <a href="index.html" class="active-link">Bracket Live</a>
+          </div>
+
+          <div class="footer-col">
+            <h4>Komunitas & Sosmed</h4>
+            <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord Community ↗</a>
+            <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok @yabidev ↗</a>
+            <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram @satriaardiansyah_ ↗</a>
+            <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube @satriaardiansyah2265 ↗</a>
+            <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener">Saweria Donasi ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="credit">© 2026 <b>Yabi Dev</b> — Tournament Bracket Hub. All rights reserved.</div>
+        <div class="footer-social-links">
+          <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord</a>
+          <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok</a>
+          <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- MODAL EDIT SKOR & ADMIN MATCH -->
+  <div class="bracket-modal" id="bracketEditModal" role="dialog" aria-modal="true" aria-labelledby="modalMatchTitle">
+    <div class="bracket-modal-card">
+      <div class="modal-header-row">
+        <div class="modal-title-group">
+          <h3 id="modalMatchTitle">Edit Skor Pertandingan</h3>
+          <p id="modalMatchSubtitle">Kelola skor, tim yang bertanding, dan tentukan pemenang</p>
+        </div>
+        <button type="button" class="modal-close-icon-btn" id="modalEditClose" aria-label="Tutup modal">✕</button>
+      </div>
+
+      <!-- Duel Score Inputs Box -->
+      <div class="edit-duel-box">
+        <!-- Tim 1 -->
+        <div class="edit-team-col">
+          <span class="edit-team-header">Tim 1 (Biru)</span>
+          <select id="editTeam1Select" class="edit-team-select" aria-label="Pilih Tim 1"></select>
+          <div class="score-stepper-wrap">
+            <button type="button" class="score-stepper-btn" id="score1Minus">−</button>
+            <input type="number" id="editScore1" class="score-input-number" min="0" value="0" aria-label="Skor Tim 1">
+            <button type="button" class="score-stepper-btn" id="score1Plus">+</button>
+          </div>
+        </div>
+
+        <!-- VS Divider -->
+        <div class="edit-vs-separator">
+          <span>VS</span>
+        </div>
+
+        <!-- Tim 2 -->
+        <div class="edit-team-col">
+          <span class="edit-team-header" style="color:var(--pink);">Tim 2 (Merah)</span>
+          <select id="editTeam2Select" class="edit-team-select" aria-label="Pilih Tim 2"></select>
+          <div class="score-stepper-wrap">
+            <button type="button" class="score-stepper-btn" id="score2Minus">−</button>
+            <input type="number" id="editScore2" class="score-input-number" min="0" value="0" aria-label="Skor Tim 2">
+            <button type="button" class="score-stepper-btn" id="score2Plus">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pilihan Pemenang -->
+      <div class="modal-field-group">
+        <label class="modal-label">Tentukan Pemenang Pertandingan</label>
+        <div class="winner-choice-group">
+          <button type="button" class="winner-choice-btn" id="btnWinTeam1">🏆 Tim 1</button>
+          <button type="button" class="winner-choice-btn" id="btnWinTeam2">🏆 Tim 2</button>
+          <button type="button" class="winner-choice-btn selected" id="btnWinAuto">⚡ Otomatis (Skor Tertinggi)</button>
+          <button type="button" class="winner-choice-btn" id="btnWinNone">❌ Belum Ada Pemenang</button>
+        </div>
+      </div>
+
+      <!-- Status Pertandingan -->
+      <div class="modal-field-group">
+        <label for="editMatchStatus" class="modal-label">Status Pertandingan</label>
+        <select id="editMatchStatus" class="edit-team-select">
+          <option value="MENUNGGU">MENUNGGU</option>
+          <option value="MATCH READY">MATCH READY</option>
+          <option value="BERLANGSUNG">BERLANGSUNG</option>
+          <option value="SELESAI">SELESAI</option>
+        </select>
+      </div>
+
+      <div class="modal-actions-row">
+        <button type="button" class="tool-btn" onclick="document.getElementById('modalEditClose').click();">Batal</button>
+        <button type="button" class="tool-btn tool-btn-primary" id="btnSaveMatchEdit">
+          <span>💾</span> Simpan & Update Bracket
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="bracketToast" class="bracket-toast"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/cursor.js"></script>
+  <script src="../js/menu.js"></script>
+  <script src="../js/bracket.js"></script>
+</body>
+
+</html>
