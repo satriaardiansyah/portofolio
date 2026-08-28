@@ -3,10 +3,42 @@
    ========================================================================== */
 
 /* ---------- Page Layout & Containers ---------- */
-.bracket-page {
+body.bracket-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  cursor: default !important;
+}
+
+body.bracket-page * {
+  cursor: inherit;
+}
+
+body.bracket-page a,
+body.bracket-page button,
+body.bracket-page select,
+body.bracket-page [role="button"],
+body.bracket-page .tool-btn,
+body.bracket-page .match-card,
+body.bracket-page .champion-showcase-card,
+body.bracket-page .podium-rank-item,
+body.bracket-page .winner-choice-btn,
+body.bracket-page .score-stepper-btn,
+body.bracket-page .modal-close-icon-btn,
+body.bracket-page .celebration-btn,
+body.bracket-page .celebration-sound-toggle,
+body.bracket-page .celebration-close-icon-btn {
+  cursor: pointer !important;
+}
+
+body.bracket-page input,
+body.bracket-page textarea {
+  cursor: text !important;
+}
+
+body.bracket-page #cursor-dot,
+body.bracket-page #cursor-ring {
+  display: none !important;
 }
 
 .bracket-hero {
