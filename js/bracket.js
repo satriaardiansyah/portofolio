@@ -692,6 +692,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- HELPER NAMA PEMAIN / ROSTER TIM ---
+  function getTeamPlayerNames(teamName, teamId) {
+    if (!teamName || teamName.startsWith('[') || teamName.startsWith('Menunggu') || teamName.startsWith('KALAH')) {
+      return '';
+    }
+
+    // 1. Cari berdasarkan ID peserta
+    if (teamId) {
+      const byId = participantsList.find((p) => String(p.id) === String(teamId));
+      if (byId && byId.playerNames && byId.playerNames !== '-') {
+        return byId.playerNames;
+      }
+    }
+
+    // 2. Cari berdasarkan nama tim (case-insensitive)
+    const normalized = teamName.trim().toLowerCase();
+    const byName = participantsList.find((p) => p.teamName && p.teamName.trim().toLowerCase() === normalized);
+    if (byName && byName.playerNames && byName.playerNames !== '-') {
+      return byName.playerNames;
+    }
+
+    return '';
+  }
+
   function renderMatchCardHtml(match, isFinal = false) {
     if (!match) return '';
 
@@ -703,6 +727,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const t1Placeholder = !match.team1_id && (!match.team1_name || match.team1_name.startsWith('[') || match.team1_name.startsWith('Menunggu') || match.team1_name.startsWith('KALAH'));
     const t2Placeholder = !match.team2_id && (!match.team2_name || match.team2_name.startsWith('[') || match.team2_name.startsWith('Menunggu') || match.team2_name.startsWith('KALAH'));
+
+    const t1Players = getTeamPlayerNames(match.team1_name, match.team1_id);
+    const t2Players = getTeamPlayerNames(match.team2_name, match.team2_id);
 
     let winnerLabelPrefix = '🏆 Pemenang:';
     if (match.id === 'final') winnerLabelPrefix = '🥇 Juara 1:';
@@ -723,9 +750,16 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="team-slot-row ${team1IsWinner ? 'winner' : ''} ${team2IsWinner ? 'loser' : ''} ${t1Placeholder ? 'empty-slot' : ''}">
             <div class="team-meta-left">
               <span class="team-seed-pill ${team1IsWinner ? 'winner-seed' : ''}">${escapeHtml(match.team1_seed || '#')}</span>
-              <span class="team-name-text ${t1Placeholder ? 'placeholder' : ''}" title="${escapeHtml(match.team1_name || '')}">
-                ${escapeHtml(match.team1_name || 'Menunggu Peserta')}
-              </span>
+              <div class="team-info-col">
+                <span class="team-name-text ${t1Placeholder ? 'placeholder' : ''}" title="${escapeHtml(match.team1_name || '')}">
+                  ${escapeHtml(match.team1_name || 'Menunggu Peserta')}
+                </span>
+                ${t1Players ? `
+                  <span class="team-players-text" title="Pemain: ${escapeHtml(t1Players)}">
+                    <span class="players-icon">👥</span> ${escapeHtml(t1Players)}
+                  </span>
+                ` : ''}
+              </div>
             </div>
             <span class="team-score-badge ${team1IsWinner ? 'winner-score' : ''}">
               ${match.score1 !== undefined ? match.score1 : 0}
@@ -736,9 +770,16 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="team-slot-row ${team2IsWinner ? 'winner' : ''} ${team1IsWinner ? 'loser' : ''} ${t2Placeholder ? 'empty-slot' : ''}">
             <div class="team-meta-left">
               <span class="team-seed-pill ${team2IsWinner ? 'winner-seed' : ''}">${escapeHtml(match.team2_seed || '#')}</span>
-              <span class="team-name-text ${t2Placeholder ? 'placeholder' : ''}" title="${escapeHtml(match.team2_name || '')}">
-                ${escapeHtml(match.team2_name || 'Menunggu Peserta')}
-              </span>
+              <div class="team-info-col">
+                <span class="team-name-text ${t2Placeholder ? 'placeholder' : ''}" title="${escapeHtml(match.team2_name || '')}">
+                  ${escapeHtml(match.team2_name || 'Menunggu Peserta')}
+                </span>
+                ${t2Players ? `
+                  <span class="team-players-text" title="Pemain: ${escapeHtml(t2Players)}">
+                    <span class="players-icon">👥</span> ${escapeHtml(t2Players)}
+                  </span>
+                ` : ''}
+              </div>
             </div>
             <span class="team-score-badge ${team2IsWinner ? 'winner-score' : ''}">
               ${match.score2 !== undefined ? match.score2 : 0}
@@ -776,13 +817,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let championRoster = 'Pemenang Grand Final akan dinobatkan sebagai Juara 1 Turnamen.';
     if (championName) {
-      const matchedTeam = participantsList.find((p) => p.teamName === championName);
-      if (matchedTeam && matchedTeam.playerNames) {
-        championRoster = `Lineup: <b>${escapeHtml(matchedTeam.playerNames)}</b>`;
+      const roster = getTeamPlayerNames(championName);
+      if (roster) {
+        championRoster = `Lineup: <b>${escapeHtml(roster)}</b>`;
       } else {
         championRoster = 'Selamat kepada tim juara atas kemenangan spektakuler!';
       }
     }
+
+    const runnerUpRoster = runnerUpName ? getTeamPlayerNames(runnerUpName) : '';
+    const thirdPlaceRoster = thirdPlaceName ? getTeamPlayerNames(thirdPlaceName) : '';
 
     return `
       <div class="champion-showcase-card" id="championPodiumCard" role="button" tabindex="0" title="Klik untuk Merayakan Kemenangan Juara 1!">
@@ -818,6 +862,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="rank-team-info">
               <span class="rank-label">JUARA 1</span>
               <span class="rank-team-name">${championName ? escapeHtml(championName) : 'Menunggu Grand Final'}</span>
+              ${championName && getTeamPlayerNames(championName) ? `<span class="rank-roster-text">👥 ${escapeHtml(getTeamPlayerNames(championName))}</span>` : ''}
             </div>
             <span class="rank-prize-badge">Rp. 100.000</span>
           </div>
@@ -828,6 +873,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="rank-team-info">
               <span class="rank-label">JUARA 2 (RUNNER-UP)</span>
               <span class="rank-team-name">${runnerUpName ? escapeHtml(runnerUpName) : 'Menunggu Grand Final'}</span>
+              ${runnerUpRoster ? `<span class="rank-roster-text">👥 ${escapeHtml(runnerUpRoster)}</span>` : ''}
             </div>
             <span class="rank-status-tag">Silver</span>
           </div>
@@ -838,6 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="rank-team-info">
               <span class="rank-label">JUARA 3 (BRONZE)</span>
               <span class="rank-team-name">${thirdPlaceName ? escapeHtml(thirdPlaceName) : 'Menunggu Match Juara 3'}</span>
+              ${thirdPlaceRoster ? `<span class="rank-roster-text">👥 ${escapeHtml(thirdPlaceRoster)}</span>` : ''}
             </div>
             <span class="rank-status-tag bronze">Bronze</span>
           </div>
@@ -1044,7 +1091,8 @@ document.addEventListener('DOMContentLoaded', () => {
     participantsList.forEach((p) => {
       const opt = document.createElement('option');
       opt.value = p.teamName;
-      opt.textContent = `${p.slot} - ${p.teamName}`;
+      const rosterInfo = p.playerNames && p.playerNames !== '-' ? ` (${p.playerNames})` : '';
+      opt.textContent = `${p.slot} - ${p.teamName}${rosterInfo}`;
       if (p.teamName === currentTeamName) {
         opt.selected = true;
       }

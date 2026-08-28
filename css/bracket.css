@@ -572,6 +572,15 @@ body.bracket-page #cursor-ring {
   flex: 1;
 }
 
+.team-info-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  justify-content: center;
+  gap: 1px;
+}
+
 .team-seed-pill {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
@@ -595,12 +604,40 @@ body.bracket-page #cursor-ring {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.25;
 }
 
 .team-name-text.placeholder {
   color: var(--muted-2);
   font-style: italic;
   font-weight: 400;
+}
+
+.team-players-text {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 1px;
+}
+
+.team-players-text .players-icon {
+  font-size: 9.5px;
+  opacity: 0.8;
+}
+
+.team-slot-row.winner .team-players-text {
+  color: rgba(69, 232, 212, 0.9);
+}
+
+.team-slot-row.loser .team-players-text {
+  color: rgba(151, 147, 168, 0.6);
 }
 
 .team-score-badge {
@@ -947,6 +984,28 @@ body.bracket-page #cursor-ring {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.rank-roster-text {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.podium-rank-item.rank-gold .rank-roster-text {
+  color: rgba(255, 215, 0, 0.85);
+}
+
+.podium-rank-item.rank-silver .rank-roster-text {
+  color: rgba(220, 220, 230, 0.85);
+}
+
+.podium-rank-item.rank-bronze .rank-roster-text {
+  color: rgba(229, 152, 102, 0.85);
 }
 
 .rank-prize-badge {
