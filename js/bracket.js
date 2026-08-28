@@ -426,8 +426,18 @@ document.addEventListener('DOMContentLoaded', () => {
       let team2_name = null;
       let team2_id = null;
 
-      // Slot Index 1
-      if (def.slot1_index !== null && def.slot1_index !== undefined) {
+      // 1. Cek apakah match sudah memiliki data Tim 1 tersimpan (dari Supabase / LocalStorage / Edit Admin)
+      const existingT1Valid = existing && existing.team1_name && 
+        !existing.team1_name.startsWith('Menunggu Peserta') && 
+        !existing.team1_name.startsWith('[SLOT') &&
+        !existing.team1_name.startsWith('[MENANG') &&
+        !existing.team1_name.startsWith('[KALAH');
+
+      if (existingT1Valid) {
+        team1_name = existing.team1_name;
+        team1_id = existing.team1_id;
+      } else if (def.slot1_index !== null && def.slot1_index !== undefined) {
+        // Fallback auto-seeding awal hanya jika belum ada data tim kustom tersimpan
         const p1 = participantsList[def.slot1_index];
         if (p1) {
           team1_name = p1.teamName;
@@ -435,13 +445,23 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           team1_name = `Menunggu Peserta (${def.team1_seed})`;
         }
-      } else if (existing && existing.team1_name && !existing.team1_name.startsWith('Menunggu Peserta')) {
+      } else if (existing && existing.team1_name) {
         team1_name = existing.team1_name;
         team1_id = existing.team1_id;
       }
 
-      // Slot Index 2
-      if (def.slot2_index !== null && def.slot2_index !== undefined) {
+      // 2. Cek apakah match sudah memiliki data Tim 2 tersimpan (dari Supabase / LocalStorage / Edit Admin)
+      const existingT2Valid = existing && existing.team2_name && 
+        !existing.team2_name.startsWith('Menunggu Peserta') && 
+        !existing.team2_name.startsWith('[SLOT') &&
+        !existing.team2_name.startsWith('[MENANG') &&
+        !existing.team2_name.startsWith('[KALAH');
+
+      if (existingT2Valid) {
+        team2_name = existing.team2_name;
+        team2_id = existing.team2_id;
+      } else if (def.slot2_index !== null && def.slot2_index !== undefined) {
+        // Fallback auto-seeding awal hanya jika belum ada data tim kustom tersimpan
         const p2 = participantsList[def.slot2_index];
         if (p2) {
           team2_name = p2.teamName;
@@ -449,13 +469,25 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           team2_name = `Menunggu Peserta (${def.team2_seed})`;
         }
-      } else if (existing && existing.team2_name && !existing.team2_name.startsWith('Menunggu Peserta')) {
+      } else if (existing && existing.team2_name) {
         team2_name = existing.team2_name;
         team2_id = existing.team2_id;
       }
 
+      // Pastikan ID tim terisi jika namanya cocok dengan daftar peserta
+      if (team1_name && !team1_id) {
+        const p1 = participantsList.find((p) => p.teamName && p.teamName.trim().toLowerCase() === team1_name.trim().toLowerCase());
+        if (p1) team1_id = p1.id;
+      }
+      if (team2_name && !team2_id) {
+        const p2 = participantsList.find((p) => p.teamName && p.teamName.trim().toLowerCase() === team2_name.trim().toLowerCase());
+        if (p2) team2_id = p2.id;
+      }
+
       let status = 'MENUNGGU';
-      if (team1_id && team2_id) {
+      if (team1_name && team2_name && 
+          !team1_name.startsWith('Menunggu') && !team2_name.startsWith('Menunggu') && 
+          !team1_name.startsWith('[') && !team2_name.startsWith('[')) {
         status = 'MATCH READY';
       }
 
@@ -1140,6 +1172,20 @@ document.addEventListener('DOMContentLoaded', () => {
   if (editModal) {
     editModal.addEventListener('click', (e) => {
       if (e.target === editModal) closeEditModal();
+    });
+  }
+
+  // Update dinamis tombol pilihan pemenang saat dropdown tim diganti
+  if (editTeam1Select) {
+    editTeam1Select.addEventListener('change', () => {
+      const val = editTeam1Select.value;
+      if (btnWinTeam1) btnWinTeam1.textContent = `🏆 ${val || 'Tim 1'}`;
+    });
+  }
+  if (editTeam2Select) {
+    editTeam2Select.addEventListener('change', () => {
+      const val = editTeam2Select.value;
+      if (btnWinTeam2) btnWinTeam2.textContent = `🏆 ${val || 'Tim 2'}`;
     });
   }
 
