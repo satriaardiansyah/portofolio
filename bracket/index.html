@@ -330,6 +330,79 @@
     </div>
   </div>
 
+  <!-- EPIC CHAMPION CELEBRATION MODAL OVERLAY -->
+  <div class="champion-celebration-overlay" id="championCelebrationModal" role="dialog" aria-modal="true" aria-labelledby="celebrationTeamTitle">
+    <div class="celebration-sunburst"></div>
+    <div class="celebration-ambient-glow"></div>
+    <canvas class="celebration-canvas" id="celebrationCanvas"></canvas>
+
+    <div class="celebration-stage-container">
+      <div class="celebration-stage-card">
+        <!-- Top Bar with Sound & Close -->
+        <div class="celebration-top-bar">
+          <button type="button" class="celebration-sound-toggle" id="celebrationSoundToggle" aria-label="Toggle Suara Fanfare" title="Nyalakan / Matikan Efek Suara">
+            <span id="celebrationSoundIcon">🔊</span> <span id="celebrationSoundText">Suara: ON</span>
+          </button>
+          <button type="button" class="celebration-close-icon-btn" id="celebrationCloseIcon" aria-label="Tutup Perayaan" title="Tutup (ESC)">✕</button>
+        </div>
+
+        <!-- 3D Floating Trophy with Halos -->
+        <div class="celebration-trophy-stage">
+          <div class="celebration-trophy-glow"></div>
+          <div class="celebration-halo-ring"></div>
+          <div class="celebration-halo-ring-2"></div>
+          <div class="celebration-trophy-icon">🏆</div>
+        </div>
+
+        <!-- Grand Crown Tag -->
+        <div class="celebration-crown-wrap">
+          <span class="celebration-crown-icon">👑</span>
+          <span class="celebration-crown-text">THE ULTIMATE GRAND CHAMPION</span>
+        </div>
+
+        <!-- Team Name (Glowing Gold) -->
+        <h2 class="celebration-team-title" id="celebrationTeamTitle">WOWOK LOVE TEDDY</h2>
+
+        <!-- Lineup & Roster -->
+        <div class="celebration-lineup-box">
+          <span class="celebration-lineup-label">Lineup Sang Juara</span>
+          <span class="celebration-lineup-names" id="celebrationLineupNames">Lineup: <b>whisper (C), kayi</b></span>
+        </div>
+
+        <!-- Extra Badges -->
+        <div class="celebration-meta-strip" id="celebrationMetaStrip">
+          <span class="celebration-pill-badge">🎮 Game: <b>Roblox Sambung Kata</b></span>
+          <span class="celebration-pill-badge">⚔️ Format: <b>2 VS 2 Brutal</b></span>
+          <span class="celebration-pill-badge" id="celebrationStatusBadge">🔥 Status: <b>Undefeated</b></span>
+        </div>
+
+        <!-- Prize Showcase Box -->
+        <div class="celebration-prize-card">
+          <div class="celebration-prize-title">🎁 TOTAL HADIAH SANG JUARA 1</div>
+          <div class="celebration-prize-val" id="celebrationPrizeVal">Rp.150.000 + 1.000.000 Koin</div>
+        </div>
+
+        <!-- Interactive Action Buttons -->
+        <div class="celebration-actions-row">
+          <button type="button" class="celebration-btn celebration-btn-firework" id="btnCelebrationFirework">
+            <span>🎆</span> Tembakkan Kembang Api!
+          </button>
+          <button type="button" class="celebration-btn celebration-btn-audio" id="btnCelebrationReplayAudio">
+            <span>🎺</span> Putar Fanfare
+          </button>
+          <button type="button" class="celebration-btn celebration-btn-share" id="btnCelebrationShare">
+            <span>📋</span> Salin Info Juara
+          </button>
+          <button type="button" class="celebration-btn celebration-btn-close" id="btnCelebrationClose">
+            Tutup
+          </button>
+        </div>
+
+        <div class="celebration-hint-tap">✨ Klik di mana saja di layar untuk ledakan kembang api baru! • Tekan ESC untuk tutup</div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="bracketToast" class="bracket-toast"></div>
 

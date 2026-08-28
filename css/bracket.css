@@ -579,44 +579,99 @@
 
 /* ---------- Champion Podium Card ---------- */
 .champion-showcase-card {
-  background: linear-gradient(145deg, rgba(30, 24, 56, 0.9), rgba(20, 18, 36, 0.95));
+  background: linear-gradient(145deg, rgba(30, 24, 56, 0.92), rgba(20, 18, 36, 0.98));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 2px solid rgba(255, 184, 77, 0.4);
+  border: 2px solid rgba(255, 184, 77, 0.5);
   border-radius: 24px;
   padding: 32px 24px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 184, 77, 0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 184, 77, 0.25);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.champion-showcase-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(255, 215, 0, 0.85);
+  box-shadow: 0 28px 65px rgba(0, 0, 0, 0.75), 0 0 55px rgba(255, 184, 77, 0.5), 0 0 85px rgba(255, 92, 138, 0.3);
+}
+
+.champion-showcase-card:active {
+  transform: translateY(-2px) scale(0.99);
 }
 
 .champion-showcase-card::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 30%, rgba(255, 184, 77, 0.18), transparent 70%);
+  background: radial-gradient(circle at 50% 30%, rgba(255, 184, 77, 0.22), transparent 70%);
   pointer-events: none;
+}
+
+.champion-showcase-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 55%
+  );
+  transform: rotate(25deg) translateY(-100%);
+  transition: transform 0.8s ease;
+  pointer-events: none;
+}
+
+.champion-showcase-card:hover::after {
+  transform: rotate(25deg) translateY(100%);
 }
 
 .trophy-glow-wrap {
   position: relative;
   margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trophy-glow-ring {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 184, 77, 0.4) 0%, transparent 70%);
+  animation: pulseGlow 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.35); opacity: 1; }
 }
 
 .trophy-icon {
   font-size: 56px;
-  filter: drop-shadow(0 0 20px rgba(255, 184, 77, 0.6));
+  filter: drop-shadow(0 0 20px rgba(255, 184, 77, 0.8));
   animation: floatTrophy 3s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes floatTrophy {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-8px) scale(1.05); }
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  50% { transform: translateY(-8px) scale(1.06) rotate(2deg); }
 }
 
 .champion-tag {
@@ -628,9 +683,12 @@
   text-transform: uppercase;
   margin-bottom: 8px;
   padding: 4px 12px;
-  background: rgba(255, 184, 77, 0.12);
-  border: 1px solid rgba(255, 184, 77, 0.35);
+  background: rgba(255, 184, 77, 0.15);
+  border: 1px solid rgba(255, 184, 77, 0.4);
   border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .champion-team-title {
@@ -640,6 +698,7 @@
   color: #fff;
   margin-bottom: 8px;
   letter-spacing: -0.01em;
+  text-shadow: 0 0 20px rgba(255, 184, 77, 0.3);
 }
 
 .champion-members {
@@ -661,6 +720,32 @@
   font-size: 12px;
   font-weight: 700;
   color: #ffe180;
+  margin-bottom: 12px;
+}
+
+.champion-celebrate-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #ffb84d, #ff5c8a);
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(255, 92, 138, 0.4);
+  animation: celebrateBadgePulse 2s ease-in-out infinite;
+  transition: transform 0.2s ease;
+}
+
+.champion-showcase-card:hover .champion-celebrate-hint {
+  transform: scale(1.06);
+}
+
+@keyframes celebrateBadgePulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 92, 138, 0.4); }
+  50% { transform: scale(1.04); box-shadow: 0 4px 22px rgba(255, 184, 77, 0.7); }
 }
 
 /* ---------- Admin / Edit Match Modal ---------- */
@@ -958,3 +1043,557 @@
     display: none;
   }
 }
+
+/* ==========================================================================
+   EPIC CHAMPION VICTORY CELEBRATION MODAL & ANIMATIONS (KEREN LUAR BIASA)
+   ========================================================================== */
+
+.champion-celebration-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, rgba(18, 12, 38, 0.94), rgba(4, 3, 10, 0.98));
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px 16px;
+}
+
+.champion-celebration-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Background Rotating Sunburst Light Rays */
+.celebration-sunburst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250vmax;
+  height: 250vmax;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(255, 184, 77, 0.06) 0deg 12deg,
+    transparent 12deg 24deg,
+    rgba(255, 92, 138, 0.04) 24deg 36deg,
+    transparent 36deg 48deg,
+    rgba(69, 232, 212, 0.05) 48deg 60deg,
+    transparent 60deg 72deg
+  );
+  pointer-events: none;
+  animation: rotateSunburst 60s linear infinite;
+  z-index: 1;
+}
+
+@keyframes rotateSunburst {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Ambient Radial Glow Blobs */
+.celebration-ambient-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 184, 77, 0.25) 0%, rgba(255, 92, 138, 0.15) 50%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  animation: ambientFloat 8s ease-in-out infinite alternate;
+  z-index: 2;
+}
+
+@keyframes ambientFloat {
+  0% { transform: translate(-10%, -10%) scale(0.9); }
+  100% { transform: translate(10%, 10%) scale(1.15); }
+}
+
+/* Fullscreen Particle & Fireworks Canvas */
+.celebration-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Stage Wrapper */
+.celebration-stage-container {
+  position: relative;
+  z-index: 10;
+  max-width: 680px;
+  width: 100%;
+  margin: auto;
+  perspective: 1200px;
+}
+
+/* Main Luxury Trophy Card */
+.celebration-stage-card {
+  position: relative;
+  background: linear-gradient(155deg, rgba(32, 22, 60, 0.94), rgba(16, 12, 32, 0.97));
+  border: 2px solid rgba(255, 215, 0, 0.65);
+  border-radius: 32px;
+  padding: 44px 32px 36px;
+  text-align: center;
+  box-shadow: 
+    0 35px 90px rgba(0, 0, 0, 0.85),
+    0 0 70px rgba(255, 184, 77, 0.4),
+    0 0 120px rgba(255, 92, 138, 0.25),
+    inset 0 0 50px rgba(255, 184, 77, 0.12);
+  transform: translateY(30px) scale(0.92) rotateX(10deg);
+  opacity: 0;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+  overflow: hidden;
+}
+
+.champion-celebration-overlay.active .celebration-stage-card {
+  transform: translateY(0) scale(1) rotateX(0deg);
+  opacity: 1;
+  animation: celebrationCardPop 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes celebrationCardPop {
+  0% { transform: translateY(50px) scale(0.85) rotateX(14deg); opacity: 0; }
+  60% { transform: translateY(-8px) scale(1.03) rotateX(-2deg); opacity: 1; }
+  100% { transform: translateY(0) scale(1) rotateX(0deg); opacity: 1; }
+}
+
+/* Animated Card Light Sweep */
+.celebration-stage-card::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.08) 46%,
+    rgba(255, 215, 0, 0.25) 50%,
+    rgba(255, 255, 255, 0.08) 54%,
+    transparent 58%
+  );
+  transform: rotate(20deg);
+  animation: shimmerSweep 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSweep {
+  0% { transform: rotate(20deg) translateY(-120%); }
+  35%, 100% { transform: rotate(20deg) translateY(120%); }
+}
+
+/* Top Action Controls inside Card */
+.celebration-top-bar {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 15;
+}
+
+.celebration-sound-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: #fff;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.celebration-sound-toggle:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: rgba(255, 215, 0, 0.5);
+  color: #ffe180;
+}
+
+.celebration-close-icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.celebration-close-icon-btn:hover {
+  background: rgba(255, 92, 138, 0.3);
+  border-color: var(--pink);
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Trophy Stage & Energy Halo */
+.celebration-trophy-stage {
+  position: relative;
+  margin: 12px auto 20px;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.celebration-halo-ring {
+  position: absolute;
+  inset: -15px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 215, 0, 0.5);
+  animation: rotateHalo 12s linear infinite;
+  pointer-events: none;
+}
+
+.celebration-halo-ring-2 {
+  position: absolute;
+  inset: -28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 92, 138, 0.35);
+  animation: rotateHaloRev 18s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotateHalo {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes rotateHaloRev {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.celebration-trophy-glow {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.55) 0%, rgba(255, 92, 138, 0.25) 50%, transparent 75%);
+  filter: blur(15px);
+  animation: pulseTrophyHalo 2.5s ease-in-out infinite;
+}
+
+@keyframes pulseTrophyHalo {
+  0%, 100% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.4); opacity: 1; }
+}
+
+.celebration-trophy-icon {
+  font-size: 82px;
+  filter: drop-shadow(0 10px 30px rgba(255, 215, 0, 0.9));
+  animation: epicTrophyFloat 3.5s ease-in-out infinite;
+  position: relative;
+  z-index: 3;
+}
+
+@keyframes epicTrophyFloat {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  25% { transform: translateY(-10px) scale(1.08) rotate(-3deg); }
+  75% { transform: translateY(-6px) scale(1.05) rotate(3deg); }
+}
+
+/* Crown & Grand Title Tag */
+.celebration-crown-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 92, 138, 0.2));
+  border: 1px solid rgba(255, 215, 0, 0.6);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  margin-bottom: 14px;
+}
+
+.celebration-crown-icon {
+  font-size: 18px;
+  animation: crownBob 1.5s ease-in-out infinite;
+}
+
+@keyframes crownBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-6deg); }
+}
+
+.celebration-crown-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #ffd700;
+  text-transform: uppercase;
+}
+
+/* Epic Team Champion Title (Keren Luar Biasa) */
+.celebration-team-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(28px, 6vw, 46px);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #ffe79a 20%,
+    #ffc72c 45%,
+    #ff608c 70%,
+    #45e8d4 95%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textGoldShimmer 4s ease infinite;
+  filter: drop-shadow(0 4px 18px rgba(255, 215, 0, 0.5));
+  word-break: break-word;
+}
+
+@keyframes textGoldShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Lineup / Roster Card */
+.celebration-lineup-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 14px 20px;
+  margin-bottom: 18px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  max-width: 90%;
+}
+
+.celebration-lineup-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.celebration-lineup-names {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.celebration-lineup-names b {
+  color: #ffe180;
+}
+
+/* Extra Meta Pills (Discord, Game ID, Win Stats) */
+.celebration-meta-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.celebration-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.celebration-pill-badge b {
+  color: #fff;
+}
+
+/* Luxury Prize Pool Showcase */
+.celebration-prize-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 184, 77, 0.18), rgba(255, 92, 138, 0.18));
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  border-radius: 20px;
+  padding: 16px 24px;
+  margin-bottom: 26px;
+  box-shadow: 0 10px 30px rgba(255, 184, 77, 0.18);
+  overflow: hidden;
+}
+
+.celebration-prize-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: skewX(-25deg);
+  animation: shinePrize 3s ease-in-out infinite;
+}
+
+@keyframes shinePrize {
+  0%, 40% { left: -100%; }
+  80%, 100% { left: 200%; }
+}
+
+.celebration-prize-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #ffd700;
+  margin-bottom: 4px;
+}
+
+.celebration-prize-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+
+/* Action Buttons Group */
+.celebration-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.celebration-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+}
+
+.celebration-btn-firework {
+  background: linear-gradient(135deg, #ff5c8a, #9b6bff);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(255, 92, 138, 0.4);
+}
+
+.celebration-btn-firework:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 10px 28px rgba(255, 92, 138, 0.6);
+}
+
+.celebration-btn-firework:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.celebration-btn-audio {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.celebration-btn-audio:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: rgba(255, 215, 0, 0.5);
+  color: #ffe180;
+  transform: translateY(-2px);
+}
+
+.celebration-btn-share {
+  background: rgba(69, 232, 212, 0.12);
+  border: 1px solid rgba(69, 232, 212, 0.4);
+  color: var(--cyan);
+}
+
+.celebration-btn-share:hover {
+  background: rgba(69, 232, 212, 0.25);
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(69, 232, 212, 0.3);
+}
+
+.celebration-btn-close {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--muted);
+}
+
+.celebration-btn-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.celebration-hint-tap {
+  font-size: 11px;
+  color: var(--muted-2);
+  margin-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Responsive adjustments for celebration card */
+@media (max-width: 640px) {
+  .celebration-stage-card {
+    padding: 36px 18px 28px;
+    border-radius: 24px;
+  }
+  .celebration-trophy-stage {
+    width: 100px;
+    height: 100px;
+    margin: 8px auto 14px;
+  }
+  .celebration-trophy-icon {
+    font-size: 60px;
+  }
+  .celebration-team-title {
+    font-size: 26px;
+  }
+  .celebration-actions-row {
+    flex-direction: column;
+    width: 100%;
+  }
+  .celebration-btn {
+    width: 100%;
+  }
+}
+

@@ -613,11 +613,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     stagesContainers.champion.innerHTML = `
-      <div class="champion-showcase-card">
+      <div class="champion-showcase-card" id="championPodiumCard" role="button" tabindex="0" title="Klik untuk Merayakan Kemenangan Juara!">
         <div class="trophy-glow-wrap">
+          <div class="trophy-glow-ring"></div>
           <div class="trophy-icon">🏆</div>
         </div>
-        <span class="champion-tag">JUARA TOURNAMENT</span>
+        <span class="champion-tag"><span>👑</span> JUARA TOURNAMENT</span>
         <h2 class="champion-team-title">
           ${championName ? escapeHtml(championName) : '<span style="color:var(--muted-2); font-size:18px;">Belum Ditentukan</span>'}
         </h2>
@@ -627,8 +628,24 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="champion-prize-pill">
           <span>🎁</span> Hadiah: Rp.150.000 + 1.000.000 Koin
         </div>
+        <div class="champion-celebrate-hint">
+          <span>🎉</span> Rayakan Kemenangan Juara!
+        </div>
       </div>
     `;
+
+    const podiumCard = document.getElementById('championPodiumCard');
+    if (podiumCard) {
+      podiumCard.addEventListener('click', () => {
+        openChampionCelebration();
+      });
+      podiumCard.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openChampionCelebration();
+        }
+      });
+    }
   }
 
   function updateHeaderStats() {
@@ -905,6 +922,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       closeEditModal();
       showToast(`✅ Skor pertandingan ${match.title} berhasil diperbarui!`);
+
+      // Auto-trigger celebration if Grand Final winner is determined
+      if (activeEditingMatchId === 'final' && matchesState['final']?.winner_name) {
+        setTimeout(() => {
+          openChampionCelebration(true);
+        }, 500);
+      }
     });
   }
 
@@ -917,6 +941,543 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // ==========================================================================
+  // EPIC CHAMPION VICTORY CELEBRATION ENGINE (WEB AUDIO & CANVAS PARTICLES)
+  // ==========================================================================
+
+  // --- 1. Web Audio API Sound Synthesizer (Fanfare & Fireworks) ---
+  class CelebrationAudioSynthesizer {
+    constructor() {
+      this.ctx = null;
+      this.isMuted = false;
+    }
+
+    init() {
+      if (!this.ctx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          this.ctx = new AudioContext();
+        }
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    }
+
+    toggleMute() {
+      this.isMuted = !this.isMuted;
+      return !this.isMuted;
+    }
+
+    playFanfare() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+
+      // Triumphant Fanfare Arpeggio Notes: C5 (523.25), E5 (659.25), G5 (783.99), C6 (1046.50), E6 (1318.51)
+      const fanfareSequence = [
+        { freq: 523.25, time: 0.00, dur: 0.15, gain: 0.25, type: 'triangle' },
+        { freq: 659.25, time: 0.15, dur: 0.15, gain: 0.25, type: 'triangle' },
+        { freq: 783.99, time: 0.30, dur: 0.20, gain: 0.28, type: 'triangle' },
+        // Mid-phrase chord strike
+        { freq: 1046.50, time: 0.52, dur: 0.65, gain: 0.32, type: 'sawtooth' },
+        { freq: 783.99,  time: 0.52, dur: 0.65, gain: 0.22, type: 'triangle' },
+        { freq: 523.25,  time: 0.52, dur: 0.65, gain: 0.25, type: 'triangle' },
+        // Quick pickup notes
+        { freq: 880.00,  time: 1.15, dur: 0.12, gain: 0.22, type: 'triangle' },
+        { freq: 987.77,  time: 1.27, dur: 0.14, gain: 0.24, type: 'triangle' },
+        // Grand Final Sustained Victory Chord (Tutti Brass)
+        { freq: 1046.50, time: 1.42, dur: 1.40, gain: 0.35, type: 'sawtooth' },
+        { freq: 1318.51, time: 1.42, dur: 1.40, gain: 0.28, type: 'sine' },
+        { freq: 783.99,  time: 1.42, dur: 1.40, gain: 0.26, type: 'triangle' },
+        { freq: 523.25,  time: 1.42, dur: 1.40, gain: 0.30, type: 'triangle' },
+        { freq: 261.63,  time: 1.42, dur: 1.40, gain: 0.35, type: 'triangle' },
+      ];
+
+      fanfareSequence.forEach((n) => {
+        const osc = this.ctx.createOscillator();
+        const gainNode = this.ctx.createGain();
+
+        osc.type = n.type || 'triangle';
+        osc.frequency.setValueAtTime(n.freq, now + n.time);
+
+        gainNode.gain.setValueAtTime(0.0001, now + n.time);
+        gainNode.gain.exponentialRampToValueAtTime(n.gain, now + n.time + 0.03);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + n.time + n.dur);
+
+        osc.connect(gainNode);
+        gainNode.connect(this.ctx.destination);
+
+        osc.start(now + n.time);
+        osc.stop(now + n.time + n.dur);
+      });
+
+      // Shimmering Victory Chimes (Bell Sparkles)
+      const chimes = [1318.51, 1567.98, 1760.00, 2093.00, 2637.02, 3135.96, 3520.00];
+      chimes.forEach((f, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const start = now + 0.7 + idx * 0.09;
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, start);
+
+        gain.gain.setValueAtTime(0.001, start);
+        gain.gain.exponentialRampToValueAtTime(0.09, start + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.55);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(start);
+        osc.stop(start + 0.55);
+      });
+    }
+
+    playFirework() {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+
+      // Sub-bass thud
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.exponentialRampToValueAtTime(32, now + 0.32);
+
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.32);
+
+      // White Noise Crackle Burst
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.28);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.14, now + 0.04);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+      noise.connect(noiseGain);
+      noiseGain.connect(this.ctx.destination);
+      noise.start(now + 0.04);
+    }
+  }
+
+  const celebrationAudio = new CelebrationAudioSynthesizer();
+
+  // --- 2. High Performance Canvas Particle & Fireworks Physics Engine ---
+  class CelebrationParticleEngine {
+    constructor(canvas) {
+      this.canvas = canvas;
+      this.ctx = canvas ? canvas.getContext('2d') : null;
+      this.confetti = [];
+      this.fireworks = [];
+      this.embers = [];
+      this.isRunning = false;
+      this.animationFrameId = null;
+      this.width = 0;
+      this.height = 0;
+      this.colors = [
+        '#ffd700', '#ffb84d', '#ff5c8a', '#45e8d4',
+        '#9b6bff', '#ffffff', '#ff94b8', '#ffe180'
+      ];
+      this.resize = this.resize.bind(this);
+      this.loop = this.loop.bind(this);
+    }
+
+    resize() {
+      if (!this.canvas) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.canvas.width = this.width * dpr;
+      this.canvas.height = this.height * dpr;
+      if (this.ctx) {
+        this.ctx.scale(dpr, dpr);
+      }
+    }
+
+    start() {
+      this.resize();
+      this.isRunning = true;
+      this.confetti = [];
+      this.fireworks = [];
+      this.embers = [];
+
+      // Generate initial lavish confetti blizzard
+      for (let i = 0; i < 150; i++) {
+        this.confetti.push(this.createConfettiPiece(true));
+      }
+
+      // Generate ambient floating embers
+      for (let i = 0; i < 40; i++) {
+        this.embers.push(this.createEmberPiece(true));
+      }
+
+      // Launch 3 initial fireworks
+      this.launchTripleFireworks();
+
+      if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+      this.loop();
+    }
+
+    stop() {
+      this.isRunning = false;
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+      if (this.ctx && this.canvas) {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+      }
+      this.confetti = [];
+      this.fireworks = [];
+      this.embers = [];
+    }
+
+    createConfettiPiece(isInitial = false) {
+      const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+      return {
+        x: Math.random() * this.width,
+        y: isInitial ? Math.random() * this.height : -20 - Math.random() * 50,
+        size: Math.random() * 9 + 6,
+        aspectRatio: Math.random() * 0.6 + 0.4,
+        color: color,
+        vx: (Math.random() - 0.5) * 3,
+        vy: Math.random() * 2.5 + 2,
+        rotX: Math.random() * Math.PI * 2,
+        rotY: Math.random() * Math.PI * 2,
+        rotZ: Math.random() * Math.PI * 2,
+        speedRotX: (Math.random() - 0.5) * 0.1,
+        speedRotY: (Math.random() - 0.5) * 0.12,
+        speedRotZ: (Math.random() - 0.5) * 0.05,
+        wobble: Math.random() * 10,
+        wobbleSpeed: Math.random() * 0.06 + 0.02
+      };
+    }
+
+    createEmberPiece(isInitial = false) {
+      return {
+        x: Math.random() * this.width,
+        y: isInitial ? Math.random() * this.height : this.height + Math.random() * 20,
+        radius: Math.random() * 2.5 + 1,
+        color: Math.random() > 0.4 ? '#ffd700' : '#ff5c8a',
+        vy: -(Math.random() * 1.5 + 0.8),
+        vx: (Math.random() - 0.5) * 0.8,
+        alpha: Math.random() * 0.6 + 0.3,
+        pulseSpeed: Math.random() * 0.04 + 0.02,
+        phase: Math.random() * Math.PI * 2
+      };
+    }
+
+    launchFirework(x, y, palette = null) {
+      const colors = palette || this.colors;
+      const mainColor = colors[Math.floor(Math.random() * colors.length)];
+      const numParticles = Math.floor(Math.random() * 30) + 60;
+      const particles = [];
+
+      for (let i = 0; i < numParticles; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 7 + 2;
+        particles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          color: Math.random() > 0.25 ? mainColor : '#ffffff',
+          radius: Math.random() * 2.6 + 1.2,
+          alpha: 1,
+          decay: Math.random() * 0.016 + 0.012,
+          gravity: 0.09,
+          drag: 0.965,
+          twinkle: Math.random() > 0.4
+        });
+      }
+
+      this.fireworks.push({ particles });
+      celebrationAudio.playFirework();
+    }
+
+    launchTripleFireworks() {
+      const centerX = this.width / 2;
+      const centerY = this.height * 0.38;
+
+      this.launchFirework(centerX, centerY, ['#ffd700', '#ffe180', '#ffffff']);
+      setTimeout(() => {
+        if (this.isRunning) {
+          this.launchFirework(centerX - this.width * 0.25, centerY + 30, ['#ff5c8a', '#9b6bff', '#ffffff']);
+        }
+      }, 250);
+      setTimeout(() => {
+        if (this.isRunning) {
+          this.launchFirework(centerX + this.width * 0.25, centerY - 20, ['#45e8d4', '#ffd700', '#ffffff']);
+        }
+      }, 500);
+    }
+
+    loop() {
+      if (!this.isRunning || !this.ctx) return;
+
+      this.ctx.clearRect(0, 0, this.width, this.height);
+
+      // 1. Render Confetti
+      for (let i = 0; i < this.confetti.length; i++) {
+        const c = this.confetti[i];
+        c.y += c.vy;
+        c.x += c.vx + Math.sin(c.wobble) * 1.2;
+        c.wobble += c.wobbleSpeed;
+        c.rotX += c.speedRotX;
+        c.rotY += c.speedRotY;
+        c.rotZ += c.speedRotZ;
+
+        // Reset if off bottom
+        if (c.y > this.height + 30) {
+          Object.assign(c, this.createConfettiPiece(false));
+        }
+
+        const width = c.size * Math.cos(c.rotY);
+        const height = (c.size * c.aspectRatio) * Math.sin(c.rotX);
+
+        this.ctx.save();
+        this.ctx.translate(c.x, c.y);
+        this.ctx.rotate(c.rotZ);
+        this.ctx.fillStyle = c.color;
+        this.ctx.beginPath();
+        this.ctx.fillRect(-width / 2, -height / 2, width, height);
+        this.ctx.restore();
+      }
+
+      // 2. Render Embers
+      for (let i = 0; i < this.embers.length; i++) {
+        const e = this.embers[i];
+        e.y += e.vy;
+        e.x += e.vx + Math.sin(e.phase) * 0.5;
+        e.phase += e.pulseSpeed;
+
+        if (e.y < -20) {
+          Object.assign(e, this.createEmberPiece(false));
+        }
+
+        const currentAlpha = Math.max(0.1, e.alpha * (0.7 + 0.3 * Math.sin(e.phase)));
+        this.ctx.save();
+        this.ctx.globalAlpha = currentAlpha;
+        this.ctx.fillStyle = e.color;
+        this.ctx.shadowColor = e.color;
+        this.ctx.shadowBlur = 8;
+        this.ctx.beginPath();
+        this.ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+      }
+
+      // 3. Render Fireworks
+      for (let fIdx = this.fireworks.length - 1; fIdx >= 0; fIdx--) {
+        const fw = this.fireworks[fIdx];
+        let aliveCount = 0;
+
+        for (let pIdx = 0; pIdx < fw.particles.length; pIdx++) {
+          const p = fw.particles[pIdx];
+          if (p.alpha <= 0.01) continue;
+
+          aliveCount++;
+          p.vx *= p.drag;
+          p.vy *= p.drag;
+          p.vy += p.gravity;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= p.decay;
+
+          let renderAlpha = p.alpha;
+          if (p.twinkle && Math.random() > 0.4) {
+            renderAlpha = Math.max(0, p.alpha - 0.25);
+          }
+
+          this.ctx.save();
+          this.ctx.globalAlpha = Math.max(0, renderAlpha);
+          this.ctx.fillStyle = p.color;
+          this.ctx.shadowColor = p.color;
+          this.ctx.shadowBlur = 10;
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.restore();
+        }
+
+        if (aliveCount === 0) {
+          this.fireworks.splice(fIdx, 1);
+        }
+      }
+
+      this.animationFrameId = requestAnimationFrame(this.loop);
+    }
+  }
+
+  // Initialize Canvas & Engine
+  const celebrationCanvas = document.getElementById('celebrationCanvas');
+  const particleEngine = new CelebrationParticleEngine(celebrationCanvas);
+
+  window.addEventListener('resize', () => {
+    if (particleEngine && particleEngine.isRunning) {
+      particleEngine.resize();
+    }
+  });
+
+  // --- 3. Champion Celebration UI Controls & Modal Logic ---
+  const celebrationModal = document.getElementById('championCelebrationModal');
+  const celebrationTeamTitle = document.getElementById('celebrationTeamTitle');
+  const celebrationLineupNames = document.getElementById('celebrationLineupNames');
+  const celebrationStatusBadge = document.getElementById('celebrationStatusBadge');
+  const celebrationPrizeVal = document.getElementById('celebrationPrizeVal');
+
+  const btnCelebrationFirework = document.getElementById('btnCelebrationFirework');
+  const btnCelebrationReplayAudio = document.getElementById('btnCelebrationReplayAudio');
+  const btnCelebrationShare = document.getElementById('btnCelebrationShare');
+  const btnCelebrationClose = document.getElementById('btnCelebrationClose');
+  const celebrationCloseIcon = document.getElementById('celebrationCloseIcon');
+  const celebrationSoundToggle = document.getElementById('celebrationSoundToggle');
+  const celebrationSoundIcon = document.getElementById('celebrationSoundIcon');
+  const celebrationSoundText = document.getElementById('celebrationSoundText');
+
+  let currentChampionData = {
+    teamName: '',
+    lineup: '',
+    discord: '',
+    gameId: '',
+    prize: 'Rp.150.000 + 1.000.000 Koin'
+  };
+
+  function openChampionCelebration(isAutoTrigger = false) {
+    if (!celebrationModal) return;
+
+    const finalMatch = matchesState['final'];
+    const championName = finalMatch ? finalMatch.winner_name : null;
+
+    if (championName) {
+      const matchedTeam = participantsList.find((p) => p.teamName === championName);
+      currentChampionData.teamName = championName;
+      currentChampionData.lineup = matchedTeam && matchedTeam.playerNames ? matchedTeam.playerNames : 'Squad Juara';
+      currentChampionData.discord = matchedTeam && matchedTeam.discordTag ? matchedTeam.discordTag : '-';
+      currentChampionData.gameId = matchedTeam && matchedTeam.gameId ? matchedTeam.gameId : '-';
+      currentChampionData.prize = 'Rp.150.000 + 1.000.000 Koin';
+
+      if (celebrationTeamTitle) celebrationTeamTitle.textContent = championName.toUpperCase();
+      if (celebrationLineupNames) celebrationLineupNames.innerHTML = `Lineup: <b>${escapeHtml(currentChampionData.lineup)}</b>`;
+      if (celebrationStatusBadge) celebrationStatusBadge.innerHTML = `🔥 Status: <b>Grand Champion</b>`;
+      if (celebrationPrizeVal) celebrationPrizeVal.textContent = currentChampionData.prize;
+    } else {
+      // Demo / Preview Mode jika belum ada juara
+      currentChampionData.teamName = 'WOWOK LOVE TEDDY';
+      currentChampionData.lineup = 'whisper (C), kayi';
+      currentChampionData.discord = 'whisper#1337';
+      currentChampionData.gameId = 'WhisperGod, KayiChan';
+      currentChampionData.prize = 'Rp.150.000 + 1.000.000 Koin';
+
+      if (celebrationTeamTitle) celebrationTeamTitle.textContent = 'WOWOK LOVE TEDDY';
+      if (celebrationLineupNames) celebrationLineupNames.innerHTML = `Lineup: <b>whisper (C), kayi</b> (Simulasi Juara)`;
+      if (celebrationStatusBadge) celebrationStatusBadge.innerHTML = `🔥 Status: <b>Simulasi Juara Turnamen</b>`;
+      if (celebrationPrizeVal) celebrationPrizeVal.textContent = currentChampionData.prize;
+    }
+
+    celebrationModal.classList.add('active');
+
+    // Start Particles & Play Victory Audio
+    particleEngine.start();
+    celebrationAudio.playFanfare();
+
+    if (isAutoTrigger) {
+      showToast(`🏆 Selamat kepada ${currentChampionData.teamName} atas kemenangan Juara 1 Turnamen!`);
+    }
+  }
+
+  function closeChampionCelebration() {
+    if (!celebrationModal) return;
+    celebrationModal.classList.remove('active');
+    particleEngine.stop();
+  }
+
+  // Button Listeners for Celebration Stage
+  if (btnCelebrationFirework) {
+    btnCelebrationFirework.addEventListener('click', (e) => {
+      e.stopPropagation();
+      particleEngine.launchTripleFireworks();
+    });
+  }
+
+  if (btnCelebrationReplayAudio) {
+    btnCelebrationReplayAudio.addEventListener('click', (e) => {
+      e.stopPropagation();
+      celebrationAudio.playFanfare();
+      showToast('🎺 Memutar kembali Fanfare Kemenangan!');
+    });
+  }
+
+  if (btnCelebrationShare) {
+    btnCelebrationShare.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const shareText = `🏆 JUARA 1 TURNAMEN SAMBUNG KATA 2 VS 2 — YABI DEV 🏆\n\n👑 Tim Pemenang: ${currentChampionData.teamName}\n👥 Lineup: ${currentChampionData.lineup}\n🎁 Total Hadiah: ${currentChampionData.prize}\n⚡ Turnamen: Roblox Sambung Kata Komunitas Yabi Dev\n\nSelamat kepada para pemenang turnamen! 🎉🔥`;
+
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(shareText);
+          showToast('📋 Info kemenangan juara berhasil disalin ke clipboard!');
+        } else {
+          showToast('📋 ' + shareText);
+        }
+      } catch (err) {
+        showToast('📋 Info Juara: ' + currentChampionData.teamName);
+      }
+    });
+  }
+
+  if (celebrationSoundToggle) {
+    celebrationSoundToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isSoundOn = celebrationAudio.toggleMute();
+      if (celebrationSoundIcon) celebrationSoundIcon.textContent = isSoundOn ? '🔊' : '🔇';
+      if (celebrationSoundText) celebrationSoundText.textContent = isSoundOn ? 'Suara: ON' : 'Suara: MUTED';
+      showToast(isSoundOn ? '🔊 Suara Fanfare diaktifkan' : '🔇 Suara Fanfare dimatikan');
+    });
+  }
+
+  if (btnCelebrationClose) btnCelebrationClose.addEventListener('click', closeChampionCelebration);
+  if (celebrationCloseIcon) celebrationCloseIcon.addEventListener('click', closeChampionCelebration);
+
+  // Click on background overlay or canvas spawns interactive firework explosion
+  if (celebrationModal) {
+    celebrationModal.addEventListener('click', (e) => {
+      if (e.target.closest('.celebration-actions-row') || e.target.closest('button')) return;
+      if (e.target.closest('.celebration-stage-card') && !e.target.classList.contains('celebration-stage-card')) return;
+      
+      // Spawn firework at click coordinates
+      particleEngine.launchFirework(e.clientX, e.clientY);
+    });
+  }
+
+  // Keyboard Shortcuts (ESC to close, Space / F to launch fireworks)
+  window.addEventListener('keydown', (e) => {
+    if (celebrationModal && celebrationModal.classList.contains('active')) {
+      if (e.key === 'Escape') {
+        closeChampionCelebration();
+      } else if (e.key === 'f' || e.key === 'F') {
+        particleEngine.launchTripleFireworks();
+      }
+    }
+  });
 
   // --- ZOOM & PANNING INTERACTION ---
   const zoomInBtn = document.getElementById('zoomInBtn');
