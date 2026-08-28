@@ -87,6 +87,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function generateBracketStructure(size) {
     const numSize = Number(size);
+
+    const bronzeMatchDef = {
+      id: 'bronze',
+      round: 'final',
+      match_number: 2,
+      title: 'Perebutan Juara 3 🥉',
+      team1_seed: 'KALAH SF-1',
+      team2_seed: 'KALAH SF-2',
+      slot1_index: null,
+      slot2_index: null,
+      next_match_id: 'champion',
+      next_match_slot: 2,
+      isBronze: true
+    };
+
     switch (numSize) {
       case 4:
         return {
@@ -94,12 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
           formatName: '4 Tim (Semi Final)',
           stages: [
             { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
-            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+            { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
-            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #04', slot1_index: 0, slot2_index: 3, next_match_id: 'final', next_match_slot: 1 },
-            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'SLOT #02', team2_seed: 'SLOT #03', slot1_index: 1, slot2_index: 2, next_match_id: 'final', next_match_slot: 2 },
-            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #04', slot1_index: 0, slot2_index: 3, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'SLOT #02', team2_seed: 'SLOT #03', slot1_index: 1, slot2_index: 2, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
+            bronzeMatchDef
           ]
         };
 
@@ -110,14 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
           stages: [
             { id: 'playin', title: 'Play-In', subtitle: '2 Pertandingan', matchIds: ['pi-1', 'pi-2'] },
             { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
-            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+            { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
             { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: 'SLOT #04', team2_seed: 'SLOT #05', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
             { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: 'SLOT #03', team2_seed: 'SLOT #06', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 2 },
-            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'SLOT #01', team2_seed: 'MENANG PI-1', slot1_index: 0, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
-            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-2', slot1_index: 1, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
-            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'SLOT #01', team2_seed: 'MENANG PI-1', slot1_index: 0, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-2', slot1_index: 1, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
+            bronzeMatchDef
           ]
         };
 
@@ -128,16 +145,17 @@ document.addEventListener('DOMContentLoaded', () => {
           stages: [
             { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: ['qf-1', 'qf-2', 'qf-3', 'qf-4'] },
             { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
-            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+            { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
             { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #08', slot1_index: 0, slot2_index: 7, next_match_id: 'sf-1', next_match_slot: 1 },
             { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'SLOT #04', team2_seed: 'SLOT #05', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
             { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'SLOT #03', team2_seed: 'SLOT #06', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 1 },
             { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'SLOT #02', team2_seed: 'SLOT #07', slot1_index: 1, slot2_index: 6, next_match_id: 'sf-2', next_match_slot: 2 },
-            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
-            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
-            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
+            bronzeMatchDef
           ]
         };
 
@@ -149,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'playin', title: 'Play-In', subtitle: '4 Pertandingan', matchIds: ['pi-1', 'pi-2', 'pi-3', 'pi-4'] },
             { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: ['qf-1', 'qf-2', 'qf-3', 'qf-4'] },
             { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
-            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+            { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
             { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: 'SLOT #08', team2_seed: 'SLOT #09', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
@@ -160,9 +178,10 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'SLOT #04', team2_seed: 'MENANG PI-2', slot1_index: 3, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 2 },
             { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'SLOT #03', team2_seed: 'MENANG PI-3', slot1_index: 2, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 1 },
             { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-4', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
-            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
-            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
-            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
+            bronzeMatchDef
           ]
         };
 
@@ -174,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'r16', title: 'Round of 16', subtitle: '8 Pertandingan', matchIds: ['r16-1', 'r16-2', 'r16-3', 'r16-4', 'r16-5', 'r16-6', 'r16-7', 'r16-8'] },
             { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: ['qf-1', 'qf-2', 'qf-3', 'qf-4'] },
             { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
-            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+            { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
             { id: 'r16-1', round: 'r16', match_number: 1, title: 'R16 #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #16', slot1_index: 0, slot2_index: 15, next_match_id: 'qf-1', next_match_slot: 1 },
@@ -189,9 +208,10 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'MENANG R16-3', team2_seed: 'MENANG R16-4', slot1_index: null, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 2 },
             { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'MENANG R16-5', team2_seed: 'MENANG R16-6', slot1_index: null, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 1 },
             { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'MENANG R16-7', team2_seed: 'MENANG R16-8', slot1_index: null, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
-            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
-            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
-            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
+            bronzeMatchDef
           ]
         };
 
@@ -248,8 +268,8 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
         const sfMatches = [
-          { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
-          { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 }
+          { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
+          { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 }
         ];
         const finalMatch = { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 };
         return {
@@ -260,9 +280,9 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'r16', title: 'Round of 16', subtitle: '8 Pertandingan', matchIds: r16Matches.map((m) => m.id) },
             { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: qfMatches.map((m) => m.id) },
             { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
-            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+            { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
-          matches: [...r32Matches, ...r16Matches, ...qfMatches, ...sfMatches, finalMatch]
+          matches: [...r32Matches, ...r16Matches, ...qfMatches, ...sfMatches, finalMatch, bronzeMatchDef]
         };
       }
 
@@ -275,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'playin', title: 'Play-In', subtitle: '2 Pertandingan', matchIds: ['pi-1', 'pi-2'] },
             { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: ['qf-1', 'qf-2', 'qf-3', 'qf-4'] },
             { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
-            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+            { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
             { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: 'SLOT #07', team2_seed: 'SLOT #10', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
@@ -284,9 +304,10 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'SLOT #04', team2_seed: 'SLOT #05', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
             { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'SLOT #03', team2_seed: 'SLOT #06', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 1 },
             { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-1', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
-            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
-            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
-            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
+            bronzeMatchDef
           ]
         };
     }
@@ -483,6 +504,8 @@ document.addEventListener('DOMContentLoaded', () => {
           winner_name: m.winner_name || null,
           next_match_id: m.next_match_id || null,
           next_match_slot: m.next_match_slot || null,
+          loser_match_id: m.loser_match_id || null,
+          loser_match_slot: m.loser_match_slot || null,
           status: m.status || 'MENUNGGU',
           updated_at: new Date().toISOString()
         }));
@@ -500,26 +523,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- LOGIKA PROPAGASI PEMENANG (NEXT ROUND) ---
+  // --- LOGIKA PROPAGASI PEMENANG & KALAH (NEXT ROUND & JUARA 3) ---
   function resolveMatchWinner(matchId, winnerType, customWinnerName = null, customWinnerId = null) {
     const match = matchesState[matchId];
     if (!match) return;
 
     let winId = null;
     let winName = null;
+    let loseId = null;
+    let loseName = null;
 
     if (winnerType === 'team1') {
       winId = match.team1_id || 'team1';
       winName = match.team1_name;
+      loseId = match.team2_id || 'team2';
+      loseName = match.team2_name;
     } else if (winnerType === 'team2') {
       winId = match.team2_id || 'team2';
       winName = match.team2_name;
+      loseId = match.team1_id || 'team1';
+      loseName = match.team1_name;
     } else if (winnerType === 'custom') {
       winId = customWinnerId || 'custom';
       winName = customWinnerName;
+      loseId = null;
+      loseName = null;
     } else if (winnerType === 'none') {
       winId = null;
       winName = null;
+      loseId = null;
+      loseName = null;
     }
 
     match.winner_id = winId;
@@ -531,7 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
       match.status = (match.team1_id && match.team2_id) ? 'MATCH READY' : 'MENUNGGU';
     }
 
-    // Propagasi ke Match Berikutnya
+    // 1. Propagasi Pemenang ke Match Berikutnya (Grand Final / Babak Lanjutan)
     if (match.next_match_id && match.next_match_id !== 'champion') {
       const nextMatch = matchesState[match.next_match_id];
       if (nextMatch) {
@@ -547,6 +580,26 @@ document.addEventListener('DOMContentLoaded', () => {
           nextMatch.status = 'MATCH READY';
         } else if ((!nextMatch.team1_id || !nextMatch.team2_id) && nextMatch.status !== 'SELESAI') {
           nextMatch.status = 'MENUNGGU';
+        }
+      }
+    }
+
+    // 2. Propagasi Tim Kalah (untuk Perebutan Juara 3 dari Semi Final)
+    if (match.loser_match_id) {
+      const loserMatch = matchesState[match.loser_match_id];
+      if (loserMatch) {
+        if (match.loser_match_slot === 1) {
+          loserMatch.team1_name = loseName || `[${loserMatch.team1_seed}]`;
+          loserMatch.team1_id = loseId;
+        } else if (match.loser_match_slot === 2) {
+          loserMatch.team2_name = loseName || `[${loserMatch.team2_seed}]`;
+          loserMatch.team2_id = loseId;
+        }
+
+        if (loserMatch.team1_id && loserMatch.team2_id && loserMatch.status === 'MENUNGGU') {
+          loserMatch.status = 'MATCH READY';
+        } else if ((!loserMatch.team1_id || !loserMatch.team2_id) && loserMatch.status !== 'SELESAI') {
+          loserMatch.status = 'MENUNGGU';
         }
       }
     }
@@ -587,12 +640,12 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     });
 
-    // Render Kolom Podium Juara (Champion Showcase)
+    // Render Kolom Podium Juara (Champion Showcase & Top 3 Standings)
     stagesHtml += `
       <div class="bracket-stage-col stage-champion">
         <div class="stage-header" style="border-color:rgba(255, 184, 77, 0.5); background:rgba(255, 184, 77, 0.15);">
-          <div class="stage-title" style="color:var(--amber);">🏆 Champion</div>
-          <div class="stage-subtitle">Pemenang Turnamen</div>
+          <div class="stage-title" style="color:var(--amber);">🏆 Podium Juara</div>
+          <div class="stage-subtitle">Hasil Akhir Turnamen</div>
         </div>
         <div class="stage-matches-container" id="stageChampionShowcase">
           ${renderChampionPodiumHtml()}
@@ -631,14 +684,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isLive = match.status === 'BERLANGSUNG';
     const isFinished = match.status === 'SELESAI';
+    const isBronze = match.id === 'bronze' || match.round === 'bronze' || match.isBronze;
     const team1IsWinner = match.winner_name && match.winner_name === match.team1_name;
     const team2IsWinner = match.winner_name && match.winner_name === match.team2_name;
 
-    const t1Placeholder = !match.team1_id && (!match.team1_name || match.team1_name.startsWith('[') || match.team1_name.startsWith('Menunggu'));
-    const t2Placeholder = !match.team2_id && (!match.team2_name || match.team2_name.startsWith('[') || match.team2_name.startsWith('Menunggu'));
+    const t1Placeholder = !match.team1_id && (!match.team1_name || match.team1_name.startsWith('[') || match.team1_name.startsWith('Menunggu') || match.team1_name.startsWith('KALAH'));
+    const t2Placeholder = !match.team2_id && (!match.team2_name || match.team2_name.startsWith('[') || match.team2_name.startsWith('Menunggu') || match.team2_name.startsWith('KALAH'));
+
+    let winnerLabelPrefix = '🏆 Pemenang:';
+    if (match.id === 'final') winnerLabelPrefix = '🥇 Juara 1:';
+    if (match.id === 'bronze') winnerLabelPrefix = '🥉 Juara 3:';
 
     return `
-      <div class="match-card ${isLive ? 'is-live' : ''} ${isFinished ? 'is-finished' : ''} ${isFinal ? 'is-grand-final' : ''}" 
+      <div class="match-card ${isLive ? 'is-live' : ''} ${isFinished ? 'is-finished' : ''} ${isFinal && !isBronze ? 'is-grand-final' : ''} ${isBronze ? 'is-bronze-card' : ''}" 
            id="card-${match.id}" 
            data-match-id="${match.id}">
         
@@ -677,7 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="match-card-foot">
           <span class="match-hint-foot">
-            ${team1IsWinner ? `🏆 Pemenang: <b>${escapeHtml(match.team1_name)}</b>` : team2IsWinner ? `🏆 Pemenang: <b>${escapeHtml(match.team2_name)}</b>` : 'Klik untuk edit skor'}
+            ${team1IsWinner ? `${winnerLabelPrefix} <b>${escapeHtml(match.team1_name)}</b>` : team2IsWinner ? `${winnerLabelPrefix} <b>${escapeHtml(match.team2_name)}</b>` : 'Klik untuk edit skor'}
           </span>
           <span class="quick-edit-hint">
             <span>⚙️</span> Edit Skor
@@ -689,7 +747,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderChampionPodiumHtml() {
     const finalMatch = matchesState['final'];
+    const bronzeMatch = matchesState['bronze'];
+
     const championName = finalMatch ? finalMatch.winner_name : null;
+    let runnerUpName = null;
+    if (championName && finalMatch) {
+      if (championName === finalMatch.team1_name) {
+        runnerUpName = finalMatch.team2_name;
+      } else if (championName === finalMatch.team2_name) {
+        runnerUpName = finalMatch.team1_name;
+      }
+    }
+
+    const thirdPlaceName = bronzeMatch ? bronzeMatch.winner_name : null;
 
     let championRoster = 'Pemenang Grand Final akan dinobatkan sebagai Juara 1 Turnamen.';
     if (championName) {
@@ -702,12 +772,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     return `
-      <div class="champion-showcase-card" id="championPodiumCard" role="button" tabindex="0" title="Klik untuk Merayakan Kemenangan Juara!">
+      <div class="champion-showcase-card" id="championPodiumCard" role="button" tabindex="0" title="Klik untuk Merayakan Kemenangan Juara 1!">
         <div class="trophy-glow-wrap">
           <div class="trophy-glow-ring"></div>
           <div class="trophy-icon">🏆</div>
         </div>
-        <span class="champion-tag"><span>👑</span> JUARA TOURNAMENT</span>
+        <span class="champion-tag"><span>👑</span> JUARA 1 TOURNAMENT</span>
         <h2 class="champion-team-title">
           ${championName ? escapeHtml(championName) : '<span style="color:var(--muted-2); font-size:18px;">Belum Ditentukan</span>'}
         </h2>
@@ -715,10 +785,49 @@ document.addEventListener('DOMContentLoaded', () => {
           ${championRoster}
         </p>
         <div class="champion-prize-pill">
-          <span>🎁</span> Hadiah: Rp.100.000
+          <span>🎁</span> Hadiah: Rp. 100.000
         </div>
         <div class="champion-celebrate-hint">
           <span>🎉</span> Rayakan Kemenangan Juara!
+        </div>
+      </div>
+
+      <!-- Top 3 Tournament Standings Podium -->
+      <div class="podium-rankings-box">
+        <div class="podium-rank-header">
+          <span>🏅</span> PODIUM HASIL AKHIR
+        </div>
+        
+        <div class="podium-rank-list">
+          <!-- Juara 1 -->
+          <div class="podium-rank-item rank-gold ${championName ? 'has-winner' : ''}">
+            <div class="rank-badge rank-badge-gold">🥇 1st</div>
+            <div class="rank-team-info">
+              <span class="rank-label">JUARA 1</span>
+              <span class="rank-team-name">${championName ? escapeHtml(championName) : 'Menunggu Grand Final'}</span>
+            </div>
+            <span class="rank-prize-badge">Rp. 100.000</span>
+          </div>
+
+          <!-- Juara 2 -->
+          <div class="podium-rank-item rank-silver ${runnerUpName ? 'has-winner' : ''}">
+            <div class="rank-badge rank-badge-silver">🥈 2nd</div>
+            <div class="rank-team-info">
+              <span class="rank-label">JUARA 2 (RUNNER-UP)</span>
+              <span class="rank-team-name">${runnerUpName ? escapeHtml(runnerUpName) : 'Menunggu Grand Final'}</span>
+            </div>
+            <span class="rank-status-tag">Silver</span>
+          </div>
+
+          <!-- Juara 3 -->
+          <div class="podium-rank-item rank-bronze ${thirdPlaceName ? 'has-winner' : ''}" id="podiumBronzeRow">
+            <div class="rank-badge rank-badge-bronze">🥉 3rd</div>
+            <div class="rank-team-info">
+              <span class="rank-label">JUARA 3 (BRONZE)</span>
+              <span class="rank-team-name">${thirdPlaceName ? escapeHtml(thirdPlaceName) : 'Menunggu Match Juara 3'}</span>
+            </div>
+            <span class="rank-status-tag bronze">Bronze</span>
+          </div>
         </div>
       </div>
     `;
@@ -769,51 +878,86 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvasRect = canvas.getBoundingClientRect();
     const scale = currentZoom || 1;
 
-    // Iterasi dinamis seluruh koneksi match
+    // 1. Koneksi Jalur Pemenang (Next Match)
     activeBracketConfig.matches.forEach((mDef) => {
       const matchData = matchesState[mDef.id];
-      if (!matchData || !mDef.next_match_id) return;
+      if (!matchData) return;
 
       const fromEl = document.getElementById(`card-${mDef.id}`);
       if (!fromEl) return;
 
-      let toEl = null;
-      let targetSlot = mDef.next_match_slot || 1;
+      // Jalur Pemenang
+      if (mDef.next_match_id) {
+        let toEl = null;
+        let targetSlot = mDef.next_match_slot || 1;
 
-      if (mDef.next_match_id === 'champion') {
-        toEl = document.getElementById('championPodiumCard');
-      } else {
-        toEl = document.getElementById(`card-${mDef.next_match_id}`);
+        if (mDef.next_match_id === 'champion') {
+          toEl = document.getElementById('championPodiumCard');
+        } else {
+          toEl = document.getElementById(`card-${mDef.next_match_id}`);
+        }
+
+        if (toEl) {
+          const fromRect = fromEl.getBoundingClientRect();
+          const toRect = toEl.getBoundingClientRect();
+
+          const startX = (fromRect.right - canvasRect.left) / scale;
+          const startY = (fromRect.top + fromRect.height / 2 - canvasRect.top) / scale;
+
+          const endX = (toRect.left - canvasRect.left) / scale;
+          const targetOffsetY = (mDef.next_match_id === 'champion')
+            ? toRect.height / 2
+            : (targetSlot === 1 ? toRect.height * 0.38 : toRect.height * 0.62);
+          const endY = (toRect.top + targetOffsetY - canvasRect.top) / scale;
+
+          const deltaX = Math.abs(endX - startX) * 0.55;
+          const pathD = `M ${startX} ${startY} C ${startX + deltaX} ${startY}, ${endX - deltaX} ${endY}, ${endX} ${endY}`;
+
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', pathD);
+
+          const hasWinner = Boolean(matchData.winner_name);
+          if (hasWinner) {
+            path.setAttribute('class', 'connector-path active winner-path');
+          } else {
+            path.setAttribute('class', 'connector-path');
+          }
+
+          svg.appendChild(path);
+        }
       }
 
-      if (!toEl) return;
+      // Jalur Tim Kalah (Semi Final -> Perebutan Juara 3)
+      if (mDef.loser_match_id) {
+        const toEl = document.getElementById(`card-${mDef.loser_match_id}`);
+        if (toEl) {
+          const fromRect = fromEl.getBoundingClientRect();
+          const toRect = toEl.getBoundingClientRect();
 
-      const fromRect = fromEl.getBoundingClientRect();
-      const toRect = toEl.getBoundingClientRect();
+          const startX = (fromRect.right - canvasRect.left) / scale;
+          const startY = (fromRect.top + fromRect.height / 2 - canvasRect.top) / scale;
 
-      const startX = (fromRect.right - canvasRect.left) / scale;
-      const startY = (fromRect.top + fromRect.height / 2 - canvasRect.top) / scale;
+          const endX = (toRect.left - canvasRect.left) / scale;
+          const targetSlot = mDef.loser_match_slot || 1;
+          const targetOffsetY = targetSlot === 1 ? toRect.height * 0.38 : toRect.height * 0.62;
+          const endY = (toRect.top + targetOffsetY - canvasRect.top) / scale;
 
-      const endX = (toRect.left - canvasRect.left) / scale;
-      const targetOffsetY = (mDef.next_match_id === 'champion')
-        ? toRect.height / 2
-        : (targetSlot === 1 ? toRect.height * 0.38 : toRect.height * 0.62);
-      const endY = (toRect.top + targetOffsetY - canvasRect.top) / scale;
+          const deltaX = Math.abs(endX - startX) * 0.55;
+          const pathD = `M ${startX} ${startY} C ${startX + deltaX} ${startY}, ${endX - deltaX} ${endY}, ${endX} ${endY}`;
 
-      const deltaX = Math.abs(endX - startX) * 0.55;
-      const pathD = `M ${startX} ${startY} C ${startX + deltaX} ${startY}, ${endX - deltaX} ${endY}, ${endX} ${endY}`;
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', pathD);
 
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', pathD);
+          const isSfFinished = Boolean(matchData.winner_name);
+          if (isSfFinished) {
+            path.setAttribute('class', 'connector-path active');
+          } else {
+            path.setAttribute('class', 'connector-path');
+          }
 
-      const hasWinner = Boolean(matchData.winner_name);
-      if (hasWinner) {
-        path.setAttribute('class', 'connector-path active winner-path');
-      } else {
-        path.setAttribute('class', 'connector-path');
+          svg.appendChild(path);
+        }
       }
-
-      svg.appendChild(path);
     });
   }
 
@@ -982,6 +1126,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
           openChampionCelebration(true);
         }, 500);
+      } else if (activeEditingMatchId === 'bronze' && matchesState['bronze']?.winner_name) {
+        showToast(`🥉 Selamat kepada ${matchesState['bronze'].winner_name} sebagai Juara 3 Turnamen!`);
       }
     });
   }

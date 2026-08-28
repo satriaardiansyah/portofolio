@@ -786,6 +786,165 @@
   50% { transform: scale(1.04); box-shadow: 0 4px 22px rgba(255, 184, 77, 0.7); }
 }
 
+/* Bronze Match Card Specific Style */
+.match-card.is-bronze-card {
+  border-color: rgba(205, 127, 50, 0.45);
+  background: linear-gradient(145deg, rgba(26, 20, 32, 0.92), rgba(20, 18, 28, 0.95));
+}
+
+.match-card.is-bronze-card:hover {
+  border-color: #e59866;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(205, 127, 50, 0.25);
+}
+
+.match-card.is-bronze-card .match-id-badge {
+  color: #e59866;
+}
+
+/* ---------- Top 3 Podium Rankings Box ---------- */
+.podium-rankings-box {
+  margin-top: 20px;
+  width: 100%;
+  background: rgba(14, 12, 27, 0.88);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  padding: 18px 16px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.podium-rank-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #c4a7ff;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.podium-rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.podium-rank-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.25s ease;
+}
+
+.podium-rank-item.rank-gold.has-winner {
+  background: rgba(255, 215, 0, 0.08);
+  border-color: rgba(255, 215, 0, 0.45);
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.15);
+}
+
+.podium-rank-item.rank-silver.has-winner {
+  background: rgba(192, 192, 192, 0.08);
+  border-color: rgba(192, 192, 192, 0.4);
+}
+
+.podium-rank-item.rank-bronze.has-winner {
+  background: rgba(205, 127, 50, 0.12);
+  border-color: rgba(205, 127, 50, 0.45);
+  box-shadow: 0 0 16px rgba(205, 127, 50, 0.2);
+}
+
+.rank-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.rank-badge-gold {
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.rank-badge-silver {
+  background: rgba(220, 220, 230, 0.2);
+  color: #e2e8f0;
+  border: 1px solid rgba(220, 220, 230, 0.4);
+}
+
+.rank-badge-bronze {
+  background: rgba(205, 127, 50, 0.2);
+  color: #e59866;
+  border: 1px solid rgba(205, 127, 50, 0.4);
+}
+
+.rank-team-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rank-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.rank-team-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rank-prize-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--amber);
+  background: rgba(255, 184, 77, 0.15);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 184, 77, 0.35);
+  flex-shrink: 0;
+}
+
+.rank-status-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 6px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.rank-status-tag.bronze {
+  color: #e59866;
+  background: rgba(205, 127, 50, 0.15);
+}
+
 /* ---------- Admin / Edit Match Modal ---------- */
 .bracket-modal {
   position: fixed;
