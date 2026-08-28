@@ -219,6 +219,22 @@ body.bracket-page #cursor-ring {
   box-shadow: 0 6px 20px rgba(225, 29, 72, 0.45);
 }
 
+.tool-btn-export {
+  background: linear-gradient(135deg, rgba(69, 232, 212, 0.15), rgba(155, 107, 255, 0.2));
+  border: 1px solid rgba(69, 232, 212, 0.4);
+  color: #e6fffa;
+  box-shadow: 0 0 12px rgba(69, 232, 212, 0.18);
+  font-weight: 700;
+}
+
+.tool-btn-export:hover {
+  background: linear-gradient(135deg, rgba(69, 232, 212, 0.28), rgba(155, 107, 255, 0.35));
+  border-color: var(--cyan);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(69, 232, 212, 0.35);
+  transform: translateY(-1px);
+}
+
 .zoom-badge {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
@@ -1117,6 +1133,120 @@ body.bracket-page #cursor-ring {
   background: rgba(255, 92, 138, 0.2);
   color: #fff;
   border-color: var(--pink);
+}
+
+/* Modal Team Allocation Helper Box */
+.modal-team-allocation-box {
+  background: rgba(14, 12, 27, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.allocation-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.allocation-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.allocation-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(69, 232, 212, 0.15);
+  color: var(--cyan);
+  border: 1px solid rgba(69, 232, 212, 0.35);
+}
+
+.allocation-badge.all-assigned {
+  background: rgba(155, 107, 255, 0.15);
+  color: #c4a7ff;
+  border-color: rgba(155, 107, 255, 0.35);
+}
+
+.allocation-desc-text {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.allocation-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 115px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.allocation-chip {
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  padding: 4px 9px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.allocation-chip.available {
+  background: rgba(69, 232, 212, 0.09);
+  border-color: rgba(69, 232, 212, 0.28);
+  color: #e6fffa;
+}
+
+.allocation-chip.available:hover {
+  background: rgba(69, 232, 212, 0.22);
+  border-color: var(--cyan);
+  transform: translateY(-1px);
+}
+
+.allocation-chip.assigned {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  opacity: 0.65;
+  cursor: default;
+}
+
+.allocation-chip.current-match {
+  background: rgba(155, 107, 255, 0.15);
+  border-color: rgba(155, 107, 255, 0.4);
+  color: #e9d5ff;
+}
+
+.allocation-warning-msg {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 92, 138, 0.12);
+  border: 1px solid rgba(255, 92, 138, 0.35);
+  color: #ff94b8;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.35;
 }
 
 /* Match Edit Score Duel Box */

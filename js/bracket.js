@@ -49,22 +49,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Mock Fallback Participants
   const defaultFallbackParticipants = [
-    { id: 'p-1', slot: '#01', teamName: 'CYBER VIPERS', playerNames: 'Satria (C), Vanya' },
-    { id: 'p-2', slot: '#02', teamName: 'NEON PROTOCOL', playerNames: 'Farhan (C), Brian' },
-    { id: 'p-3', slot: '#03', teamName: 'SHADOW APEX', playerNames: 'Aldo (C), Cindy' },
-    { id: 'p-4', slot: '#04', teamName: 'ROYAL TITANS', playerNames: 'Rian (C), Sheila' },
-    { id: 'p-5', slot: '#05', teamName: 'PHANTOM SQUAD', playerNames: 'Bima (C), Aurel' },
-    { id: 'p-6', slot: '#06', teamName: 'DRAGON VOID', playerNames: 'Kevin (C), Nabila' },
-    { id: 'p-7', slot: '#07', teamName: 'AURORA GLITCH', playerNames: 'Daffa (C), Putri' },
-    { id: 'p-8', slot: '#08', teamName: 'MYSTIC FALCON', playerNames: 'Zaki (C), Tari' },
-    { id: 'p-9', slot: '#09', teamName: 'VALKYRIE X', playerNames: 'Gavin (C), Jessica' },
-    { id: 'p-10', slot: '#10', teamName: 'ZERO GRAVITY', playerNames: 'Rangga (C), Tiara' },
-    { id: 'p-11', slot: '#11', teamName: 'SOLAR ECLIPSE', playerNames: 'Fajar (C), Diana' },
-    { id: 'p-12', slot: '#12', teamName: 'QUANTUM FORCE', playerNames: 'Arga (C), Melisa' },
-    { id: 'p-13', slot: '#13', teamName: 'NEXUS LEGENDS', playerNames: 'Rizky (C), Clara' },
-    { id: 'p-14', slot: '#14', teamName: 'INFINITY STORM', playerNames: 'Danu (C), Bella' },
-    { id: 'p-15', slot: '#15', teamName: 'BLAZE RUNNERS', playerNames: 'Haikal (C), Tasya' },
-    { id: 'p-16', slot: '#16', teamName: 'OMEGA PROTOCOL', playerNames: 'Geri (C), Nadia' }
+    { id: 'p-1', teamName: 'CYBER VIPERS', playerNames: 'Satria (C), Vanya' },
+    { id: 'p-2', teamName: 'NEON PROTOCOL', playerNames: 'Farhan (C), Brian' },
+    { id: 'p-3', teamName: 'SHADOW APEX', playerNames: 'Aldo (C), Cindy' },
+    { id: 'p-4', teamName: 'ROYAL TITANS', playerNames: 'Rian (C), Sheila' },
+    { id: 'p-5', teamName: 'PHANTOM SQUAD', playerNames: 'Bima (C), Aurel' },
+    { id: 'p-6', teamName: 'DRAGON VOID', playerNames: 'Kevin (C), Nabila' },
+    { id: 'p-7', teamName: 'AURORA GLITCH', playerNames: 'Daffa (C), Putri' },
+    { id: 'p-8', teamName: 'MYSTIC FALCON', playerNames: 'Zaki (C), Tari' },
+    { id: 'p-9', teamName: 'VALKYRIE X', playerNames: 'Gavin (C), Jessica' },
+    { id: 'p-10', teamName: 'ZERO GRAVITY', playerNames: 'Rangga (C), Tiara' },
+    { id: 'p-11', teamName: 'SOLAR ECLIPSE', playerNames: 'Fajar (C), Diana' },
+    { id: 'p-12', teamName: 'QUANTUM FORCE', playerNames: 'Arga (C), Melisa' },
+    { id: 'p-13', teamName: 'NEXUS LEGENDS', playerNames: 'Rizky (C), Clara' },
+    { id: 'p-14', teamName: 'INFINITY STORM', playerNames: 'Danu (C), Bella' },
+    { id: 'p-15', teamName: 'BLAZE RUNNERS', playerNames: 'Haikal (C), Tasya' },
+    { id: 'p-16', teamName: 'OMEGA PROTOCOL', playerNames: 'Geri (C), Nadia' }
   ];
 
   // --- DYNAMIC BRACKET ENGINE GENERATOR ---
@@ -112,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
-            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #04', slot1_index: 0, slot2_index: 3, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
-            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'SLOT #02', team2_seed: 'SLOT #03', slot1_index: 1, slot2_index: 2, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: '', team2_seed: '', slot1_index: 0, slot2_index: 3, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: '', team2_seed: '', slot1_index: 1, slot2_index: 2, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
             { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
             bronzeMatchDef
           ]
@@ -129,10 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
-            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: 'SLOT #04', team2_seed: 'SLOT #05', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
-            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: 'SLOT #03', team2_seed: 'SLOT #06', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 2 },
-            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'SLOT #01', team2_seed: 'MENANG PI-1', slot1_index: 0, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
-            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-2', slot1_index: 1, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
+            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: '', team2_seed: '', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
+            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: '', team2_seed: '', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: '', team2_seed: 'MENANG PI-1', slot1_index: 0, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: '', team2_seed: 'MENANG PI-2', slot1_index: 1, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
             { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
             bronzeMatchDef
           ]
@@ -148,10 +148,10 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
-            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #08', slot1_index: 0, slot2_index: 7, next_match_id: 'sf-1', next_match_slot: 1 },
-            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'SLOT #04', team2_seed: 'SLOT #05', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
-            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'SLOT #03', team2_seed: 'SLOT #06', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 1 },
-            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'SLOT #02', team2_seed: 'SLOT #07', slot1_index: 1, slot2_index: 6, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: '', team2_seed: '', slot1_index: 0, slot2_index: 7, next_match_id: 'sf-1', next_match_slot: 1 },
+            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: '', team2_seed: '', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
+            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: '', team2_seed: '', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 1 },
+            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: '', team2_seed: '', slot1_index: 1, slot2_index: 6, next_match_id: 'sf-2', next_match_slot: 2 },
             { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
             { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
             { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
@@ -170,14 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
-            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: 'SLOT #08', team2_seed: 'SLOT #09', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
-            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: 'SLOT #05', team2_seed: 'SLOT #12', slot1_index: 4, slot2_index: 11, next_match_id: 'qf-2', next_match_slot: 2 },
-            { id: 'pi-3', round: 'playin', match_number: 3, title: 'Play-In #3', team1_seed: 'SLOT #06', team2_seed: 'SLOT #11', slot1_index: 5, slot2_index: 10, next_match_id: 'qf-3', next_match_slot: 2 },
-            { id: 'pi-4', round: 'playin', match_number: 4, title: 'Play-In #4', team1_seed: 'SLOT #07', team2_seed: 'SLOT #10', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
-            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: 'SLOT #01', team2_seed: 'MENANG PI-1', slot1_index: 0, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
-            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'SLOT #04', team2_seed: 'MENANG PI-2', slot1_index: 3, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 2 },
-            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'SLOT #03', team2_seed: 'MENANG PI-3', slot1_index: 2, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 1 },
-            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-4', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: '', team2_seed: '', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
+            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: '', team2_seed: '', slot1_index: 4, slot2_index: 11, next_match_id: 'qf-2', next_match_slot: 2 },
+            { id: 'pi-3', round: 'playin', match_number: 3, title: 'Play-In #3', team1_seed: '', team2_seed: '', slot1_index: 5, slot2_index: 10, next_match_id: 'qf-3', next_match_slot: 2 },
+            { id: 'pi-4', round: 'playin', match_number: 4, title: 'Play-In #4', team1_seed: '', team2_seed: '', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
+            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: '', team2_seed: 'MENANG PI-1', slot1_index: 0, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
+            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: '', team2_seed: 'MENANG PI-2', slot1_index: 3, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 2 },
+            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: '', team2_seed: 'MENANG PI-3', slot1_index: 2, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 1 },
+            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: '', team2_seed: 'MENANG PI-4', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
             { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
             { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
             { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
@@ -196,14 +196,14 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
-            { id: 'r16-1', round: 'r16', match_number: 1, title: 'R16 #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #16', slot1_index: 0, slot2_index: 15, next_match_id: 'qf-1', next_match_slot: 1 },
-            { id: 'r16-2', round: 'r16', match_number: 2, title: 'R16 #2', team1_seed: 'SLOT #08', team2_seed: 'SLOT #09', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
-            { id: 'r16-3', round: 'r16', match_number: 3, title: 'R16 #3', team1_seed: 'SLOT #04', team2_seed: 'SLOT #13', slot1_index: 3, slot2_index: 12, next_match_id: 'qf-2', next_match_slot: 1 },
-            { id: 'r16-4', round: 'r16', match_number: 4, title: 'R16 #4', team1_seed: 'SLOT #05', team2_seed: 'SLOT #12', slot1_index: 4, slot2_index: 11, next_match_id: 'qf-2', next_match_slot: 2 },
-            { id: 'r16-5', round: 'r16', match_number: 5, title: 'R16 #5', team1_seed: 'SLOT #03', team2_seed: 'SLOT #14', slot1_index: 2, slot2_index: 13, next_match_id: 'qf-3', next_match_slot: 1 },
-            { id: 'r16-6', round: 'r16', match_number: 6, title: 'R16 #6', team1_seed: 'SLOT #06', team2_seed: 'SLOT #11', slot1_index: 5, slot2_index: 10, next_match_id: 'qf-3', next_match_slot: 2 },
-            { id: 'r16-7', round: 'r16', match_number: 7, title: 'R16 #7', team1_seed: 'SLOT #02', team2_seed: 'SLOT #15', slot1_index: 1, slot2_index: 14, next_match_id: 'qf-4', next_match_slot: 1 },
-            { id: 'r16-8', round: 'r16', match_number: 8, title: 'R16 #8', team1_seed: 'SLOT #07', team2_seed: 'SLOT #10', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
+            { id: 'r16-1', round: 'r16', match_number: 1, title: 'R16 #1', team1_seed: '', team2_seed: '', slot1_index: 0, slot2_index: 15, next_match_id: 'qf-1', next_match_slot: 1 },
+            { id: 'r16-2', round: 'r16', match_number: 2, title: 'R16 #2', team1_seed: '', team2_seed: '', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
+            { id: 'r16-3', round: 'r16', match_number: 3, title: 'R16 #3', team1_seed: '', team2_seed: '', slot1_index: 3, slot2_index: 12, next_match_id: 'qf-2', next_match_slot: 1 },
+            { id: 'r16-4', round: 'r16', match_number: 4, title: 'R16 #4', team1_seed: '', team2_seed: '', slot1_index: 4, slot2_index: 11, next_match_id: 'qf-2', next_match_slot: 2 },
+            { id: 'r16-5', round: 'r16', match_number: 5, title: 'R16 #5', team1_seed: '', team2_seed: '', slot1_index: 2, slot2_index: 13, next_match_id: 'qf-3', next_match_slot: 1 },
+            { id: 'r16-6', round: 'r16', match_number: 6, title: 'R16 #6', team1_seed: '', team2_seed: '', slot1_index: 5, slot2_index: 10, next_match_id: 'qf-3', next_match_slot: 2 },
+            { id: 'r16-7', round: 'r16', match_number: 7, title: 'R16 #7', team1_seed: '', team2_seed: '', slot1_index: 1, slot2_index: 14, next_match_id: 'qf-4', next_match_slot: 1 },
+            { id: 'r16-8', round: 'r16', match_number: 8, title: 'R16 #8', team1_seed: '', team2_seed: '', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
             { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: 'MENANG R16-1', team2_seed: 'MENANG R16-2', slot1_index: null, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
             { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'MENANG R16-3', team2_seed: 'MENANG R16-4', slot1_index: null, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 2 },
             { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'MENANG R16-5', team2_seed: 'MENANG R16-6', slot1_index: null, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 1 },
@@ -225,8 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
             round: 'r32',
             match_number: i,
             title: `R32 #${i}`,
-            team1_seed: `SLOT #${String(i).padStart(2, '0')}`,
-            team2_seed: `SLOT #${String(33 - i).padStart(2, '0')}`,
+            team1_seed: '',
+            team2_seed: '',
             slot1_index: i - 1,
             slot2_index: 32 - i,
             next_match_id: `r16-${nextR16}`,
@@ -298,12 +298,12 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
-            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: 'SLOT #07', team2_seed: 'SLOT #10', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
-            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: 'SLOT #08', team2_seed: 'SLOT #09', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
-            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: 'SLOT #01', team2_seed: 'MENANG PI-2', slot1_index: 0, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
-            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'SLOT #04', team2_seed: 'SLOT #05', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
-            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'SLOT #03', team2_seed: 'SLOT #06', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 1 },
-            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-1', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: '', team2_seed: '', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
+            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: '', team2_seed: '', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
+            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: '', team2_seed: 'MENANG PI-2', slot1_index: 0, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
+            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: '', team2_seed: '', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
+            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: '', team2_seed: '', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 1 },
+            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: '', team2_seed: 'MENANG PI-1', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
             { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
             { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
             { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
@@ -325,10 +325,9 @@ document.addEventListener('DOMContentLoaded', () => {
           .order('created_at', { ascending: true });
 
         if (!error && data && data.length > 0) {
-          participantsList = data.map((item, idx) => ({
+          participantsList = data.map((item) => ({
             id: String(item.id),
-            slot: `#${String(idx + 1).padStart(2, '0')}`,
-            teamName: item.team_name || `Tim Slot #${idx + 1}`,
+            teamName: item.team_name || 'Tim Tanpa Nama',
             playerNames: item.player_names || '-',
             gameId: item.game_id || '-',
             discordTag: item.discord_tag || '-',
@@ -348,10 +347,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (localP) {
         const parsed = JSON.parse(localP);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          participantsList = parsed.slice().reverse().map((item, idx) => ({
+          participantsList = parsed.slice().reverse().map((item) => ({
             id: String(item.id),
-            slot: `#${String(idx + 1).padStart(2, '0')}`,
-            teamName: item.teamName || item.team_name || `Tim Slot #${idx + 1}`,
+            teamName: item.teamName || item.team_name || 'Tim Tanpa Nama',
             playerNames: item.playerNames || item.player_names || '-',
             gameId: item.gameId || item.game_id || '-',
             discordTag: item.discordTag || item.discord_tag || '-',
@@ -428,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 1. Cek apakah match sudah memiliki data Tim 1 tersimpan (dari Supabase / LocalStorage / Edit Admin)
       const existingT1Valid = existing && existing.team1_name && 
-        !existing.team1_name.startsWith('Menunggu Peserta') && 
+        !existing.team1_name.startsWith('Menunggu') && 
         !existing.team1_name.startsWith('[SLOT') &&
         !existing.team1_name.startsWith('[MENANG') &&
         !existing.team1_name.startsWith('[KALAH');
@@ -443,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
           team1_name = p1.teamName;
           team1_id = p1.id;
         } else {
-          team1_name = `Menunggu Peserta (${def.team1_seed})`;
+          team1_name = def.team1_seed ? `[${def.team1_seed}]` : 'Menunggu Tim';
         }
       } else if (existing && existing.team1_name) {
         team1_name = existing.team1_name;
@@ -452,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 2. Cek apakah match sudah memiliki data Tim 2 tersimpan (dari Supabase / LocalStorage / Edit Admin)
       const existingT2Valid = existing && existing.team2_name && 
-        !existing.team2_name.startsWith('Menunggu Peserta') && 
+        !existing.team2_name.startsWith('Menunggu') && 
         !existing.team2_name.startsWith('[SLOT') &&
         !existing.team2_name.startsWith('[MENANG') &&
         !existing.team2_name.startsWith('[KALAH');
@@ -467,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
           team2_name = p2.teamName;
           team2_id = p2.id;
         } else {
-          team2_name = `Menunggu Peserta (${def.team2_seed})`;
+          team2_name = def.team2_seed ? `[${def.team2_seed}]` : 'Menunggu Tim';
         }
       } else if (existing && existing.team2_name) {
         team2_name = existing.team2_name;
@@ -493,9 +491,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       newMatchesState[def.id] = {
         ...def,
-        team1_name: team1_name || `[${def.team1_seed}]`,
+        team1_name: team1_name || (def.team1_seed ? `[${def.team1_seed}]` : 'Menunggu Tim'),
         team1_id: team1_id,
-        team2_name: team2_name || `[${def.team2_seed}]`,
+        team2_name: team2_name || (def.team2_seed ? `[${def.team2_seed}]` : 'Menunggu Tim'),
         team2_id: team2_id,
         score1: existing ? Number(existing.score1 || 0) : 0,
         score2: existing ? Number(existing.score2 || 0) : 0,
@@ -763,6 +761,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const t1Players = getTeamPlayerNames(match.team1_name, match.team1_id);
     const t2Players = getTeamPlayerNames(match.team2_name, match.team2_id);
 
+    const showT1Seed = t1Placeholder && match.team1_seed && (match.team1_seed.startsWith('MENANG') || match.team1_seed.startsWith('KALAH'));
+    const showT2Seed = t2Placeholder && match.team2_seed && (match.team2_seed.startsWith('MENANG') || match.team2_seed.startsWith('KALAH'));
+
     let winnerLabelPrefix = '🏆 Pemenang:';
     if (match.id === 'final') winnerLabelPrefix = '🥇 Juara 1:';
     if (match.id === 'bronze') winnerLabelPrefix = '🥉 Juara 3:';
@@ -781,10 +782,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <!-- Tim 1 -->
           <div class="team-slot-row ${team1IsWinner ? 'winner' : ''} ${team2IsWinner ? 'loser' : ''} ${t1Placeholder ? 'empty-slot' : ''}">
             <div class="team-meta-left">
-              <span class="team-seed-pill ${team1IsWinner ? 'winner-seed' : ''}">${escapeHtml(match.team1_seed || '#')}</span>
+              ${showT1Seed ? `<span class="team-seed-pill ${team1IsWinner ? 'winner-seed' : ''}">${escapeHtml(match.team1_seed)}</span>` : ''}
               <div class="team-info-col">
                 <span class="team-name-text ${t1Placeholder ? 'placeholder' : ''}" title="${escapeHtml(match.team1_name || '')}">
-                  ${escapeHtml(match.team1_name || 'Menunggu Peserta')}
+                  ${escapeHtml(match.team1_name || 'Menunggu Tim')}
                 </span>
                 ${t1Players ? `
                   <span class="team-players-text" title="Pemain: ${escapeHtml(t1Players)}">
@@ -801,10 +802,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <!-- Tim 2 -->
           <div class="team-slot-row ${team2IsWinner ? 'winner' : ''} ${team1IsWinner ? 'loser' : ''} ${t2Placeholder ? 'empty-slot' : ''}">
             <div class="team-meta-left">
-              <span class="team-seed-pill ${team2IsWinner ? 'winner-seed' : ''}">${escapeHtml(match.team2_seed || '#')}</span>
+              ${showT2Seed ? `<span class="team-seed-pill ${team2IsWinner ? 'winner-seed' : ''}">${escapeHtml(match.team2_seed)}</span>` : ''}
               <div class="team-info-col">
                 <span class="team-name-text ${t2Placeholder ? 'placeholder' : ''}" title="${escapeHtml(match.team2_name || '')}">
-                  ${escapeHtml(match.team2_name || 'Menunggu Peserta')}
+                  ${escapeHtml(match.team2_name || 'Menunggu Tim')}
                 </span>
                 ${t2Players ? `
                   <span class="team-players-text" title="Pemain: ${escapeHtml(t2Players)}">
@@ -1077,17 +1078,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let modalSelectedWinnerType = 'auto';
 
+  // --- ENGINE VALIDASI & ALOKASI TIM TURNAMEN PADA BRACKET ---
+
+  function isValidRealTeam(name) {
+    if (!name) return false;
+    const t = String(name).trim();
+    if (!t || t.startsWith('[') || t.startsWith('Menunggu') || t.startsWith('KALAH')) {
+      return false;
+    }
+    return true;
+  }
+
+  function getBracketAllocationStatus(currentMatchId) {
+    const assignedMap = {}; // { 'nama tim': 'Play-In #1' }
+    Object.values(matchesState).forEach((m) => {
+      if (m.id !== currentMatchId) {
+        if (isValidRealTeam(m.team1_name)) {
+          assignedMap[m.team1_name.trim().toLowerCase()] = m.title || m.id;
+        }
+        if (isValidRealTeam(m.team2_name)) {
+          assignedMap[m.team2_name.trim().toLowerCase()] = m.title || m.id;
+        }
+      }
+    });
+
+    const availableTeams = [];
+    const assignedTeams = [];
+
+    participantsList.forEach((p) => {
+      const key = p.teamName ? p.teamName.trim().toLowerCase() : '';
+      if (!key) return;
+      if (assignedMap[key]) {
+        assignedTeams.push({ ...p, assignedMatch: assignedMap[key] });
+      } else {
+        availableTeams.push(p);
+      }
+    });
+
+    return { assignedMap, availableTeams, assignedTeams };
+  }
+
   function openEditModal(matchId) {
     activeEditingMatchId = matchId;
     const match = matchesState[matchId];
     if (!match) return;
 
     if (modalMatchTitle) modalMatchTitle.textContent = `Edit Skor: ${match.title}`;
-    if (modalMatchSubtitle) modalMatchSubtitle.textContent = `Babak: ${(match.round || '').toUpperCase()} • Kelola skor & pemenang`;
+    if (modalMatchSubtitle) modalMatchSubtitle.textContent = `Babak: ${(match.round || '').toUpperCase()} • Kelola tim & skor`;
 
-    // Isi Dropdown Tim
-    populateTeamDropdown(editTeam1Select, match.team1_name);
-    populateTeamDropdown(editTeam2Select, match.team2_name);
+    const { assignedMap } = getBracketAllocationStatus(matchId);
+
+    // Isi Dropdown Tim dengan pengelompokan Tim Tersedia vs Sudah di Bracket
+    populateTeamDropdown(editTeam1Select, match.team1_name, assignedMap);
+    populateTeamDropdown(editTeam2Select, match.team2_name, assignedMap);
 
     // Isi Skor
     if (editScore1Input) editScore1Input.value = match.score1 || 0;
@@ -1108,10 +1151,13 @@ document.addEventListener('DOMContentLoaded', () => {
       setWinnerSelection('auto');
     }
 
+    // Render chips status alokasi tim
+    updateModalAllocationUI(matchId);
+
     if (editModal) editModal.classList.add('open');
   }
 
-  function populateTeamDropdown(selectEl, currentTeamName) {
+  function populateTeamDropdown(selectEl, currentTeamName, assignedMap = {}) {
     if (!selectEl) return;
     selectEl.innerHTML = '';
 
@@ -1120,24 +1166,179 @@ document.addEventListener('DOMContentLoaded', () => {
     defaultOpt.textContent = '-- Pilih Tim / Peserta --';
     selectEl.appendChild(defaultOpt);
 
+    const availableGroup = document.createElement('optgroup');
+    availableGroup.label = '🟢 TIM TERSEDIA (BELUM MASUK BRACKET)';
+
+    const assignedGroup = document.createElement('optgroup');
+    assignedGroup.label = '⚠️ TIM SUDAH MASUK BRACKET (MATCH LAIN)';
+
+    let hasAvailable = false;
+    let hasAssigned = false;
+
     participantsList.forEach((p) => {
+      const key = p.teamName ? p.teamName.trim().toLowerCase() : '';
+      const isAssignedElsewhere = assignedMap[key] && (!currentTeamName || p.teamName.trim().toLowerCase() !== currentTeamName.trim().toLowerCase());
+      const rosterInfo = p.playerNames && p.playerNames !== '-' ? ` (${p.playerNames})` : '';
+
       const opt = document.createElement('option');
       opt.value = p.teamName;
-      const rosterInfo = p.playerNames && p.playerNames !== '-' ? ` (${p.playerNames})` : '';
-      opt.textContent = `${p.slot} - ${p.teamName}${rosterInfo}`;
+
       if (p.teamName === currentTeamName) {
         opt.selected = true;
       }
-      selectEl.appendChild(opt);
+
+      if (isAssignedElsewhere) {
+        opt.textContent = `⚠️ ${p.teamName}${rosterInfo} — [Sudah di ${assignedMap[key]}]`;
+        assignedGroup.appendChild(opt);
+        hasAssigned = true;
+      } else {
+        opt.textContent = `${p.teamName}${rosterInfo}`;
+        availableGroup.appendChild(opt);
+        hasAvailable = true;
+      }
     });
 
-    if (currentTeamName && !participantsList.some((p) => p.teamName === currentTeamName)) {
+    if (hasAvailable) {
+      selectEl.appendChild(availableGroup);
+    }
+    if (hasAssigned) {
+      selectEl.appendChild(assignedGroup);
+    }
+
+    if (currentTeamName && isValidRealTeam(currentTeamName) && !participantsList.some((p) => p.teamName === currentTeamName)) {
       const customOpt = document.createElement('option');
       customOpt.value = currentTeamName;
       customOpt.textContent = currentTeamName;
       customOpt.selected = true;
       selectEl.appendChild(customOpt);
     }
+  }
+
+  function updateModalAllocationUI(matchId) {
+    const countBadge = document.getElementById('allocationCountBadge');
+    const chipsWrap = document.getElementById('allocationChipsWrap');
+
+    if (!chipsWrap) return;
+
+    const { assignedMap, availableTeams } = getBracketAllocationStatus(matchId);
+    const currentMatch = matchesState[matchId];
+
+    if (countBadge) {
+      if (availableTeams.length > 0) {
+        countBadge.textContent = `${availableTeams.length} Tim Belum Masuk Bracket`;
+        countBadge.classList.remove('all-assigned');
+      } else {
+        countBadge.textContent = `Semua Tim Telah Masuk Bracket`;
+        countBadge.classList.add('all-assigned');
+      }
+    }
+
+    chipsWrap.innerHTML = '';
+
+    if (participantsList.length === 0) {
+      chipsWrap.innerHTML = '<span style="font-size:11px; color:var(--muted);">Belum ada peserta terdaftar.</span>';
+      return;
+    }
+
+    participantsList.forEach((p) => {
+      const key = p.teamName ? p.teamName.trim().toLowerCase() : '';
+      const isCurrentTeam1 = currentMatch && currentMatch.team1_name === p.teamName;
+      const isCurrentTeam2 = currentMatch && currentMatch.team2_name === p.teamName;
+      const isCurrentMatch = isCurrentTeam1 || isCurrentTeam2;
+      const assignedMatchTitle = assignedMap[key];
+
+      const chip = document.createElement('span');
+      chip.className = 'allocation-chip';
+
+      if (isCurrentMatch) {
+        chip.classList.add('current-match');
+        chip.innerHTML = `<span>⚔️</span> <b>${escapeHtml(p.teamName)}</b> <small style="opacity:0.75;">(Match Ini)</small>`;
+        chip.title = `Tim ini sedang dipasang di pertandingan ini`;
+      } else if (assignedMatchTitle) {
+        chip.classList.add('assigned');
+        chip.innerHTML = `<span>⚠️</span> ${escapeHtml(p.teamName)} <small style="opacity:0.75;">(${escapeHtml(assignedMatchTitle)})</small>`;
+        chip.title = `Sudah dipasang di ${assignedMatchTitle}. Klik untuk memasang ke match ini (memindahkan tim).`;
+        chip.addEventListener('click', () => {
+          assignTeamToCurrentModal(p.teamName);
+        });
+      } else {
+        chip.classList.add('available');
+        chip.innerHTML = `<span>🟢</span> <b>${escapeHtml(p.teamName)}</b> <small style="color:var(--cyan); font-weight:600;">+ Pasang</small>`;
+        chip.title = `Belum masuk bracket. Klik untuk memasang ke pertandingan ini!`;
+        chip.addEventListener('click', () => {
+          assignTeamToCurrentModal(p.teamName);
+        });
+      }
+
+      chipsWrap.appendChild(chip);
+    });
+
+    validateModalTeamSelection();
+  }
+
+  function assignTeamToCurrentModal(teamName) {
+    if (!editTeam1Select || !editTeam2Select) return;
+
+    if (!editTeam1Select.value || !isValidRealTeam(editTeam1Select.value)) {
+      editTeam1Select.value = teamName;
+      if (btnWinTeam1) btnWinTeam1.textContent = `🏆 ${teamName}`;
+    } else if (!editTeam2Select.value || !isValidRealTeam(editTeam2Select.value)) {
+      editTeam2Select.value = teamName;
+      if (btnWinTeam2) btnWinTeam2.textContent = `🏆 ${teamName}`;
+    } else {
+      if (editTeam1Select.value !== teamName) {
+        editTeam2Select.value = teamName;
+        if (btnWinTeam2) btnWinTeam2.textContent = `🏆 ${teamName}`;
+      } else {
+        editTeam1Select.value = teamName;
+        if (btnWinTeam1) btnWinTeam1.textContent = `🏆 ${teamName}`;
+      }
+    }
+
+    validateModalTeamSelection();
+  }
+
+  function validateModalTeamSelection() {
+    const warningMsg = document.getElementById('allocationWarningMsg');
+    const btnSave = document.getElementById('btnSaveMatchEdit');
+    if (!warningMsg) return true;
+
+    const t1 = editTeam1Select ? editTeam1Select.value.trim() : '';
+    const t2 = editTeam2Select ? editTeam2Select.value.trim() : '';
+
+    if (t1 && t2 && t1.toLowerCase() === t2.toLowerCase() && isValidRealTeam(t1)) {
+      warningMsg.innerHTML = `⚠️ <b>Validasi Gagal:</b> Tim 1 dan Tim 2 tidak boleh memilih tim yang sama (<b>${escapeHtml(t1)}</b>). Silakan pilih dua tim yang berbeda!`;
+      warningMsg.style.display = 'block';
+      warningMsg.style.background = 'rgba(255, 92, 138, 0.15)';
+      warningMsg.style.borderColor = 'rgba(255, 92, 138, 0.4)';
+      warningMsg.style.color = '#ff94b8';
+      if (btnSave) btnSave.disabled = true;
+      return false;
+    }
+
+    const { assignedMap } = getBracketAllocationStatus(activeEditingMatchId);
+    const warnings = [];
+
+    if (t1 && assignedMap[t1.toLowerCase()]) {
+      warnings.push(`Tim 1 (<b>${escapeHtml(t1)}</b>) saat ini terdaftar di ${escapeHtml(assignedMap[t1.toLowerCase()])}`);
+    }
+    if (t2 && assignedMap[t2.toLowerCase()]) {
+      warnings.push(`Tim 2 (<b>${escapeHtml(t2)}</b>) saat ini terdaftar di ${escapeHtml(assignedMap[t2.toLowerCase()])}`);
+    }
+
+    if (warnings.length > 0) {
+      warningMsg.innerHTML = `ℹ️ <b>Info Pemindahan:</b> ${warnings.join(' & ')}. Tim akan dialokasikan ke match ini saat disimpan.`;
+      warningMsg.style.display = 'block';
+      warningMsg.style.background = 'rgba(155, 107, 255, 0.12)';
+      warningMsg.style.borderColor = 'rgba(155, 107, 255, 0.35)';
+      warningMsg.style.color = '#d8b4fe';
+      if (btnSave) btnSave.disabled = false;
+      return true;
+    }
+
+    warningMsg.style.display = 'none';
+    if (btnSave) btnSave.disabled = false;
+    return true;
   }
 
   function setWinnerSelection(type) {
@@ -1175,17 +1376,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Update dinamis tombol pilihan pemenang saat dropdown tim diganti
+  // Update dinamis tombol pilihan pemenang & validasi saat dropdown tim diganti
   if (editTeam1Select) {
     editTeam1Select.addEventListener('change', () => {
       const val = editTeam1Select.value;
       if (btnWinTeam1) btnWinTeam1.textContent = `🏆 ${val || 'Tim 1'}`;
+      validateModalTeamSelection();
     });
   }
   if (editTeam2Select) {
     editTeam2Select.addEventListener('change', () => {
       const val = editTeam2Select.value;
       if (btnWinTeam2) btnWinTeam2.textContent = `🏆 ${val || 'Tim 2'}`;
+      validateModalTeamSelection();
     });
   }
 
@@ -1195,6 +1398,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!activeEditingMatchId) return;
       const match = matchesState[activeEditingMatchId];
       if (!match) return;
+
+      const valid = validateModalTeamSelection();
+      if (!valid) {
+        showToast('⚠️ Gagal menyimpan: Tim 1 dan Tim 2 tidak boleh sama!');
+        return;
+      }
 
       const score1 = Math.max(0, parseInt(editScore1Input ? editScore1Input.value : 0) || 0);
       const score2 = Math.max(0, parseInt(editScore2Input ? editScore2Input.value : 0) || 0);
@@ -1842,6 +2051,182 @@ document.addEventListener('DOMContentLoaded', () => {
   const bracketSizeSelect = document.getElementById('bracketSizeSelect');
   const btnSyncParticipants = document.getElementById('btnSyncParticipants');
   const btnResetBracket = document.getElementById('btnResetBracket');
+  const btnDownloadBracketImg = document.getElementById('btnDownloadBracketImg');
+
+  // --- EXPORT BRACKET TO ULTRA HD IMAGE (PNG) ---
+  async function exportBracketAsHDImage() {
+    const btn = document.getElementById('btnDownloadBracketImg');
+    const originalHtml = btn ? btn.innerHTML : '';
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Merender HD...';
+    }
+
+    showToast('📸 Sedang merender bagan bracket dalam resolusi Ultra HD...');
+
+    try {
+      // 1. Pastikan html2canvas dimuat
+      if (typeof html2canvas === 'undefined') {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('Gagal memuat library pembuat gambar (html2canvas).'));
+          document.head.appendChild(script);
+        });
+      }
+
+      const sourceCanvas = document.getElementById('bracketCanvas');
+      if (!sourceCanvas) throw new Error('Elemen bagan bracket tidak ditemukan.');
+
+      // Simpan level zoom saat ini dan reset sementara ke 1 (100%) agar kalkulasi SVG tepat
+      const prevZoom = currentZoom;
+      currentZoom = 1;
+      if (bracketCanvas) bracketCanvas.style.transform = 'scale(1)';
+      if (zoomBadge) zoomBadge.textContent = '100%';
+      drawConnectorLines();
+
+      // Beri jeda 150ms agar rendering SVG lines stabil
+      await new Promise((r) => setTimeout(r, 150));
+
+      // 2. Buat container poster turnamen profesional
+      const poster = document.createElement('div');
+      poster.style.position = 'fixed';
+      poster.style.top = '-99999px';
+      poster.style.left = '-99999px';
+      poster.style.zIndex = '-9999';
+      poster.style.background = 'radial-gradient(ellipse at 50% 0%, #171233 0%, #080614 100%)';
+      poster.style.padding = '44px 50px';
+      poster.style.borderRadius = '24px';
+      poster.style.boxSizing = 'border-box';
+      poster.style.fontFamily = "'Inter', sans-serif";
+      poster.style.color = '#fff';
+      poster.style.display = 'inline-block';
+      poster.style.minWidth = 'max-content';
+
+      // Header Poster
+      const activeSize = getActiveBracketSize();
+      const formatTitle = activeBracketConfig ? activeBracketConfig.formatName : `${activeSize} Tim Single Elimination`;
+      const dateStr = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+      let completedCount = 0;
+      let totalMatches = activeBracketConfig ? activeBracketConfig.matches.length : 0;
+      Object.values(matchesState).forEach((m) => {
+        if (m.status === 'SELESAI' || m.winner_name) completedCount++;
+      });
+
+      const headerBox = document.createElement('div');
+      headerBox.style.display = 'flex';
+      headerBox.style.alignItems = 'center';
+      headerBox.style.justifyContent = 'space-between';
+      headerBox.style.borderBottom = '1px solid rgba(255, 255, 255, 0.12)';
+      headerBox.style.paddingBottom = '22px';
+      headerBox.style.marginBottom = '32px';
+      headerBox.style.gap = '30px';
+
+      headerBox.innerHTML = `
+        <div>
+          <div style="font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:800; letter-spacing:2px; color:#45e8d4; margin-bottom:6px; text-transform:uppercase;">
+            🎮 YABI DEV ESPORTS TOURNAMENT
+          </div>
+          <div style="font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:800; color:#fff; line-height:1.2; letter-spacing:-0.5px;">
+            BAGAN TURNAMEN SAMBUNG KATA 2 VS 2
+          </div>
+          <div style="font-size:13px; color:#94a3b8; margin-top:6px;">
+            Format: <b style="color:#e2e8f0;">${escapeHtml(formatTitle)}</b> • Tanggal: <b>${escapeHtml(dateStr)}</b> • Status: <b style="color:#45e8d4;">${completedCount}/${totalMatches} Match Selesai</b>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="display:inline-block; padding:6px 14px; border-radius:8px; background:rgba(69, 232, 212, 0.12); border:1px solid rgba(69, 232, 212, 0.35); font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:#45e8d4;">
+            OFFICIAL BRACKET
+          </div>
+          <div style="font-size:11px; color:#64748b; margin-top:6px; font-family:'JetBrains Mono',monospace;">
+            yabi.dev/bracket.html
+          </div>
+        </div>
+      `;
+      poster.appendChild(headerBox);
+
+      // Klon Konten Bracket Canvas
+      const clone = sourceCanvas.cloneNode(true);
+      clone.style.transform = 'none';
+      clone.style.margin = '0 auto';
+      clone.style.position = 'relative';
+
+      // Pastikan SVG garis terklon dengan sempurna
+      const origSvg = sourceCanvas.querySelector('#bracketSvg');
+      const cloneSvg = clone.querySelector('#bracketSvg');
+      if (origSvg && cloneSvg) {
+        cloneSvg.innerHTML = origSvg.innerHTML;
+        cloneSvg.style.width = '100%';
+        cloneSvg.style.height = '100%';
+      }
+
+      poster.appendChild(clone);
+
+      // Footer Poster
+      const footerBox = document.createElement('div');
+      footerBox.style.display = 'flex';
+      footerBox.style.alignItems = 'center';
+      footerBox.style.justifyContent = 'space-between';
+      footerBox.style.borderTop = '1px solid rgba(255, 255, 255, 0.08)';
+      footerBox.style.paddingTop = '20px';
+      footerBox.style.marginTop = '32px';
+      footerBox.style.fontSize = '12px';
+      footerBox.style.color = '#64748b';
+
+      footerBox.innerHTML = `
+        <div>Diselenggarakan secara resmi oleh <b>Komunitas Yabi Dev</b> • Single Elimination System</div>
+        <div>Generated at ${new Date().toLocaleTimeString('id-ID')} • Official Website: yabi.dev</div>
+      `;
+      poster.appendChild(footerBox);
+
+      document.body.appendChild(poster);
+
+      // Render menggunakan html2canvas (Skala 2.5x untuk resolusi Ultra HD jernih saat di-zoom/share)
+      const renderedCanvas = await html2canvas(poster, {
+        scale: 2.5,
+        backgroundColor: '#080614',
+        useCORS: true,
+        logging: false,
+        allowTaint: true
+      });
+
+      // Hapus elemen clone sementara
+      document.body.removeChild(poster);
+
+      // Kembalikan zoom asli
+      currentZoom = prevZoom;
+      if (bracketCanvas) bracketCanvas.style.transform = `scale(${currentZoom})`;
+      if (zoomBadge) zoomBadge.textContent = `${Math.round(currentZoom * 100)}%`;
+      drawConnectorLines();
+
+      // Download file PNG
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+      const filename = `bracket-turnamen-sambung-kata-${timestamp}.png`;
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = renderedCanvas.toDataURL('image/png', 1.0);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('🎉 Bagan Bracket Ultra HD berhasil di-download!');
+    } catch (err) {
+      console.error('Error saat download bagan HD:', err);
+      showToast('⚠️ Gagal membuat gambar: ' + (err.message || 'Terjadi kesalahan'));
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+  }
+
+  if (btnDownloadBracketImg) {
+    btnDownloadBracketImg.addEventListener('click', exportBracketAsHDImage);
+  }
 
   if (bracketSizeSelect) {
     bracketSizeSelect.value = selectedFormat;

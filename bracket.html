@@ -139,6 +139,11 @@
           </div>
 
           <div class="toolbar-right">
+            <!-- Export HD Image Button -->
+            <button type="button" class="tool-btn tool-btn-export" id="btnDownloadBracketImg" title="Download bagan bracket turnamen format gambar Ultra HD (PNG)">
+              <span>📸</span> Download Bagan HD
+            </button>
+
             <!-- Zoom Controls -->
             <button type="button" class="tool-btn" id="zoomOutBtn" aria-label="Zoom Out">🔍−</button>
             <span class="zoom-badge" id="zoomBadge">100%</span>
@@ -220,6 +225,24 @@
           <p id="modalMatchSubtitle">Kelola skor, tim yang bertanding, dan tentukan pemenang</p>
         </div>
         <button type="button" class="modal-close-icon-btn" id="modalEditClose" aria-label="Tutup modal">✕</button>
+      </div>
+
+      <!-- Validation & Available Teams Strip -->
+      <div class="modal-team-allocation-box" id="modalTeamAllocationBox">
+        <div class="allocation-header-row">
+          <div class="allocation-title-wrap">
+            <span class="allocation-title-icon">📊</span>
+            <span class="allocation-title-text">Status Alokasi Tim Turnamen</span>
+          </div>
+          <span class="allocation-badge" id="allocationCountBadge">0 Belum Masuk Bracket</span>
+        </div>
+        <div class="allocation-desc-text">
+          Pilih tim dari dropdown atau klik chip tim tersedia (<b style="color:var(--cyan);">🟢</b>) di bawah untuk memasangkan ke pertandingan ini:
+        </div>
+        <div class="allocation-chips-wrap" id="allocationChipsWrap">
+          <!-- Dynamic available/assigned chips rendered by JS -->
+        </div>
+        <div class="allocation-warning-msg" id="allocationWarningMsg" style="display:none;"></div>
       </div>
 
       <!-- Duel Score Inputs Box -->
@@ -361,6 +384,7 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/bracket.js"></script>
 </body>
