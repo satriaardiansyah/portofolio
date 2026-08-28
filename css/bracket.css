@@ -217,6 +217,38 @@
   box-shadow: 0 0 14px rgba(69, 232, 212, 0.3);
 }
 
+.bracket-format-select-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.bracket-format-select {
+  background: rgba(20, 18, 36, 0.85);
+  border: 1px solid rgba(69, 232, 212, 0.35);
+  color: var(--cyan);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.bracket-format-select:focus,
+.bracket-format-select:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px rgba(69, 232, 212, 0.3);
+}
+
+.bracket-format-select option {
+  background: #141224;
+  color: #fff;
+  padding: 8px;
+}
+
 /* ---------- Bracket Interactive Viewport ---------- */
 .bracket-viewport-wrapper {
   position: relative;
@@ -260,7 +292,7 @@
 
 .bracket-canvas {
   position: relative;
-  min-width: 1380px;
+  min-width: max-content;
   transform-origin: top left;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -298,20 +330,27 @@
   filter: drop-shadow(0 0 8px rgba(255, 92, 138, 0.7));
 }
 
-/* Grid Columns for Bracket Rounds */
+/* Dynamic Flex / Grid for Bracket Stages */
 .bracket-stages-grid {
-  display: grid;
-  grid-template-columns: 270px 270px 270px 270px 300px;
+  display: flex;
+  flex-direction: row;
   gap: 48px;
   position: relative;
   z-index: 2;
   align-items: stretch;
+  min-width: max-content;
 }
 
 .bracket-stage-col {
   display: flex;
   flex-direction: column;
   min-height: 680px;
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.bracket-stage-col.stage-champion {
+  width: 320px;
 }
 
 .stage-header {
@@ -353,13 +392,12 @@
   gap: 20px;
 }
 
-/* Special alignment for Play-In matches to align with Quarter Finals */
+/* Dynamic stage specific alignments */
 .stage-playin .stage-matches-container {
   justify-content: space-between;
-  padding: 40px 0 30px 0;
+  padding: 30px 0;
 }
 
-/* Special alignment for Grand Final & Champion */
 .stage-champion .stage-matches-container {
   justify-content: center;
 }

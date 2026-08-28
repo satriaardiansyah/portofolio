@@ -1,7 +1,8 @@
 /**
  * TOURNAMENT BRACKET MODULE - YABIDEV
- * Mengelola sistem Single Elimination 10 Tim, sinkronisasi Supabase & LocalStorage,
- * kalkulasi pemenang otomatis/manual, propagasi babak berikutnya, SVG connecting lines,
+ * Mengelola sistem Dynamic Single Elimination Tournament Bracket (4, 6, 8, 10, 12, 16, 32 Tim),
+ * penyesuaian babak otomatis, auto-seeding saat tim bertambah, sinkronisasi Supabase & LocalStorage,
+ * kalkulasi pemenang otomatis/manual, propagasi babak berikutnya, SVG connecting lines dinamis,
  * serta mode admin edit skor.
  */
 
@@ -24,190 +25,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const MATCHES_TABLE = 'tournament_matches';
   const STORAGE_MATCHES_KEY = 'yabidev_bracket_matches_v1';
   const STORAGE_PARTICIPANTS_KEY = 'yabidev_tournament_data_v1';
+  const STORAGE_FORMAT_KEY = 'yabidev_bracket_format_v1';
 
   let supabaseClient = null;
-  let isMatchesTableAvailable = true; // Akan diset false jika table belum dibuat di Supabase
+  let isMatchesTableAvailable = true;
 
   if (window.supabase && typeof window.supabase.createClient === 'function') {
     try {
       supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_KEY);
-      console.log('⚡ Supabase Client initialized for Bracket');
+      console.log('⚡ Supabase Client initialized for Dynamic Bracket');
     } catch (err) {
       console.warn('⚠️ Supabase init error:', err);
     }
   }
 
   // --- STATE MANAGEMENT ---
-  let participantsList = []; // 10 Slots
-  let matchesState = {};     // Map by match ID: 'pi-1', 'pi-2', 'qf-1', ..., 'final'
+  let participantsList = [];
+  let matchesState = {};
+  let selectedFormat = localStorage.getItem(STORAGE_FORMAT_KEY) || 'auto';
+  let activeBracketConfig = null;
   let currentZoom = 1;
   let activeEditingMatchId = null;
 
-  // Struktur Default 10 Slot Bracket (Single Elimination)
-  const INITIAL_MATCH_DEFINITIONS = [
-    // 1. Play-In / Babak Pendahuluan
-    {
-      id: 'pi-1',
-      round: 'playin',
-      match_number: 1,
-      title: 'Play-In #1',
-      team1_seed: 'SLOT #07',
-      team2_seed: 'SLOT #10',
-      slot1_index: 6, // 0-based index slot 7
-      slot2_index: 9, // 0-based index slot 10
-      next_match_id: 'qf-4',
-      next_match_slot: 2,
-      score1: 0,
-      score2: 0,
-      winner_id: null,
-      winner_name: null,
-      status: 'MENUNGGU'
-    },
-    {
-      id: 'pi-2',
-      round: 'playin',
-      match_number: 2,
-      title: 'Play-In #2',
-      team1_seed: 'SLOT #08',
-      team2_seed: 'SLOT #09',
-      slot1_index: 7, // slot 8
-      slot2_index: 8, // slot 9
-      next_match_id: 'qf-1',
-      next_match_slot: 2,
-      score1: 0,
-      score2: 0,
-      winner_id: null,
-      winner_name: null,
-      status: 'MENUNGGU'
-    },
-
-    // 2. Quarter Finals (8 Tim)
-    {
-      id: 'qf-1',
-      round: 'quarter',
-      match_number: 1,
-      title: 'Quarter Final #1',
-      team1_seed: 'SLOT #01',
-      team2_seed: 'MENANG PI-2',
-      slot1_index: 0, // slot 1
-      slot2_index: null, // Dari Play-In 2
-      next_match_id: 'sf-1',
-      next_match_slot: 1,
-      score1: 0,
-      score2: 0,
-      winner_id: null,
-      winner_name: null,
-      status: 'MENUNGGU'
-    },
-    {
-      id: 'qf-2',
-      round: 'quarter',
-      match_number: 2,
-      title: 'Quarter Final #2',
-      team1_seed: 'SLOT #04',
-      team2_seed: 'SLOT #05',
-      slot1_index: 3, // slot 4
-      slot2_index: 4, // slot 5
-      next_match_id: 'sf-1',
-      next_match_slot: 2,
-      score1: 0,
-      score2: 0,
-      winner_id: null,
-      winner_name: null,
-      status: 'MENUNGGU'
-    },
-    {
-      id: 'qf-3',
-      round: 'quarter',
-      match_number: 3,
-      title: 'Quarter Final #3',
-      team1_seed: 'SLOT #03',
-      team2_seed: 'SLOT #06',
-      slot1_index: 2, // slot 3
-      slot2_index: 5, // slot 6
-      next_match_id: 'sf-2',
-      next_match_slot: 1,
-      score1: 0,
-      score2: 0,
-      winner_id: null,
-      winner_name: null,
-      status: 'MENUNGGU'
-    },
-    {
-      id: 'qf-4',
-      round: 'quarter',
-      match_number: 4,
-      title: 'Quarter Final #4',
-      team1_seed: 'SLOT #02',
-      team2_seed: 'MENANG PI-1',
-      slot1_index: 1, // slot 2
-      slot2_index: null, // Dari Play-In 1
-      next_match_id: 'sf-2',
-      next_match_slot: 2,
-      score1: 0,
-      score2: 0,
-      winner_id: null,
-      winner_name: null,
-      status: 'MENUNGGU'
-    },
-
-    // 3. Semi Finals (4 Tim)
-    {
-      id: 'sf-1',
-      round: 'semi',
-      match_number: 1,
-      title: 'Semi Final #1',
-      team1_seed: 'MENANG QF-1',
-      team2_seed: 'MENANG QF-2',
-      slot1_index: null,
-      slot2_index: null,
-      next_match_id: 'final',
-      next_match_slot: 1,
-      score1: 0,
-      score2: 0,
-      winner_id: null,
-      winner_name: null,
-      status: 'MENUNGGU'
-    },
-    {
-      id: 'sf-2',
-      round: 'semi',
-      match_number: 2,
-      title: 'Semi Final #2',
-      team1_seed: 'MENANG QF-3',
-      team2_seed: 'MENANG QF-4',
-      slot1_index: null,
-      slot2_index: null,
-      next_match_id: 'final',
-      next_match_slot: 2,
-      score1: 0,
-      score2: 0,
-      winner_id: null,
-      winner_name: null,
-      status: 'MENUNGGU'
-    },
-
-    // 4. Grand Final
-    {
-      id: 'final',
-      round: 'final',
-      match_number: 1,
-      title: 'Grand Final 🏆',
-      team1_seed: 'MENANG SF-1',
-      team2_seed: 'MENANG SF-2',
-      slot1_index: null,
-      slot2_index: null,
-      next_match_id: 'champion',
-      next_match_slot: 1,
-      score1: 0,
-      score2: 0,
-      winner_id: null,
-      winner_name: null,
-      status: 'MENUNGGU'
-    }
-  ];
-
-  // Mock Peserta jika Supabase belum ada data
+  // Mock Fallback Participants
   const defaultFallbackParticipants = [
     { id: 'p-1', slot: '#01', teamName: 'CYBER VIPERS', playerNames: 'Satria (C), Vanya' },
     { id: 'p-2', slot: '#02', teamName: 'NEON PROTOCOL', playerNames: 'Farhan (C), Brian' },
@@ -218,8 +58,239 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'p-7', slot: '#07', teamName: 'AURORA GLITCH', playerNames: 'Daffa (C), Putri' },
     { id: 'p-8', slot: '#08', teamName: 'MYSTIC FALCON', playerNames: 'Zaki (C), Tari' },
     { id: 'p-9', slot: '#09', teamName: 'VALKYRIE X', playerNames: 'Gavin (C), Jessica' },
-    { id: 'p-10', slot: '#10', teamName: 'ZERO GRAVITY', playerNames: 'Rangga (C), Tiara' }
+    { id: 'p-10', slot: '#10', teamName: 'ZERO GRAVITY', playerNames: 'Rangga (C), Tiara' },
+    { id: 'p-11', slot: '#11', teamName: 'SOLAR ECLIPSE', playerNames: 'Fajar (C), Diana' },
+    { id: 'p-12', slot: '#12', teamName: 'QUANTUM FORCE', playerNames: 'Arga (C), Melisa' },
+    { id: 'p-13', slot: '#13', teamName: 'NEXUS LEGENDS', playerNames: 'Rizky (C), Clara' },
+    { id: 'p-14', slot: '#14', teamName: 'INFINITY STORM', playerNames: 'Danu (C), Bella' },
+    { id: 'p-15', slot: '#15', teamName: 'BLAZE RUNNERS', playerNames: 'Haikal (C), Tasya' },
+    { id: 'p-16', slot: '#16', teamName: 'OMEGA PROTOCOL', playerNames: 'Geri (C), Nadia' }
   ];
+
+  // --- DYNAMIC BRACKET ENGINE GENERATOR ---
+  function determineAutoBracketSize(count) {
+    if (count <= 4) return 4;
+    if (count <= 6) return 6;
+    if (count <= 8) return 8;
+    if (count <= 10) return 10;
+    if (count <= 12) return 12;
+    if (count <= 16) return 16;
+    return 32;
+  }
+
+  function getActiveBracketSize() {
+    if (selectedFormat === 'auto' || !selectedFormat) {
+      return determineAutoBracketSize(participantsList.length);
+    }
+    return parseInt(selectedFormat, 10) || 10;
+  }
+
+  function generateBracketStructure(size) {
+    const numSize = Number(size);
+    switch (numSize) {
+      case 4:
+        return {
+          totalTeams: 4,
+          formatName: '4 Tim (Semi Final)',
+          stages: [
+            { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
+            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+          ],
+          matches: [
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #04', slot1_index: 0, slot2_index: 3, next_match_id: 'final', next_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'SLOT #02', team2_seed: 'SLOT #03', slot1_index: 1, slot2_index: 2, next_match_id: 'final', next_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+          ]
+        };
+
+      case 6:
+        return {
+          totalTeams: 6,
+          formatName: '6 Tim (Play-In + SF)',
+          stages: [
+            { id: 'playin', title: 'Play-In', subtitle: '2 Pertandingan', matchIds: ['pi-1', 'pi-2'] },
+            { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
+            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+          ],
+          matches: [
+            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: 'SLOT #04', team2_seed: 'SLOT #05', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
+            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: 'SLOT #03', team2_seed: 'SLOT #06', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'SLOT #01', team2_seed: 'MENANG PI-1', slot1_index: 0, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-2', slot1_index: 1, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+          ]
+        };
+
+      case 8:
+        return {
+          totalTeams: 8,
+          formatName: '8 Tim (Quarter Final)',
+          stages: [
+            { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: ['qf-1', 'qf-2', 'qf-3', 'qf-4'] },
+            { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
+            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+          ],
+          matches: [
+            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #08', slot1_index: 0, slot2_index: 7, next_match_id: 'sf-1', next_match_slot: 1 },
+            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'SLOT #04', team2_seed: 'SLOT #05', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
+            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'SLOT #03', team2_seed: 'SLOT #06', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 1 },
+            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'SLOT #02', team2_seed: 'SLOT #07', slot1_index: 1, slot2_index: 6, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+          ]
+        };
+
+      case 12:
+        return {
+          totalTeams: 12,
+          formatName: '12 Tim (Play-In + QF)',
+          stages: [
+            { id: 'playin', title: 'Play-In', subtitle: '4 Pertandingan', matchIds: ['pi-1', 'pi-2', 'pi-3', 'pi-4'] },
+            { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: ['qf-1', 'qf-2', 'qf-3', 'qf-4'] },
+            { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
+            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+          ],
+          matches: [
+            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: 'SLOT #08', team2_seed: 'SLOT #09', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
+            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: 'SLOT #05', team2_seed: 'SLOT #12', slot1_index: 4, slot2_index: 11, next_match_id: 'qf-2', next_match_slot: 2 },
+            { id: 'pi-3', round: 'playin', match_number: 3, title: 'Play-In #3', team1_seed: 'SLOT #06', team2_seed: 'SLOT #11', slot1_index: 5, slot2_index: 10, next_match_id: 'qf-3', next_match_slot: 2 },
+            { id: 'pi-4', round: 'playin', match_number: 4, title: 'Play-In #4', team1_seed: 'SLOT #07', team2_seed: 'SLOT #10', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
+            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: 'SLOT #01', team2_seed: 'MENANG PI-1', slot1_index: 0, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
+            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'SLOT #04', team2_seed: 'MENANG PI-2', slot1_index: 3, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 2 },
+            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'SLOT #03', team2_seed: 'MENANG PI-3', slot1_index: 2, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 1 },
+            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-4', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+          ]
+        };
+
+      case 16:
+        return {
+          totalTeams: 16,
+          formatName: '16 Tim (Round of 16)',
+          stages: [
+            { id: 'r16', title: 'Round of 16', subtitle: '8 Pertandingan', matchIds: ['r16-1', 'r16-2', 'r16-3', 'r16-4', 'r16-5', 'r16-6', 'r16-7', 'r16-8'] },
+            { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: ['qf-1', 'qf-2', 'qf-3', 'qf-4'] },
+            { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
+            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+          ],
+          matches: [
+            { id: 'r16-1', round: 'r16', match_number: 1, title: 'R16 #1', team1_seed: 'SLOT #01', team2_seed: 'SLOT #16', slot1_index: 0, slot2_index: 15, next_match_id: 'qf-1', next_match_slot: 1 },
+            { id: 'r16-2', round: 'r16', match_number: 2, title: 'R16 #2', team1_seed: 'SLOT #08', team2_seed: 'SLOT #09', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
+            { id: 'r16-3', round: 'r16', match_number: 3, title: 'R16 #3', team1_seed: 'SLOT #04', team2_seed: 'SLOT #13', slot1_index: 3, slot2_index: 12, next_match_id: 'qf-2', next_match_slot: 1 },
+            { id: 'r16-4', round: 'r16', match_number: 4, title: 'R16 #4', team1_seed: 'SLOT #05', team2_seed: 'SLOT #12', slot1_index: 4, slot2_index: 11, next_match_id: 'qf-2', next_match_slot: 2 },
+            { id: 'r16-5', round: 'r16', match_number: 5, title: 'R16 #5', team1_seed: 'SLOT #03', team2_seed: 'SLOT #14', slot1_index: 2, slot2_index: 13, next_match_id: 'qf-3', next_match_slot: 1 },
+            { id: 'r16-6', round: 'r16', match_number: 6, title: 'R16 #6', team1_seed: 'SLOT #06', team2_seed: 'SLOT #11', slot1_index: 5, slot2_index: 10, next_match_id: 'qf-3', next_match_slot: 2 },
+            { id: 'r16-7', round: 'r16', match_number: 7, title: 'R16 #7', team1_seed: 'SLOT #02', team2_seed: 'SLOT #15', slot1_index: 1, slot2_index: 14, next_match_id: 'qf-4', next_match_slot: 1 },
+            { id: 'r16-8', round: 'r16', match_number: 8, title: 'R16 #8', team1_seed: 'SLOT #07', team2_seed: 'SLOT #10', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
+            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: 'MENANG R16-1', team2_seed: 'MENANG R16-2', slot1_index: null, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
+            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'MENANG R16-3', team2_seed: 'MENANG R16-4', slot1_index: null, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 2 },
+            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'MENANG R16-5', team2_seed: 'MENANG R16-6', slot1_index: null, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 1 },
+            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'MENANG R16-7', team2_seed: 'MENANG R16-8', slot1_index: null, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+          ]
+        };
+
+      case 32: {
+        const r32Matches = [];
+        for (let i = 1; i <= 16; i++) {
+          const nextR16 = Math.ceil(i / 2);
+          const nextSlot = (i % 2 === 1) ? 1 : 2;
+          r32Matches.push({
+            id: `r32-${i}`,
+            round: 'r32',
+            match_number: i,
+            title: `R32 #${i}`,
+            team1_seed: `SLOT #${String(i).padStart(2, '0')}`,
+            team2_seed: `SLOT #${String(33 - i).padStart(2, '0')}`,
+            slot1_index: i - 1,
+            slot2_index: 32 - i,
+            next_match_id: `r16-${nextR16}`,
+            next_match_slot: nextSlot
+          });
+        }
+        const r16Matches = [];
+        for (let i = 1; i <= 8; i++) {
+          const nextQf = Math.ceil(i / 2);
+          const nextSlot = (i % 2 === 1) ? 1 : 2;
+          r16Matches.push({
+            id: `r16-${i}`,
+            round: 'r16',
+            match_number: i,
+            title: `R16 #${i}`,
+            team1_seed: `MENANG R32-${i * 2 - 1}`,
+            team2_seed: `MENANG R32-${i * 2}`,
+            slot1_index: null,
+            slot2_index: null,
+            next_match_id: `qf-${nextQf}`,
+            next_match_slot: nextSlot
+          });
+        }
+        const qfMatches = [];
+        for (let i = 1; i <= 4; i++) {
+          const nextSf = Math.ceil(i / 2);
+          const nextSlot = (i % 2 === 1) ? 1 : 2;
+          qfMatches.push({
+            id: `qf-${i}`,
+            round: 'quarter',
+            match_number: i,
+            title: `Quarter #${i}`,
+            team1_seed: `MENANG R16-${i * 2 - 1}`,
+            team2_seed: `MENANG R16-${i * 2}`,
+            slot1_index: null,
+            slot2_index: null,
+            next_match_id: `sf-${nextSf}`,
+            next_match_slot: nextSlot
+          });
+        }
+        const sfMatches = [
+          { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
+          { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 }
+        ];
+        const finalMatch = { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 };
+        return {
+          totalTeams: 32,
+          formatName: '32 Tim (Round of 32)',
+          stages: [
+            { id: 'r32', title: 'Round of 32', subtitle: '16 Pertandingan', matchIds: r32Matches.map((m) => m.id) },
+            { id: 'r16', title: 'Round of 16', subtitle: '8 Pertandingan', matchIds: r16Matches.map((m) => m.id) },
+            { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: qfMatches.map((m) => m.id) },
+            { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
+            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+          ],
+          matches: [...r32Matches, ...r16Matches, ...qfMatches, ...sfMatches, finalMatch]
+        };
+      }
+
+      case 10:
+      default:
+        return {
+          totalTeams: 10,
+          formatName: '10 Tim (Play-In + QF)',
+          stages: [
+            { id: 'playin', title: 'Play-In', subtitle: '2 Pertandingan', matchIds: ['pi-1', 'pi-2'] },
+            { id: 'quarter', title: 'Quarter Final', subtitle: '4 Pertandingan', matchIds: ['qf-1', 'qf-2', 'qf-3', 'qf-4'] },
+            { id: 'semi', title: 'Semi Final', subtitle: '2 Pertandingan', matchIds: ['sf-1', 'sf-2'] },
+            { id: 'final', title: 'Grand Final', subtitle: 'Perebutan Juara', isFinal: true, matchIds: ['final'] }
+          ],
+          matches: [
+            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: 'SLOT #07', team2_seed: 'SLOT #10', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
+            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: 'SLOT #08', team2_seed: 'SLOT #09', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
+            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: 'SLOT #01', team2_seed: 'MENANG PI-2', slot1_index: 0, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
+            { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: 'SLOT #04', team2_seed: 'SLOT #05', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
+            { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: 'SLOT #03', team2_seed: 'SLOT #06', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 1 },
+            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: 'SLOT #02', team2_seed: 'MENANG PI-1', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1 },
+            { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2 },
+            { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 }
+          ]
+        };
+    }
+  }
 
   // --- DATA ACCESS LAYER ---
 
@@ -230,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const { data, error } = await supabaseClient
           .from(PARTICIPANTS_TABLE)
           .select('*')
-          .order('created_at', { ascending: true }); // Terdaftar lebih awal dapat slot lebih kecil (#1, #2, dst.)
+          .order('created_at', { ascending: true });
 
         if (!error && data && data.length > 0) {
           participantsList = data.map((item, idx) => ({
@@ -244,15 +315,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }));
           console.log(`⚡ Loaded ${participantsList.length} participants from Supabase`);
           return;
-        } else if (error) {
-          console.info('Supabase participants query note:', error.message);
         }
       } catch (err) {
         console.warn('Gagal membaca peserta dari Supabase:', err);
       }
     }
 
-    // Fallback LocalStorage peserta jika ada
+    // Fallback LocalStorage
     try {
       const localP = localStorage.getItem(STORAGE_PARTICIPANTS_KEY);
       if (localP) {
@@ -273,11 +342,14 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {}
 
     // Fallback Mock data
-    participantsList = defaultFallbackParticipants;
+    participantsList = defaultFallbackParticipants.slice(0, 10);
   }
 
   // 2. Fetch State Pertandingan dari Supabase / LocalStorage
   async function loadBracketMatches() {
+    const activeSize = getActiveBracketSize();
+    activeBracketConfig = generateBracketStructure(activeSize);
+
     let loadedFromDb = false;
 
     if (supabaseClient && isMatchesTableAvailable) {
@@ -297,11 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
           });
           loadedFromDb = true;
           console.log('⚡ Loaded tournament matches from Supabase');
-        } else if (error) {
-          if (error.message && error.message.includes('Could not find the table')) {
-            isMatchesTableAvailable = false;
-            console.info('ℹ️ Catatan: Tabel public.tournament_matches belum dibuat di Supabase. Sistem menggunakan LocalStorage.');
-          }
+        } else if (error && error.message && error.message.includes('Could not find the table')) {
+          isMatchesTableAvailable = false;
         }
       } catch (err) {
         console.warn('Supabase matches query error:', err);
@@ -309,31 +378,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (!loadedFromDb) {
-      // Coba LocalStorage
       try {
         const localData = localStorage.getItem(STORAGE_MATCHES_KEY);
         if (localData) {
           matchesState = JSON.parse(localData);
           console.log('⚡ Loaded tournament matches from LocalStorage');
-          return;
         }
       } catch (e) {}
-
-      // Jika belum ada data sama sekali, inisialisasi dari default definisi
-      initializeDefaultMatches();
     }
+
+    // Pastikan seluruh match dalam struktur terinisialisasi
+    initializeDynamicMatches(activeBracketConfig);
   }
 
-  // Inisialisasi default matches dan pasangkan tim awal
-  function initializeDefaultMatches() {
-    matchesState = {};
-    INITIAL_MATCH_DEFINITIONS.forEach((def) => {
+  // Inisialisasi dynamic matches berdasarkan struktur aktif dan list tim peserta
+  function initializeDynamicMatches(config) {
+    if (!config || !config.matches) return;
+
+    const newMatchesState = {};
+
+    config.matches.forEach((def) => {
+      const existing = matchesState[def.id];
+
       let team1_name = null;
       let team1_id = null;
       let team2_name = null;
       let team2_id = null;
 
-      // Pasang Tim 1 jika punya slot_index awal
+      // Slot Index 1
       if (def.slot1_index !== null && def.slot1_index !== undefined) {
         const p1 = participantsList[def.slot1_index];
         if (p1) {
@@ -342,9 +414,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           team1_name = `Menunggu Peserta (${def.team1_seed})`;
         }
+      } else if (existing && existing.team1_name && !existing.team1_name.startsWith('Menunggu Peserta')) {
+        team1_name = existing.team1_name;
+        team1_id = existing.team1_id;
       }
 
-      // Pasang Tim 2 jika punya slot_index awal
+      // Slot Index 2
       if (def.slot2_index !== null && def.slot2_index !== undefined) {
         const p2 = participantsList[def.slot2_index];
         if (p2) {
@@ -353,41 +428,42 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           team2_name = `Menunggu Peserta (${def.team2_seed})`;
         }
+      } else if (existing && existing.team2_name && !existing.team2_name.startsWith('Menunggu Peserta')) {
+        team2_name = existing.team2_name;
+        team2_id = existing.team2_id;
       }
 
-      // Status awal
       let status = 'MENUNGGU';
       if (team1_id && team2_id) {
         status = 'MATCH READY';
       }
 
-      matchesState[def.id] = {
+      newMatchesState[def.id] = {
         ...def,
         team1_name: team1_name || `[${def.team1_seed}]`,
         team1_id: team1_id,
         team2_name: team2_name || `[${def.team2_seed}]`,
         team2_id: team2_id,
-        score1: 0,
-        score2: 0,
-        winner_id: null,
-        winner_name: null,
-        status: status
+        score1: existing ? Number(existing.score1 || 0) : 0,
+        score2: existing ? Number(existing.score2 || 0) : 0,
+        winner_id: existing ? existing.winner_id : null,
+        winner_name: existing ? existing.winner_name : null,
+        status: existing && existing.status ? existing.status : status
       };
     });
 
+    matchesState = newMatchesState;
     saveMatchesState();
   }
 
   // 3. Simpan State Pertandingan ke Supabase & LocalStorage
   async function saveMatchesState() {
-    // 1. Simpan ke LocalStorage segera
     try {
       localStorage.setItem(STORAGE_MATCHES_KEY, JSON.stringify(matchesState));
     } catch (e) {
       console.warn('LocalStorage save error:', e);
     }
 
-    // 2. Simpan ke Supabase jika tersedia dan tabel sudah dibuat
     if (supabaseClient && isMatchesTableAvailable) {
       try {
         const rows = Object.values(matchesState).map((m) => ({
@@ -415,11 +491,8 @@ document.addEventListener('DOMContentLoaded', () => {
           .from(MATCHES_TABLE)
           .upsert(rows, { onConflict: 'id' });
 
-        if (error) {
-          if (error.message && error.message.includes('Could not find the table')) {
-            isMatchesTableAvailable = false;
-          }
-          console.info('Catatan sync Supabase:', error.message);
+        if (error && error.message && error.message.includes('Could not find the table')) {
+          isMatchesTableAvailable = false;
         }
       } catch (err) {
         console.warn('Gagal sync ke Supabase:', err);
@@ -470,7 +543,6 @@ document.addEventListener('DOMContentLoaded', () => {
           nextMatch.team2_id = winId;
         }
 
-        // Update status match tujuan
         if (nextMatch.team1_id && nextMatch.team2_id && nextMatch.status === 'MENUNGGU') {
           nextMatch.status = 'MATCH READY';
         } else if ((!nextMatch.team1_id || !nextMatch.team2_id) && nextMatch.status !== 'SELESAI') {
@@ -483,53 +555,72 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBracket();
   }
 
-  // --- RENDER BRACKET & UI ---
-
-  const stagesContainers = {
-    playin: document.getElementById('stagePlayinMatches'),
-    quarter: document.getElementById('stageQuarterMatches'),
-    semi: document.getElementById('stageSemiMatches'),
-    final: document.getElementById('stageFinalMatches'),
-    champion: document.getElementById('stageChampionShowcase')
-  };
+  // --- RENDER DYNAMIC BRACKET & UI ---
 
   function renderBracket() {
-    // 1. Render Play-In Matches
-    if (stagesContainers.playin) {
-      stagesContainers.playin.innerHTML = ['pi-1', 'pi-2']
-        .map((id) => renderMatchCardHtml(matchesState[id]))
+    const stagesGrid = document.getElementById('bracketStagesGrid');
+    if (!stagesGrid) return;
+
+    const activeSize = getActiveBracketSize();
+    if (!activeBracketConfig || activeBracketConfig.totalTeams !== activeSize) {
+      activeBracketConfig = generateBracketStructure(activeSize);
+    }
+
+    let stagesHtml = '';
+
+    // Render setiap kolom babak pertandingan
+    activeBracketConfig.stages.forEach((stage) => {
+      const matchCardsHtml = stage.matchIds
+        .map((id) => renderMatchCardHtml(matchesState[id], stage.isFinal))
         .join('');
+
+      stagesHtml += `
+        <div class="bracket-stage-col stage-${stage.id}">
+          <div class="stage-header ${stage.isFinal ? 'final-header' : ''}">
+            <div class="stage-title" ${stage.isFinal ? 'style="color:var(--amber);"' : ''}>${escapeHtml(stage.title)}</div>
+            <div class="stage-subtitle" ${stage.isFinal ? 'style="color:#ffd180;"' : ''}>${escapeHtml(stage.subtitle)}</div>
+          </div>
+          <div class="stage-matches-container" id="stageMatches_${stage.id}">
+            ${matchCardsHtml}
+          </div>
+        </div>
+      `;
+    });
+
+    // Render Kolom Podium Juara (Champion Showcase)
+    stagesHtml += `
+      <div class="bracket-stage-col stage-champion">
+        <div class="stage-header" style="border-color:rgba(255, 184, 77, 0.5); background:rgba(255, 184, 77, 0.15);">
+          <div class="stage-title" style="color:var(--amber);">🏆 Champion</div>
+          <div class="stage-subtitle">Pemenang Turnamen</div>
+        </div>
+        <div class="stage-matches-container" id="stageChampionShowcase">
+          ${renderChampionPodiumHtml()}
+        </div>
+      </div>
+    `;
+
+    stagesGrid.innerHTML = stagesHtml;
+
+    // Attach Champion Event
+    const podiumCard = document.getElementById('championPodiumCard');
+    if (podiumCard) {
+      podiumCard.addEventListener('click', () => openChampionCelebration());
+      podiumCard.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openChampionCelebration();
+        }
+      });
     }
 
-    // 2. Render Quarter Finals Matches
-    if (stagesContainers.quarter) {
-      stagesContainers.quarter.innerHTML = ['qf-1', 'qf-2', 'qf-3', 'qf-4']
-        .map((id) => renderMatchCardHtml(matchesState[id]))
-        .join('');
-    }
-
-    // 3. Render Semi Finals Matches
-    if (stagesContainers.semi) {
-      stagesContainers.semi.innerHTML = ['sf-1', 'sf-2']
-        .map((id) => renderMatchCardHtml(matchesState[id]))
-        .join('');
-    }
-
-    // 4. Render Grand Final Match
-    if (stagesContainers.final) {
-      stagesContainers.final.innerHTML = renderMatchCardHtml(matchesState['final'], true);
-    }
-
-    // 5. Render Champion Podium
-    renderChampionPodium();
-
-    // 6. Update Top Header Stats
+    // Update Top Header Stats & Badges
     updateHeaderStats();
 
-    // 7. Attach Click Events to Match Cards
+    // Attach Click Events to Match Cards
     attachCardEventListeners();
 
-    // 8. Re-draw Connecting Lines
+    // Re-draw Connecting Lines
     requestAnimationFrame(() => {
       drawConnectorLines();
     });
@@ -596,9 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  function renderChampionPodium() {
-    if (!stagesContainers.champion) return;
-
+  function renderChampionPodiumHtml() {
     const finalMatch = matchesState['final'];
     const championName = finalMatch ? finalMatch.winner_name : null;
 
@@ -612,7 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    stagesContainers.champion.innerHTML = `
+    return `
       <div class="champion-showcase-card" id="championPodiumCard" role="button" tabindex="0" title="Klik untuk Merayakan Kemenangan Juara!">
         <div class="trophy-glow-wrap">
           <div class="trophy-glow-ring"></div>
@@ -626,49 +715,47 @@ document.addEventListener('DOMContentLoaded', () => {
           ${championRoster}
         </p>
         <div class="champion-prize-pill">
-          <span>🎁</span> Hadiah: Rp.150.000 + 1.000.000 Koin
+          <span>🎁</span> Hadiah: Rp.100.000
         </div>
         <div class="champion-celebrate-hint">
           <span>🎉</span> Rayakan Kemenangan Juara!
         </div>
       </div>
     `;
-
-    const podiumCard = document.getElementById('championPodiumCard');
-    if (podiumCard) {
-      podiumCard.addEventListener('click', () => {
-        openChampionCelebration();
-      });
-      podiumCard.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          openChampionCelebration();
-        }
-      });
-    }
   }
 
   function updateHeaderStats() {
-    const totalMatches = Object.keys(matchesState).length || 9;
+    const activeSize = getActiveBracketSize();
+    const config = activeBracketConfig || generateBracketStructure(activeSize);
+
+    const totalMatches = config.matches ? config.matches.length : Object.keys(matchesState).length;
     const completedMatches = Object.values(matchesState).filter((m) => m.status === 'SELESAI').length;
     const liveMatches = Object.values(matchesState).filter((m) => m.status === 'BERLANGSUNG').length;
 
     const bStatCompleted = document.getElementById('bStatCompleted');
     const bStatLive = document.getElementById('bStatLive');
     const bStatRegistered = document.getElementById('bStatRegistered');
+    const bStatFormat = document.getElementById('bStatFormat');
+    const seasonTagFormat = document.getElementById('seasonTagFormat');
+    const bracketSizeSelect = document.getElementById('bracketSizeSelect');
 
     if (bStatCompleted) bStatCompleted.textContent = `${completedMatches} / ${totalMatches} Match`;
     if (bStatLive) bStatLive.textContent = `${liveMatches} Pertandingan`;
-    if (bStatRegistered) bStatRegistered.textContent = `${participantsList.length} / 10 Tim`;
+    if (bStatRegistered) bStatRegistered.textContent = `${participantsList.length} / ${activeSize} Tim`;
+    if (bStatFormat) bStatFormat.textContent = config.formatName || `${activeSize} Tim Single Elimination`;
+    if (seasonTagFormat) seasonTagFormat.textContent = `${activeSize} TIM SINGLE ELIMINATION`;
+
+    if (bracketSizeSelect && bracketSizeSelect.value !== selectedFormat) {
+      bracketSizeSelect.value = selectedFormat;
+    }
   }
 
-  // --- SVG CONNECTING LINES RENDERING ---
+  // --- SVG CONNECTING LINES DYNAMIC RENDERING ---
   function drawConnectorLines() {
     const svg = document.getElementById('bracketSvg');
     const canvas = document.getElementById('bracketCanvas');
-    if (!svg || !canvas) return;
+    if (!svg || !canvas || !activeBracketConfig) return;
 
-    // Bersihkan garis lama
     svg.innerHTML = `
       <defs>
         <linearGradient id="grad-connector-active" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -682,49 +769,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvasRect = canvas.getBoundingClientRect();
     const scale = currentZoom || 1;
 
-    // Daftar koneksi antar kartu
-    const connections = [
-      // Play-In -> Quarter
-      { from: 'pi-1', to: 'qf-4', fromWinner: matchesState['pi-1']?.winner_name, targetSlot: 2 },
-      { from: 'pi-2', to: 'qf-1', fromWinner: matchesState['pi-2']?.winner_name, targetSlot: 2 },
+    // Iterasi dinamis seluruh koneksi match
+    activeBracketConfig.matches.forEach((mDef) => {
+      const matchData = matchesState[mDef.id];
+      if (!matchData || !mDef.next_match_id) return;
 
-      // Quarter -> Semi
-      { from: 'qf-1', to: 'sf-1', fromWinner: matchesState['qf-1']?.winner_name, targetSlot: 1 },
-      { from: 'qf-2', to: 'sf-1', fromWinner: matchesState['qf-2']?.winner_name, targetSlot: 2 },
-      { from: 'qf-3', to: 'sf-2', fromWinner: matchesState['qf-3']?.winner_name, targetSlot: 1 },
-      { from: 'qf-4', to: 'sf-2', fromWinner: matchesState['qf-4']?.winner_name, targetSlot: 2 },
+      const fromEl = document.getElementById(`card-${mDef.id}`);
+      if (!fromEl) return;
 
-      // Semi -> Final
-      { from: 'sf-1', to: 'final', fromWinner: matchesState['sf-1']?.winner_name, targetSlot: 1 },
-      { from: 'sf-2', to: 'final', fromWinner: matchesState['sf-2']?.winner_name, targetSlot: 2 }
-    ];
+      let toEl = null;
+      let targetSlot = mDef.next_match_slot || 1;
 
-    connections.forEach((conn) => {
-      const fromEl = document.getElementById(`card-${conn.from}`);
-      const toEl = document.getElementById(`card-${conn.to}`);
+      if (mDef.next_match_id === 'champion') {
+        toEl = document.getElementById('championPodiumCard');
+      } else {
+        toEl = document.getElementById(`card-${mDef.next_match_id}`);
+      }
 
-      if (!fromEl || !toEl) return;
+      if (!toEl) return;
 
       const fromRect = fromEl.getBoundingClientRect();
       const toRect = toEl.getBoundingClientRect();
 
-      // Titik keluar (kanan tengah dari kartu asal)
       const startX = (fromRect.right - canvasRect.left) / scale;
       const startY = (fromRect.top + fromRect.height / 2 - canvasRect.top) / scale;
 
-      // Titik masuk (kiri kartu tujuan, disesuaikan dengan slot 1 atau 2)
       const endX = (toRect.left - canvasRect.left) / scale;
-      const targetOffsetY = conn.targetSlot === 1 ? toRect.height * 0.38 : toRect.height * 0.62;
+      const targetOffsetY = (mDef.next_match_id === 'champion')
+        ? toRect.height / 2
+        : (targetSlot === 1 ? toRect.height * 0.38 : toRect.height * 0.62);
       const endY = (toRect.top + targetOffsetY - canvasRect.top) / scale;
 
-      // Smooth Bezier Curve
       const deltaX = Math.abs(endX - startX) * 0.55;
       const pathD = `M ${startX} ${startY} C ${startX + deltaX} ${startY}, ${endX - deltaX} ${endY}, ${endX} ${endY}`;
 
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', pathD);
 
-      if (conn.fromWinner) {
+      const hasWinner = Boolean(matchData.winner_name);
+      if (hasWinner) {
         path.setAttribute('class', 'connector-path active winner-path');
       } else {
         path.setAttribute('class', 'connector-path');
@@ -732,29 +815,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       svg.appendChild(path);
     });
-
-    // Garis dari Final ke Podium Champion jika pemenang sudah ada
-    const finalEl = document.getElementById('card-final');
-    const champEl = stagesContainers.champion?.querySelector('.champion-showcase-card');
-    if (finalEl && champEl) {
-      const fRect = finalEl.getBoundingClientRect();
-      const cRect = champEl.getBoundingClientRect();
-
-      const startX = (fRect.right - canvasRect.left) / scale;
-      const startY = (fRect.top + fRect.height / 2 - canvasRect.top) / scale;
-      const endX = (cRect.left - canvasRect.left) / scale;
-      const endY = (cRect.top + cRect.height / 2 - canvasRect.top) / scale;
-
-      const deltaX = Math.abs(endX - startX) * 0.5;
-      const pathD = `M ${startX} ${startY} C ${startX + deltaX} ${startY}, ${endX - deltaX} ${endY}, ${endX} ${endY}`;
-
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', pathD);
-
-      const hasChampion = Boolean(matchesState['final']?.winner_name);
-      path.setAttribute('class', hasChampion ? 'connector-path active winner-path' : 'connector-path');
-      svg.appendChild(path);
-    }
   }
 
   // --- MODAL EDIT SKOR & ADMIN ---
@@ -779,7 +839,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const editMatchStatus = document.getElementById('editMatchStatus');
   const btnSaveMatchEdit = document.getElementById('btnSaveMatchEdit');
 
-  let modalSelectedWinnerType = 'auto'; // 'auto', 'team1', 'team2', 'none'
+  let modalSelectedWinnerType = 'auto';
 
   function openEditModal(matchId) {
     activeEditingMatchId = matchId;
@@ -834,7 +894,6 @@ document.addEventListener('DOMContentLoaded', () => {
       selectEl.appendChild(opt);
     });
 
-    // Jika custom atau dari pemenang match sebelumnya
     if (currentTeamName && !participantsList.some((p) => p.teamName === currentTeamName)) {
       const customOpt = document.createElement('option');
       customOpt.value = currentTeamName;
@@ -890,7 +949,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const score2 = Math.max(0, parseInt(editScore2Input ? editScore2Input.value : 0) || 0);
       const status = editMatchStatus ? editMatchStatus.value : 'SELESAI';
 
-      // Tim yang dipilih
       const team1Name = editTeam1Select ? editTeam1Select.value : match.team1_name;
       const team2Name = editTeam2Select ? editTeam2Select.value : match.team2_name;
 
@@ -900,20 +958,17 @@ document.addEventListener('DOMContentLoaded', () => {
       match.score2 = score2;
       match.status = status;
 
-      // Update ID jika ditemukan di daftar peserta
       const p1 = participantsList.find((p) => p.teamName === match.team1_name);
       if (p1) match.team1_id = p1.id;
       const p2 = participantsList.find((p) => p.teamName === match.team2_name);
       if (p2) match.team2_id = p2.id;
 
-      // Evaluasi pemenang
       if (modalSelectedWinnerType === 'auto') {
         if (score1 > score2) {
           resolveMatchWinner(activeEditingMatchId, 'team1');
         } else if (score2 > score1) {
           resolveMatchWinner(activeEditingMatchId, 'team2');
         } else {
-          // Imbang => belum ada pemenang otomatis
           resolveMatchWinner(activeEditingMatchId, 'none');
         }
       } else {
@@ -923,7 +978,6 @@ document.addEventListener('DOMContentLoaded', () => {
       closeEditModal();
       showToast(`✅ Skor pertandingan ${match.title} berhasil diperbarui!`);
 
-      // Auto-trigger celebration if Grand Final winner is determined
       if (activeEditingMatchId === 'final' && matchesState['final']?.winner_name) {
         setTimeout(() => {
           openChampionCelebration(true);
@@ -1531,9 +1585,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- ACTIONS & TOAST ---
+  // --- ACTIONS, SELECTOR & TOAST ---
+  const bracketSizeSelect = document.getElementById('bracketSizeSelect');
   const btnSyncParticipants = document.getElementById('btnSyncParticipants');
   const btnResetBracket = document.getElementById('btnResetBracket');
+
+  if (bracketSizeSelect) {
+    bracketSizeSelect.value = selectedFormat;
+    bracketSizeSelect.addEventListener('change', async () => {
+      selectedFormat = bracketSizeSelect.value;
+      try {
+        localStorage.setItem(STORAGE_FORMAT_KEY, selectedFormat);
+      } catch (e) {}
+
+      const activeSize = getActiveBracketSize();
+      activeBracketConfig = generateBracketStructure(activeSize);
+      initializeDynamicMatches(activeBracketConfig);
+      renderBracket();
+
+      const formatLabel = bracketSizeSelect.options[bracketSizeSelect.selectedIndex]?.text || `${activeSize} Tim`;
+      showToast(`⚡ Format bracket diubah ke: ${formatLabel}`);
+    });
+  }
 
   if (btnSyncParticipants) {
     btnSyncParticipants.addEventListener('click', async () => {
@@ -1542,9 +1615,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         await loadParticipants();
-        initializeDefaultMatches();
+        const activeSize = getActiveBracketSize();
+        activeBracketConfig = generateBracketStructure(activeSize);
+        initializeDynamicMatches(activeBracketConfig);
         renderBracket();
-        showToast('🔄 Bracket berhasil disinkronkan dengan data peserta terbaru!');
+        showToast(`🔄 Bracket berhasil disinkronkan (${participantsList.length} tim terdaftar)!`);
       } catch (err) {
         console.error('Error saat sinkron peserta:', err);
         showToast('⚠️ Gagal sinkron peserta: ' + err.message);
@@ -1557,10 +1632,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnResetBracket) {
     btnResetBracket.addEventListener('click', () => {
-      const confirmReset = confirm('⚠️ Apakah Anda yakin ingin mereset seluruh skor dan pertandingan bracket?');
+      const confirmReset = confirm('⚠️ Apakah Anda yakin ingin mereset seluruh skor dan pertandingan bracket ke posisi awal?');
       if (confirmReset) {
         try {
-          initializeDefaultMatches();
+          matchesState = {};
+          try {
+            localStorage.removeItem(STORAGE_MATCHES_KEY);
+          } catch (e) {}
+          const activeSize = getActiveBracketSize();
+          activeBracketConfig = generateBracketStructure(activeSize);
+          initializeDynamicMatches(activeBracketConfig);
           renderBracket();
           showToast('🗑️ Seluruh pertandingan bracket telah di-reset ke kondisi awal.');
         } catch (err) {
@@ -1594,6 +1675,18 @@ document.addEventListener('DOMContentLoaded', () => {
         .on('postgres_changes', { event: '*', schema: 'public', table: MATCHES_TABLE }, async () => {
           console.log('⚡ Realtime update: Perubahan data pertandingan di Supabase');
           await loadBracketMatches();
+          renderBracket();
+        })
+        .subscribe();
+
+      supabaseClient
+        .channel('public:tournament_registrations')
+        .on('postgres_changes', { event: '*', schema: 'public', table: PARTICIPANTS_TABLE }, async () => {
+          console.log('⚡ Realtime update: Peserta baru terdaftar di Supabase');
+          await loadParticipants();
+          const activeSize = getActiveBracketSize();
+          activeBracketConfig = generateBracketStructure(activeSize);
+          initializeDynamicMatches(activeBracketConfig);
           renderBracket();
         })
         .subscribe();

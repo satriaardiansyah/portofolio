@@ -80,7 +80,7 @@
             <span class="status-badge-open">
               <span class="status-dot-pulse"></span> BAGAN TOURNAMENT LIVE
             </span>
-            <span class="season-tag mono">10 TIM SINGLE ELIMINATION</span>
+            <span class="season-tag mono" id="seasonTagFormat">DYNAMIC SINGLE ELIMINATION</span>
           </div>
           <div class="admin-mode-pill active">
             <span>⚡</span> AUTO-SYNC SUPABASE
@@ -92,22 +92,22 @@
         </h1>
 
         <p class="bracket-desc">
-          Bagan eliminasi resmi 10 slot turnamen Yabi Dev. Dilengkapi babak Play-In pendahuluan, Quarter Final, Semi Final, hingga Grand Final perebutan takhta Juara!
+          Bagan eliminasi resmi turnamen Yabi Dev. Struktur babak, slot seeding, dan alur pemenang dihitung secara otomatis dan dinamis menyesuaikan jumlah tim yang bertanding!
         </p>
 
         <!-- Stats Counter Strip -->
         <div class="bracket-stats-strip">
           <div class="b-stat-card">
             <span class="b-stat-label">Format Turnamen</span>
-            <span class="b-stat-value" style="color:var(--cyan);">10 Tim Single Elimination</span>
+            <span class="b-stat-value" style="color:var(--cyan);" id="bStatFormat">10 Tim Single Elimination</span>
           </div>
           <div class="b-stat-card">
             <span class="b-stat-label">Tim Terdaftar</span>
-            <span class="b-stat-value" id="bStatRegistered">10 / 10 Tim</span>
+            <span class="b-stat-value" id="bStatRegistered">0 Tim</span>
           </div>
           <div class="b-stat-card">
             <span class="b-stat-label">Total Pertandingan Selesai</span>
-            <span class="b-stat-value" style="color:var(--pink);" id="bStatCompleted">0 / 9 Match</span>
+            <span class="b-stat-value" style="color:var(--pink);" id="bStatCompleted">0 / 0 Match</span>
           </div>
           <div class="b-stat-card">
             <span class="b-stat-label">Match Berlangsung</span>
@@ -122,6 +122,18 @@
       <div class="bracket-toolbar-wrap">
         <div class="bracket-toolbar">
           <div class="toolbar-left">
+            <div class="bracket-format-select-wrap">
+              <select id="bracketSizeSelect" class="bracket-format-select" aria-label="Pilih format turnamen">
+                <option value="auto">⚡ Format: Otomatis (Auto-Detect)</option>
+                <option value="4">4 Tim (Semi Final)</option>
+                <option value="6">6 Tim (Play-In + SF)</option>
+                <option value="8">8 Tim (Quarter Final)</option>
+                <option value="10" selected>10 Tim (Play-In + QF)</option>
+                <option value="12">12 Tim (Play-In + QF)</option>
+                <option value="16">16 Tim (Round of 16)</option>
+                <option value="32">32 Tim (Round of 32)</option>
+              </select>
+            </div>
             <button type="button" class="tool-btn" id="btnSyncParticipants" title="Ambil tim terbaru dari database Supabase">
               <span>🔄</span> Sinkron Peserta
             </button>
@@ -148,64 +160,9 @@
             <!-- SVG Overlay for Connecting Lines -->
             <svg class="bracket-svg-overlay" id="bracketSvg"></svg>
 
-            <!-- 5 Columns Stage Grid -->
-            <div class="bracket-stages-grid">
-              
-              <!-- 1. Babak Pendahuluan / Play-In -->
-              <div class="bracket-stage-col stage-playin">
-                <div class="stage-header">
-                  <div class="stage-title">Play-In</div>
-                  <div class="stage-subtitle">2 Pertandingan</div>
-                </div>
-                <div class="stage-matches-container" id="stagePlayinMatches">
-                  <!-- Match PI-1 & PI-2 dynamically rendered -->
-                </div>
-              </div>
-
-              <!-- 2. Quarter Final (8 Tim) -->
-              <div class="bracket-stage-col stage-quarter">
-                <div class="stage-header">
-                  <div class="stage-title">Quarter Final</div>
-                  <div class="stage-subtitle">4 Pertandingan</div>
-                </div>
-                <div class="stage-matches-container" id="stageQuarterMatches">
-                  <!-- Match QF-1, QF-2, QF-3, QF-4 dynamically rendered -->
-                </div>
-              </div>
-
-              <!-- 3. Semi Final (4 Tim) -->
-              <div class="bracket-stage-col stage-semi">
-                <div class="stage-header">
-                  <div class="stage-title">Semi Final</div>
-                  <div class="stage-subtitle">2 Pertandingan</div>
-                </div>
-                <div class="stage-matches-container" id="stageSemiMatches">
-                  <!-- Match SF-1, SF-2 dynamically rendered -->
-                </div>
-              </div>
-
-              <!-- 4. Grand Final -->
-              <div class="bracket-stage-col stage-final">
-                <div class="stage-header final-header">
-                  <div class="stage-title" style="color:var(--amber);">Grand Final</div>
-                  <div class="stage-subtitle" style="color:#ffd180;">Perebutan Juara</div>
-                </div>
-                <div class="stage-matches-container" id="stageFinalMatches">
-                  <!-- Match FINAL dynamically rendered -->
-                </div>
-              </div>
-
-              <!-- 5. Champion Podium -->
-              <div class="bracket-stage-col stage-champion">
-                <div class="stage-header" style="border-color:rgba(255, 184, 77, 0.5); background:rgba(255, 184, 77, 0.15);">
-                  <div class="stage-title" style="color:var(--amber);">🏆 Champion</div>
-                  <div class="stage-subtitle">Pemenang Turnamen</div>
-                </div>
-                <div class="stage-matches-container" id="stageChampionShowcase">
-                  <!-- Champion Trophy Card dynamically rendered -->
-                </div>
-              </div>
-
+            <!-- Dynamic Stages Grid (Rendered automatically by JS) -->
+            <div class="bracket-stages-grid" id="bracketStagesGrid">
+              <!-- Stage columns dynamically rendered by bracket.js -->
             </div>
           </div>
         </div>
@@ -379,7 +336,7 @@
         <!-- Prize Showcase Box -->
         <div class="celebration-prize-card">
           <div class="celebration-prize-title">🎁 TOTAL HADIAH SANG JUARA 1</div>
-          <div class="celebration-prize-val" id="celebrationPrizeVal">Rp.150.000 + 1.000.000 Koin</div>
+          <div class="celebration-prize-val" id="celebrationPrizeVal">Rp. 100.000</div>
         </div>
 
         <!-- Interactive Action Buttons -->
