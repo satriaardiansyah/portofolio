@@ -408,12 +408,12 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
     }
 
-    // Pastikan seluruh match dalam struktur terinisialisasi
-    initializeDynamicMatches(activeBracketConfig);
+    // Inisialisasi struktur dalam memori TANPA memicu write kembali ke database
+    initializeDynamicMatches(activeBracketConfig, false);
   }
 
   // Inisialisasi dynamic matches berdasarkan struktur aktif dan list tim peserta
-  function initializeDynamicMatches(config) {
+  function initializeDynamicMatches(config, shouldSyncToDb = false) {
     if (!config || !config.matches) return;
 
     const newMatchesState = {};
@@ -474,7 +474,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     matchesState = newMatchesState;
-    saveMatchesState();
+
+    try {
+      localStorage.setItem(STORAGE_MATCHES_KEY, JSON.stringify(matchesState));
+    } catch (e) {
+      console.warn('LocalStorage save error:', e);
+    }
+
+    if (shouldSyncToDb) {
+      saveMatchesState();
+    }
   }
 
   // 3. Simpan State Pertandingan ke Supabase & LocalStorage
@@ -514,8 +523,12 @@ document.addEventListener('DOMContentLoaded', () => {
           .from(MATCHES_TABLE)
           .upsert(rows, { onConflict: 'id' });
 
-        if (error && error.message && error.message.includes('Could not find the table')) {
-          isMatchesTableAvailable = false;
+        if (error) {
+          if (error.message && error.message.includes('Could not find the table')) {
+            isMatchesTableAvailable = false;
+          } else {
+            console.warn('Supabase upsert error:', error);
+          }
         }
       } catch (err) {
         console.warn('Gagal sync ke Supabase:', err);
@@ -1746,7 +1759,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const activeSize = getActiveBracketSize();
       activeBracketConfig = generateBracketStructure(activeSize);
-      initializeDynamicMatches(activeBracketConfig);
+      initializeDynamicMatches(activeBracketConfig, false);
       renderBracket();
 
       const formatLabel = bracketSizeSelect.options[bracketSizeSelect.selectedIndex]?.text || `${activeSize} Tim`;
@@ -1763,7 +1776,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadParticipants();
         const activeSize = getActiveBracketSize();
         activeBracketConfig = generateBracketStructure(activeSize);
-        initializeDynamicMatches(activeBracketConfig);
+        initializeDynamicMatches(activeBracketConfig, true);
         renderBracket();
         showToast(`🔄 Bracket berhasil disinkronkan (${participantsList.length} tim terdaftar)!`);
       } catch (err) {
@@ -1787,7 +1800,7 @@ document.addEventListener('DOMContentLoaded', () => {
           } catch (e) {}
           const activeSize = getActiveBracketSize();
           activeBracketConfig = generateBracketStructure(activeSize);
-          initializeDynamicMatches(activeBracketConfig);
+          initializeDynamicMatches(activeBracketConfig, true);
           renderBracket();
           showToast('🗑️ Seluruh pertandingan bracket telah di-reset ke kondisi awal.');
         } catch (err) {
@@ -1813,27 +1826,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3500);
   }
 
-  // Realtime update listener jika Supabase aktif dan tabel tersedia
+  // Realtime update listener dengan debouncing untuk mencegah request storm
+  let realtimeMatchesTimer = null;
+  let isFetchingMatches = false;
+
+  async function handleRealtimeMatchesUpdate() {
+    if (isFetchingMatches) return;
+    if (realtimeMatchesTimer) clearTimeout(realtimeMatchesTimer);
+
+    realtimeMatchesTimer = setTimeout(async () => {
+      try {
+        isFetchingMatches = true;
+        console.log('⚡ Realtime update: Sinkronisasi data pertandingan dari Supabase...');
+        await loadBracketMatches();
+        renderBracket();
+      } catch (err) {
+        console.error('Error saat menangani realtime matches update:', err);
+      } finally {
+        isFetchingMatches = false;
+      }
+    }, 300);
+  }
+
+  let realtimeParticipantsTimer = null;
+  let isFetchingParticipants = false;
+
+  async function handleRealtimeParticipantsUpdate() {
+    if (isFetchingParticipants) return;
+    if (realtimeParticipantsTimer) clearTimeout(realtimeParticipantsTimer);
+
+    realtimeParticipantsTimer = setTimeout(async () => {
+      try {
+        isFetchingParticipants = true;
+        console.log('⚡ Realtime update: Sinkronisasi peserta dari Supabase...');
+        await loadParticipants();
+        const activeSize = getActiveBracketSize();
+        activeBracketConfig = generateBracketStructure(activeSize);
+        initializeDynamicMatches(activeBracketConfig, false);
+        renderBracket();
+      } catch (err) {
+        console.error('Error saat menangani realtime participants update:', err);
+      } finally {
+        isFetchingParticipants = false;
+      }
+    }, 300);
+  }
+
   if (supabaseClient) {
     try {
       supabaseClient
         .channel('public:tournament_matches')
-        .on('postgres_changes', { event: '*', schema: 'public', table: MATCHES_TABLE }, async () => {
-          console.log('⚡ Realtime update: Perubahan data pertandingan di Supabase');
-          await loadBracketMatches();
-          renderBracket();
+        .on('postgres_changes', { event: '*', schema: 'public', table: MATCHES_TABLE }, () => {
+          handleRealtimeMatchesUpdate();
         })
         .subscribe();
 
       supabaseClient
         .channel('public:tournament_registrations')
-        .on('postgres_changes', { event: '*', schema: 'public', table: PARTICIPANTS_TABLE }, async () => {
-          console.log('⚡ Realtime update: Peserta baru terdaftar di Supabase');
-          await loadParticipants();
-          const activeSize = getActiveBracketSize();
-          activeBracketConfig = generateBracketStructure(activeSize);
-          initializeDynamicMatches(activeBracketConfig);
-          renderBracket();
+        .on('postgres_changes', { event: '*', schema: 'public', table: PARTICIPANTS_TABLE }, () => {
+          handleRealtimeParticipantsUpdate();
         })
         .subscribe();
     } catch (e) {
