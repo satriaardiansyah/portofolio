@@ -717,6 +717,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Re-draw Connecting Lines
     requestAnimationFrame(() => {
       drawConnectorLines();
+      setTimeout(() => {
+        drawConnectorLines();
+      }, 60);
     });
   }
 
@@ -947,11 +950,75 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // --- HELPER KOORDINAT LOKAL BRACKET ---
+  // Menghitung posisi elemen relatif terhadap bracketCanvas secara presisi tanpa terpengaruh zoom/transform
+  function getElementLocalOffset(el, container) {
+    if (!el || !container) return { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 };
+    let x = 0;
+    let y = 0;
+    let curr = el;
+    while (curr && curr !== container) {
+      x += curr.offsetLeft;
+      y += curr.offsetTop;
+      curr = curr.offsetParent;
+    }
+    const width = el.offsetWidth;
+    const height = el.offsetHeight;
+    return {
+      left: x,
+      top: y,
+      right: x + width,
+      bottom: y + height,
+      width,
+      height
+    };
+  }
+
+  // Helper: Membuat jalur garis siku stepped profesional berujung halus (rounded corners)
+  function createSteppedBracketPath(startX, startY, endX, endY, isLoserPath = false) {
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+
+    // Jika sejajar horizontal sempurna
+    if (Math.abs(deltaY) < 3) {
+      return `M ${startX} ${startY} L ${endX} ${endY}`;
+    }
+
+    // Radius kelengkungan sudut siku (corner-radius mulus)
+    const radius = Math.min(10, Math.abs(deltaY) / 2, Math.abs(deltaX) / 2);
+
+    // Titik belok di ruang antara kolom
+    const splitRatio = isLoserPath ? 0.38 : 0.50;
+    const midX = Math.round(startX + Math.max(16, deltaX * splitRatio));
+
+    const signY = deltaY > 0 ? 1 : -1;
+    const signX = deltaX > 0 ? 1 : -1;
+
+    return [
+      `M ${startX} ${startY}`,
+      `L ${midX - signX * radius} ${startY}`,
+      `Q ${midX} ${startY}, ${midX} ${startY + signY * radius}`,
+      `L ${midX} ${endY - signY * radius}`,
+      `Q ${midX} ${endY}, ${midX + signX * radius} ${endY}`,
+      `L ${endX} ${endY}`
+    ].join(' ');
+  }
+
   // --- SVG CONNECTING LINES DYNAMIC RENDERING ---
   function drawConnectorLines() {
     const svg = document.getElementById('bracketSvg');
     const canvas = document.getElementById('bracketCanvas');
     if (!svg || !canvas || !activeBracketConfig) return;
+
+    // Pastikan ukuran SVG selalu mencakup seluruh area kanvas yang sesungguhnya
+    const canvasWidth = Math.max(canvas.scrollWidth, canvas.offsetWidth);
+    const canvasHeight = Math.max(canvas.scrollHeight, canvas.offsetHeight);
+
+    svg.setAttribute('width', String(canvasWidth));
+    svg.setAttribute('height', String(canvasHeight));
+    svg.setAttribute('viewBox', `0 0 ${canvasWidth} ${canvasHeight}`);
+    svg.style.width = canvasWidth + 'px';
+    svg.style.height = canvasHeight + 'px';
 
     svg.innerHTML = `
       <defs>
@@ -963,16 +1030,28 @@ document.addEventListener('DOMContentLoaded', () => {
       </defs>
     `;
 
-    const canvasRect = canvas.getBoundingClientRect();
-    const scale = currentZoom || 1;
-
-    // 1. Koneksi Jalur Pemenang (Next Match)
+    // 1. Koneksi Jalur Pemenang (Next Match) & Jalur Tim Kalah
     activeBracketConfig.matches.forEach((mDef) => {
       const matchData = matchesState[mDef.id];
       if (!matchData) return;
 
       const fromEl = document.getElementById(`card-${mDef.id}`);
       if (!fromEl) return;
+
+      const fromOffset = getElementLocalOffset(fromEl, canvas);
+
+      // Tentukan titik keluar garis dari match asal
+      let fromOffsetY = fromOffset.height * 0.5;
+      if (matchData.winner_name) {
+        const slotRows = fromEl.querySelectorAll('.team-slot-row');
+        if (slotRows && slotRows.length >= 2) {
+          const winRow = matchData.winner_name === matchData.team1_name ? slotRows[0] : (matchData.winner_name === matchData.team2_name ? slotRows[1] : null);
+          if (winRow) {
+            const winOffset = getElementLocalOffset(winRow, canvas);
+            fromOffsetY = (winOffset.top + winOffset.height / 2) - fromOffset.top;
+          }
+        }
+      }
 
       // Jalur Pemenang
       if (mDef.next_match_id) {
@@ -986,20 +1065,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (toEl) {
-          const fromRect = fromEl.getBoundingClientRect();
-          const toRect = toEl.getBoundingClientRect();
+          const toOffset = getElementLocalOffset(toEl, canvas);
 
-          const startX = (fromRect.right - canvasRect.left) / scale;
-          const startY = (fromRect.top + fromRect.height / 2 - canvasRect.top) / scale;
+          let targetOffsetY = toOffset.height * (targetSlot === 1 ? 0.38 : 0.65);
 
-          const endX = (toRect.left - canvasRect.left) / scale;
-          const targetOffsetY = (mDef.next_match_id === 'champion')
-            ? toRect.height / 2
-            : (targetSlot === 1 ? toRect.height * 0.38 : toRect.height * 0.62);
-          const endY = (toRect.top + targetOffsetY - canvasRect.top) / scale;
+          if (mDef.next_match_id === 'champion') {
+            if (mDef.id === 'final') {
+              const goldRow = toEl.querySelector('.rank-gold');
+              if (goldRow) {
+                const goldOffset = getElementLocalOffset(goldRow, canvas);
+                targetOffsetY = (goldOffset.top + goldOffset.height / 2) - toOffset.top;
+              } else {
+                targetOffsetY = toOffset.height * 0.45;
+              }
+            } else if (mDef.id === 'bronze') {
+              const bronzeRow = toEl.querySelector('.rank-bronze');
+              if (bronzeRow) {
+                const bronzeOffset = getElementLocalOffset(bronzeRow, canvas);
+                targetOffsetY = (bronzeOffset.top + bronzeOffset.height / 2) - toOffset.top;
+              } else {
+                targetOffsetY = toOffset.height * 0.75;
+              }
+            } else {
+              targetOffsetY = toOffset.height * 0.5;
+            }
+          } else {
+            const slotRows = toEl.querySelectorAll('.team-slot-row');
+            if (slotRows && slotRows.length >= 2) {
+              const targetRow = slotRows[targetSlot === 1 ? 0 : 1];
+              if (targetRow) {
+                const rowOffset = getElementLocalOffset(targetRow, canvas);
+                targetOffsetY = (rowOffset.top + rowOffset.height / 2) - toOffset.top;
+              }
+            }
+          }
 
-          const deltaX = Math.abs(endX - startX) * 0.55;
-          const pathD = `M ${startX} ${startY} C ${startX + deltaX} ${startY}, ${endX - deltaX} ${endY}, ${endX} ${endY}`;
+          const startX = fromOffset.right;
+          const startY = fromOffset.top + fromOffsetY;
+          const endX = toOffset.left;
+          const endY = toOffset.top + targetOffsetY;
+
+          const pathD = createSteppedBracketPath(startX, startY, endX, endY, false);
 
           const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
           path.setAttribute('d', pathD);
@@ -1019,28 +1125,46 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mDef.loser_match_id) {
         const toEl = document.getElementById(`card-${mDef.loser_match_id}`);
         if (toEl) {
-          const fromRect = fromEl.getBoundingClientRect();
-          const toRect = toEl.getBoundingClientRect();
+          const toOffset = getElementLocalOffset(toEl, canvas);
 
-          const startX = (fromRect.right - canvasRect.left) / scale;
-          const startY = (fromRect.top + fromRect.height / 2 - canvasRect.top) / scale;
+          let loserFromOffsetY = fromOffset.height * 0.5;
+          if (matchData.winner_name) {
+            const slotRows = fromEl.querySelectorAll('.team-slot-row');
+            if (slotRows && slotRows.length >= 2) {
+              const loseRow = matchData.winner_name === matchData.team1_name ? slotRows[1] : (matchData.winner_name === matchData.team2_name ? slotRows[0] : null);
+              if (loseRow) {
+                const loseOffset = getElementLocalOffset(loseRow, canvas);
+                loserFromOffsetY = (loseOffset.top + loseOffset.height / 2) - fromOffset.top;
+              }
+            }
+          }
 
-          const endX = (toRect.left - canvasRect.left) / scale;
           const targetSlot = mDef.loser_match_slot || 1;
-          const targetOffsetY = targetSlot === 1 ? toRect.height * 0.38 : toRect.height * 0.62;
-          const endY = (toRect.top + targetOffsetY - canvasRect.top) / scale;
+          let targetOffsetY = toOffset.height * (targetSlot === 1 ? 0.38 : 0.65);
+          const slotRows = toEl.querySelectorAll('.team-slot-row');
+          if (slotRows && slotRows.length >= 2) {
+            const targetRow = slotRows[targetSlot === 1 ? 0 : 1];
+            if (targetRow) {
+              const rowOffset = getElementLocalOffset(targetRow, canvas);
+              targetOffsetY = (rowOffset.top + rowOffset.height / 2) - toOffset.top;
+            }
+          }
 
-          const deltaX = Math.abs(endX - startX) * 0.55;
-          const pathD = `M ${startX} ${startY} C ${startX + deltaX} ${startY}, ${endX - deltaX} ${endY}, ${endX} ${endY}`;
+          const startX = fromOffset.right;
+          const startY = fromOffset.top + loserFromOffsetY;
+          const endX = toOffset.left;
+          const endY = toOffset.top + targetOffsetY;
+
+          const pathD = createSteppedBracketPath(startX, startY, endX, endY, true);
 
           const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
           path.setAttribute('d', pathD);
 
           const isSfFinished = Boolean(matchData.winner_name);
           if (isSfFinished) {
-            path.setAttribute('class', 'connector-path active');
+            path.setAttribute('class', 'connector-path loser-path active');
           } else {
-            path.setAttribute('class', 'connector-path');
+            path.setAttribute('class', 'connector-path loser-path');
           }
 
           svg.appendChild(path);
@@ -2073,22 +2197,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const sourceCanvas = document.getElementById('bracketCanvas');
       if (!sourceCanvas) throw new Error('Elemen bagan bracket tidak ditemukan.');
 
-      // Simpan level zoom saat ini dan reset sementara ke 1 (100%) agar kalkulasi SVG tepat
-      const prevZoom = currentZoom;
-      currentZoom = 1;
-      if (bracketCanvas) bracketCanvas.style.transform = 'scale(1)';
-      if (zoomBadge) zoomBadge.textContent = '100%';
+      // Pastikan SVG lines terkini
       drawConnectorLines();
-
-      // Beri jeda 150ms agar rendering SVG lines stabil
-      await new Promise((r) => setTimeout(r, 150));
 
       // 2. Buat container poster turnamen profesional
       const poster = document.createElement('div');
+      poster.id = 'tournamentPosterExport';
       poster.style.position = 'fixed';
-      poster.style.top = '-99999px';
-      poster.style.left = '-99999px';
+      poster.style.top = '0';
+      poster.style.left = '0';
       poster.style.zIndex = '-9999';
+      poster.style.opacity = '0';
+      poster.style.pointerEvents = 'none';
       poster.style.background = 'radial-gradient(ellipse at 50% 0%, #171233 0%, #080614 100%)';
       poster.style.padding = '44px 50px';
       poster.style.borderRadius = '24px';
@@ -2147,13 +2267,46 @@ document.addEventListener('DOMContentLoaded', () => {
       clone.style.margin = '0 auto';
       clone.style.position = 'relative';
 
-      // Pastikan SVG garis terklon dengan sempurna
+      // Pastikan SVG garis terklon dengan ukuran & atribut viewBox yang valid
       const origSvg = sourceCanvas.querySelector('#bracketSvg');
       const cloneSvg = clone.querySelector('#bracketSvg');
       if (origSvg && cloneSvg) {
+        const svgW = origSvg.getAttribute('width') || String(sourceCanvas.scrollWidth);
+        const svgH = origSvg.getAttribute('height') || String(sourceCanvas.scrollHeight);
+        const vBox = origSvg.getAttribute('viewBox') || `0 0 ${svgW} ${svgH}`;
+
+        cloneSvg.setAttribute('width', svgW);
+        cloneSvg.setAttribute('height', svgH);
+        cloneSvg.setAttribute('viewBox', vBox);
+        cloneSvg.style.width = svgW + 'px';
+        cloneSvg.style.height = svgH + 'px';
+        cloneSvg.style.position = 'absolute';
+        cloneSvg.style.top = '0';
+        cloneSvg.style.left = '0';
         cloneSvg.innerHTML = origSvg.innerHTML;
-        cloneSvg.style.width = '100%';
-        cloneSvg.style.height = '100%';
+
+        // Hilangkan filter CSS drop-shadow dari path clone untuk kompatibilitas sempurna dengan html2canvas
+        const paths = cloneSvg.querySelectorAll('path');
+        paths.forEach((p) => {
+          p.style.filter = 'none';
+          if (p.classList.contains('winner-path')) {
+            p.setAttribute('stroke', '#45e8d4');
+            p.setAttribute('stroke-width', '3');
+          } else if (p.classList.contains('loser-path') && p.classList.contains('active')) {
+            p.setAttribute('stroke', '#ffb84d');
+            p.setAttribute('stroke-width', '2.5');
+          } else if (p.classList.contains('loser-path')) {
+            p.setAttribute('stroke', 'rgba(255, 184, 77, 0.45)');
+            p.setAttribute('stroke-width', '2');
+            p.setAttribute('stroke-dasharray', '6 4');
+          } else if (p.classList.contains('active')) {
+            p.setAttribute('stroke', '#45e8d4');
+            p.setAttribute('stroke-width', '2.5');
+          } else {
+            p.setAttribute('stroke', 'rgba(255, 255, 255, 0.22)');
+            p.setAttribute('stroke-width', '2');
+          }
+        });
       }
 
       poster.appendChild(clone);
@@ -2177,23 +2330,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
       document.body.appendChild(poster);
 
-      // Render menggunakan html2canvas (Skala 2.5x untuk resolusi Ultra HD jernih saat di-zoom/share)
+      // Jeda singkat agar layout poster clone terkomputasi
+      await new Promise((r) => setTimeout(r, 120));
+
+      // Render menggunakan html2canvas (Skala 2x untuk resolusi Ultra HD tajam tanpa melebihi batas canvas GPU)
       const renderedCanvas = await html2canvas(poster, {
-        scale: 2.5,
+        scale: 2.0,
         backgroundColor: '#080614',
         useCORS: true,
         logging: false,
-        allowTaint: true
+        allowTaint: true,
+        windowWidth: poster.scrollWidth + 120,
+        windowHeight: poster.scrollHeight + 120
       });
 
       // Hapus elemen clone sementara
       document.body.removeChild(poster);
-
-      // Kembalikan zoom asli
-      currentZoom = prevZoom;
-      if (bracketCanvas) bracketCanvas.style.transform = `scale(${currentZoom})`;
-      if (zoomBadge) zoomBadge.textContent = `${Math.round(currentZoom * 100)}%`;
-      drawConnectorLines();
 
       // Download file PNG
       const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
@@ -2454,10 +2606,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Handle Resize untuk update SVG lines
+  // Handle Resize & Layout Changes untuk update SVG lines
   window.addEventListener('resize', () => {
     drawConnectorLines();
   });
+
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => {
+      drawConnectorLines();
+    });
+    if (bracketCanvas) ro.observe(bracketCanvas);
+    const stagesGrid = document.getElementById('bracketStagesGrid');
+    if (stagesGrid) ro.observe(stagesGrid);
+  }
 
   // --- INITIALIZATION ---
   async function init() {

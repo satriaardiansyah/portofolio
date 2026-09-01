@@ -368,7 +368,7 @@ body.bracket-page #cursor-ring {
   position: relative;
   min-width: max-content;
   transform-origin: top left;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Hindari transition transform agar koordinat SVG & kartu selalu 100% sinkron saat zoom/fit */
 }
 
 /* SVG Line Overlay */
@@ -385,23 +385,36 @@ body.bracket-page #cursor-ring {
 
 .connector-path {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.12);
+  stroke: rgba(255, 255, 255, 0.16);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+  transition: stroke 0.25s ease, stroke-width 0.25s ease;
 }
 
 .connector-path.active {
   stroke: var(--cyan);
   stroke-width: 2.5;
-  filter: drop-shadow(0 0 6px rgba(69, 232, 212, 0.6));
+  filter: drop-shadow(0 0 5px rgba(69, 232, 212, 0.6));
 }
 
 .connector-path.winner-path {
   stroke: url(#grad-connector-active);
   stroke-width: 3;
-  filter: drop-shadow(0 0 8px rgba(255, 92, 138, 0.7));
+  filter: drop-shadow(0 0 7px rgba(255, 92, 138, 0.7));
+}
+
+.connector-path.loser-path {
+  stroke: rgba(255, 184, 77, 0.4);
+  stroke-dasharray: 6 4;
+  stroke-width: 2;
+}
+
+.connector-path.loser-path.active {
+  stroke: var(--amber);
+  stroke-dasharray: none;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 6px rgba(255, 184, 77, 0.6));
 }
 
 /* Dynamic Flex / Grid for Bracket Stages */
