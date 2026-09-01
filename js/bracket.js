@@ -2042,6 +2042,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- ACTIONS, SELECTOR & TOAST ---
   const bracketSizeSelect = document.getElementById('bracketSizeSelect');
   const btnSyncParticipants = document.getElementById('btnSyncParticipants');
+  const btnShuffleBracket = document.getElementById('btnShuffleBracket');
   const btnResetBracket = document.getElementById('btnResetBracket');
   const btnDownloadBracketImg = document.getElementById('btnDownloadBracketImg');
 
@@ -2256,6 +2257,96 @@ document.addEventListener('DOMContentLoaded', () => {
       } finally {
         btnSyncParticipants.disabled = false;
         btnSyncParticipants.innerHTML = '<span>🔄</span> Sinkron Peserta';
+      }
+    });
+  }
+
+  if (btnShuffleBracket) {
+    btnShuffleBracket.addEventListener('click', async () => {
+      let teams = [...participantsList];
+
+      // Jika participantsList kosong, kumpulkan tim unik yang sudah ada di bagan bracket
+      if (teams.length === 0) {
+        const uniqueTeams = new Map();
+        Object.values(matchesState).forEach((m) => {
+          if (m.team1_name && !m.team1_name.startsWith('Menunggu') && !m.team1_name.startsWith('[')) {
+            uniqueTeams.set(m.team1_name, {
+              id: m.team1_id || `team-${uniqueTeams.size + 1}`,
+              teamName: m.team1_name,
+              playerNames: getTeamPlayerNames(m.team1_name) || '-',
+              gameId: '-',
+              discordTag: '-',
+              status: 'Terverifikasi'
+            });
+          }
+          if (m.team2_name && !m.team2_name.startsWith('Menunggu') && !m.team2_name.startsWith('[')) {
+            uniqueTeams.set(m.team2_name, {
+              id: m.team2_id || `team-${uniqueTeams.size + 1}`,
+              teamName: m.team2_name,
+              playerNames: getTeamPlayerNames(m.team2_name) || '-',
+              gameId: '-',
+              discordTag: '-',
+              status: 'Terverifikasi'
+            });
+          }
+        });
+
+        if (uniqueTeams.size > 0) {
+          teams = Array.from(uniqueTeams.values());
+        }
+      }
+
+      if (teams.length < 2) {
+        showToast('⚠️ Minimal harus ada 2 tim terdaftar untuk dapat mengacak bagan!');
+        return;
+      }
+
+      const confirmShuffle = confirm(`🎲 Apakah Anda yakin ingin mengacak undian penempatan bagan turnamen (${teams.length} tim)?\n\nSeluruh skor pertandingan saat ini akan di-reset ke babak awal dengan urutan bagan yang baru.`);
+      if (!confirmShuffle) return;
+
+      btnShuffleBracket.disabled = true;
+      const originalHtml = btnShuffleBracket.innerHTML;
+      btnShuffleBracket.innerHTML = '<span>⏳</span> Mengacak...';
+
+      try {
+        // Algoritma pengacakan Fisher-Yates shuffle
+        for (let i = teams.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [teams[i], teams[j]] = [teams[j], teams[i]];
+        }
+
+        participantsList = teams;
+        try {
+          localStorage.setItem(STORAGE_PARTICIPANTS_KEY, JSON.stringify(participantsList));
+        } catch (e) {}
+
+        // Reset skor dan state pertandingan agar seeding baru terpasang bersih
+        matchesState = {};
+        try {
+          localStorage.removeItem(STORAGE_MATCHES_KEY);
+        } catch (e) {}
+
+        const activeSize = getActiveBracketSize();
+        activeBracketConfig = generateBracketStructure(activeSize);
+        initializeDynamicMatches(activeBracketConfig, true);
+        renderBracket();
+
+        // Animasi getar/pulse halus pada kanvas bracket
+        const canvas = document.getElementById('bracketCanvas');
+        if (canvas) {
+          canvas.classList.add('bracket-shuffling');
+          setTimeout(() => {
+            canvas.classList.remove('bracket-shuffling');
+          }, 600);
+        }
+
+        showToast(`🎲 Bagan berhasil diacak secara adil! (${teams.length} Tim terundi)`);
+      } catch (err) {
+        console.error('Error saat mengacak bagan:', err);
+        showToast('⚠️ Gagal mengacak bagan: ' + (err.message || 'Terjadi kesalahan'));
+      } finally {
+        btnShuffleBracket.disabled = false;
+        btnShuffleBracket.innerHTML = originalHtml;
       }
     });
   }

@@ -122,8 +122,23 @@
       <div class="bracket-toolbar-wrap">
         <div class="bracket-toolbar">
           <div class="toolbar-left">
+            <div class="bracket-format-select-wrap">
+              <select id="bracketSizeSelect" class="bracket-format-select" aria-label="Pilih format turnamen">
+                <option value="auto">⚡ Format: Otomatis (Auto-Detect)</option>
+                <option value="4">4 Tim (Semi Final)</option>
+                <option value="6">6 Tim (Play-In + SF)</option>
+                <option value="8">8 Tim (Quarter Final)</option>
+                <option value="10" selected>10 Tim (Play-In + QF)</option>
+                <option value="12">12 Tim (Play-In + QF)</option>
+                <option value="16">16 Tim (Round of 16)</option>
+                <option value="32">32 Tim (Round of 32)</option>
+              </select>
+            </div>
             <button type="button" class="tool-btn" id="btnSyncParticipants" title="Ambil tim terbaru dari database Supabase">
               <span>🔄</span> Sinkron Peserta
+            </button>
+            <button type="button" class="tool-btn tool-btn-shuffle" id="btnShuffleBracket" title="Acak penempatan tim secara acak (Undian Bagan / Shuffle Bracket)">
+              <span>🎲</span> Acak Bagan
             </button>
             <button type="button" class="tool-btn tool-btn-danger" id="btnResetBracket" title="Reset skor & pertandingan ke posisi awal">
               <span>🗑️</span> Reset Bracket
@@ -131,6 +146,11 @@
           </div>
 
           <div class="toolbar-right">
+            <!-- Export HD Image Button -->
+            <button type="button" class="tool-btn tool-btn-export" id="btnDownloadBracketImg" title="Download bagan bracket turnamen format gambar Ultra HD (PNG)">
+              <span>📸</span> Download Bagan HD
+            </button>
+
             <!-- Zoom Controls -->
             <button type="button" class="tool-btn" id="zoomOutBtn" aria-label="Zoom Out">🔍−</button>
             <span class="zoom-badge" id="zoomBadge">100%</span>
