@@ -747,6 +747,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return '';
   }
 
+  const rosterSvgIcon = `<svg class="players-icon" width="11" height="11" viewBox="0 0 20 20" fill="currentColor" style="display:inline-block; vertical-align:-1px; margin-right:3px; opacity:0.85; flex-shrink:0;"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>`;
+
   function renderMatchCardHtml(match, isFinal = false) {
     if (!match) return '';
 
@@ -764,6 +766,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const showT1Seed = t1Placeholder && match.team1_seed && (match.team1_seed.startsWith('MENANG') || match.team1_seed.startsWith('KALAH'));
     const showT2Seed = t2Placeholder && match.team2_seed && (match.team2_seed.startsWith('MENANG') || match.team2_seed.startsWith('KALAH'));
+
+    // Tentukan teks nama tim untuk placeholder agar tidak terduplikasi dengan pill seed
+    let t1DisplayName = match.team1_name || 'Menunggu Tim';
+    if (showT1Seed) {
+      t1DisplayName = 'Menunggu Hasil';
+    }
+
+    let t2DisplayName = match.team2_name || 'Menunggu Tim';
+    if (showT2Seed) {
+      t2DisplayName = 'Menunggu Hasil';
+    }
 
     let winnerLabelPrefix = '🏆 Pemenang:';
     if (match.id === 'final') winnerLabelPrefix = '🥇 Juara 1:';
@@ -786,11 +799,11 @@ document.addEventListener('DOMContentLoaded', () => {
               ${showT1Seed ? `<span class="team-seed-pill ${team1IsWinner ? 'winner-seed' : ''}">${escapeHtml(match.team1_seed)}</span>` : ''}
               <div class="team-info-col">
                 <span class="team-name-text ${t1Placeholder ? 'placeholder' : ''}" title="${escapeHtml(match.team1_name || '')}">
-                  ${escapeHtml(match.team1_name || 'Menunggu Tim')}
+                  ${escapeHtml(t1DisplayName)}
                 </span>
                 ${t1Players ? `
                   <span class="team-players-text" title="Pemain: ${escapeHtml(t1Players)}">
-                    <span class="players-icon">👥</span> ${escapeHtml(t1Players)}
+                    ${rosterSvgIcon} ${escapeHtml(t1Players)}
                   </span>
                 ` : ''}
               </div>
@@ -806,11 +819,11 @@ document.addEventListener('DOMContentLoaded', () => {
               ${showT2Seed ? `<span class="team-seed-pill ${team2IsWinner ? 'winner-seed' : ''}">${escapeHtml(match.team2_seed)}</span>` : ''}
               <div class="team-info-col">
                 <span class="team-name-text ${t2Placeholder ? 'placeholder' : ''}" title="${escapeHtml(match.team2_name || '')}">
-                  ${escapeHtml(match.team2_name || 'Menunggu Tim')}
+                  ${escapeHtml(t2DisplayName)}
                 </span>
                 ${t2Players ? `
                   <span class="team-players-text" title="Pemain: ${escapeHtml(t2Players)}">
-                    <span class="players-icon">👥</span> ${escapeHtml(t2Players)}
+                    ${rosterSvgIcon} ${escapeHtml(t2Players)}
                   </span>
                 ` : ''}
               </div>
@@ -892,8 +905,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="rank-badge rank-badge-gold">🥇 1st</div>
             <div class="rank-team-info">
               <span class="rank-label">JUARA 1</span>
-              <span class="rank-team-name">${championName ? escapeHtml(championName) : 'Menunggu Grand Final'}</span>
-              ${championName && getTeamPlayerNames(championName) ? `<span class="rank-roster-text">👥 ${escapeHtml(getTeamPlayerNames(championName))}</span>` : ''}
+              <span class="rank-team-name">${championName ? escapeHtml(championName) : '<span style="color:var(--muted-2); font-style:italic; font-weight:500;">Menunggu Final</span>'}</span>
+              ${championName && getTeamPlayerNames(championName) ? `<span class="rank-roster-text">${rosterSvgIcon} ${escapeHtml(getTeamPlayerNames(championName))}</span>` : ''}
             </div>
             <span class="rank-status-tag gold" style="color:var(--amber);background:rgba(255,184,77,0.15);border:1px solid rgba(255,184,77,0.35);">Gold</span>
           </div>
@@ -903,8 +916,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="rank-badge rank-badge-silver">🥈 2nd</div>
             <div class="rank-team-info">
               <span class="rank-label">JUARA 2 (RUNNER-UP)</span>
-              <span class="rank-team-name">${runnerUpName ? escapeHtml(runnerUpName) : 'Menunggu Grand Final'}</span>
-              ${runnerUpRoster ? `<span class="rank-roster-text">👥 ${escapeHtml(runnerUpRoster)}</span>` : ''}
+              <span class="rank-team-name">${runnerUpName ? escapeHtml(runnerUpName) : '<span style="color:var(--muted-2); font-style:italic; font-weight:500;">Menunggu Final</span>'}</span>
+              ${runnerUpRoster ? `<span class="rank-roster-text">${rosterSvgIcon} ${escapeHtml(runnerUpRoster)}</span>` : ''}
             </div>
             <span class="rank-status-tag">Silver</span>
           </div>
@@ -914,8 +927,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="rank-badge rank-badge-bronze">🥉 3rd</div>
             <div class="rank-team-info">
               <span class="rank-label">JUARA 3 (BRONZE)</span>
-              <span class="rank-team-name">${thirdPlaceName ? escapeHtml(thirdPlaceName) : 'Menunggu Match Juara 3'}</span>
-              ${thirdPlaceRoster ? `<span class="rank-roster-text">👥 ${escapeHtml(thirdPlaceRoster)}</span>` : ''}
+              <span class="rank-team-name">${thirdPlaceName ? escapeHtml(thirdPlaceName) : '<span style="color:var(--muted-2); font-style:italic; font-weight:500;">Menunggu Match 3</span>'}</span>
+              ${thirdPlaceRoster ? `<span class="rank-roster-text">${rosterSvgIcon} ${escapeHtml(thirdPlaceRoster)}</span>` : ''}
             </div>
             <span class="rank-status-tag bronze">Bronze</span>
           </div>
@@ -2194,6 +2207,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
+      // Pastikan semua Google Web Fonts telah termuat 100% sempurna sebelum snapshot
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (e) {}
+      }
+
       const sourceCanvas = document.getElementById('bracketCanvas');
       if (!sourceCanvas) throw new Error('Elemen bagan bracket tidak ditemukan.');
 
@@ -2205,9 +2225,9 @@ document.addEventListener('DOMContentLoaded', () => {
       poster.id = 'tournamentPosterExport';
       poster.style.position = 'fixed';
       poster.style.top = '0';
-      poster.style.left = '0';
+      poster.style.left = '-12000px';
       poster.style.zIndex = '-9999';
-      poster.style.opacity = '0';
+      poster.style.opacity = '1';
       poster.style.pointerEvents = 'none';
       poster.style.background = 'radial-gradient(ellipse at 50% 0%, #171233 0%, #080614 100%)';
       poster.style.padding = '44px 50px';
@@ -2266,18 +2286,20 @@ document.addEventListener('DOMContentLoaded', () => {
       clone.style.transform = 'none';
       clone.style.margin = '0 auto';
       clone.style.position = 'relative';
+      clone.style.width = sourceCanvas.scrollWidth + 'px';
+      clone.style.height = sourceCanvas.scrollHeight + 'px';
+      clone.style.minWidth = sourceCanvas.scrollWidth + 'px';
 
       // Pastikan SVG garis terklon dengan ukuran & atribut viewBox yang valid
       const origSvg = sourceCanvas.querySelector('#bracketSvg');
       const cloneSvg = clone.querySelector('#bracketSvg');
       if (origSvg && cloneSvg) {
-        const svgW = origSvg.getAttribute('width') || String(sourceCanvas.scrollWidth);
-        const svgH = origSvg.getAttribute('height') || String(sourceCanvas.scrollHeight);
-        const vBox = origSvg.getAttribute('viewBox') || `0 0 ${svgW} ${svgH}`;
+        const svgW = sourceCanvas.scrollWidth;
+        const svgH = sourceCanvas.scrollHeight;
 
-        cloneSvg.setAttribute('width', svgW);
-        cloneSvg.setAttribute('height', svgH);
-        cloneSvg.setAttribute('viewBox', vBox);
+        cloneSvg.setAttribute('width', String(svgW));
+        cloneSvg.setAttribute('height', String(svgH));
+        cloneSvg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
         cloneSvg.style.width = svgW + 'px';
         cloneSvg.style.height = svgH + 'px';
         cloneSvg.style.position = 'absolute';
@@ -2296,14 +2318,14 @@ document.addEventListener('DOMContentLoaded', () => {
             p.setAttribute('stroke', '#ffb84d');
             p.setAttribute('stroke-width', '2.5');
           } else if (p.classList.contains('loser-path')) {
-            p.setAttribute('stroke', 'rgba(255, 184, 77, 0.45)');
+            p.setAttribute('stroke', 'rgba(255, 184, 77, 0.5)');
             p.setAttribute('stroke-width', '2');
             p.setAttribute('stroke-dasharray', '6 4');
           } else if (p.classList.contains('active')) {
             p.setAttribute('stroke', '#45e8d4');
             p.setAttribute('stroke-width', '2.5');
           } else {
-            p.setAttribute('stroke', 'rgba(255, 255, 255, 0.22)');
+            p.setAttribute('stroke', 'rgba(255, 255, 255, 0.25)');
             p.setAttribute('stroke-width', '2');
           }
         });
@@ -2340,8 +2362,18 @@ document.addEventListener('DOMContentLoaded', () => {
         useCORS: true,
         logging: false,
         allowTaint: true,
-        windowWidth: poster.scrollWidth + 120,
-        windowHeight: poster.scrollHeight + 120
+        onclone: (clonedDoc) => {
+          const clonedPoster = clonedDoc.getElementById('tournamentPosterExport');
+          if (clonedPoster) {
+            clonedPoster.style.position = 'static';
+            clonedPoster.style.left = '0';
+            clonedPoster.style.top = '0';
+            clonedPoster.style.margin = '0';
+            clonedPoster.style.opacity = '1';
+            clonedPoster.style.visibility = 'visible';
+            clonedPoster.style.display = 'inline-block';
+          }
+        }
       });
 
       // Hapus elemen clone sementara
