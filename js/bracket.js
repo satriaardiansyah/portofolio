@@ -298,12 +298,12 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: 'final', title: 'Grand Final & Juara 3', subtitle: 'Perebutan Juara 1 & 3', isFinal: true, matchIds: ['final', 'bronze'] }
           ],
           matches: [
-            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: '', team2_seed: '', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
-            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: '', team2_seed: '', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
-            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: '', team2_seed: 'MENANG PI-2', slot1_index: 0, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
+            { id: 'pi-1', round: 'playin', match_number: 1, title: 'Play-In #1', team1_seed: '', team2_seed: '', slot1_index: 7, slot2_index: 8, next_match_id: 'qf-1', next_match_slot: 2 },
+            { id: 'pi-2', round: 'playin', match_number: 2, title: 'Play-In #2', team1_seed: '', team2_seed: '', slot1_index: 6, slot2_index: 9, next_match_id: 'qf-4', next_match_slot: 2 },
+            { id: 'qf-1', round: 'quarter', match_number: 1, title: 'Quarter Final #1', team1_seed: '', team2_seed: 'MENANG PI-1', slot1_index: 0, slot2_index: null, next_match_id: 'sf-1', next_match_slot: 1 },
             { id: 'qf-2', round: 'quarter', match_number: 2, title: 'Quarter Final #2', team1_seed: '', team2_seed: '', slot1_index: 3, slot2_index: 4, next_match_id: 'sf-1', next_match_slot: 2 },
             { id: 'qf-3', round: 'quarter', match_number: 3, title: 'Quarter Final #3', team1_seed: '', team2_seed: '', slot1_index: 2, slot2_index: 5, next_match_id: 'sf-2', next_match_slot: 1 },
-            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: '', team2_seed: 'MENANG PI-1', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
+            { id: 'qf-4', round: 'quarter', match_number: 4, title: 'Quarter Final #4', team1_seed: '', team2_seed: 'MENANG PI-2', slot1_index: 1, slot2_index: null, next_match_id: 'sf-2', next_match_slot: 2 },
             { id: 'sf-1', round: 'semi', match_number: 1, title: 'Semi Final #1', team1_seed: 'MENANG QF-1', team2_seed: 'MENANG QF-2', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 1, loser_match_id: 'bronze', loser_match_slot: 1 },
             { id: 'sf-2', round: 'semi', match_number: 2, title: 'Semi Final #2', team1_seed: 'MENANG QF-3', team2_seed: 'MENANG QF-4', slot1_index: null, slot2_index: null, next_match_id: 'final', next_match_slot: 2, loser_match_id: 'bronze', loser_match_slot: 2 },
             { id: 'final', round: 'final', match_number: 1, title: 'Grand Final 🏆', team1_seed: 'MENANG SF-1', team2_seed: 'MENANG SF-2', slot1_index: null, slot2_index: null, next_match_id: 'champion', next_match_slot: 1 },
@@ -443,9 +443,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           team1_name = def.team1_seed ? `[${def.team1_seed}]` : 'Menunggu Tim';
         }
-      } else if (existing && existing.team1_name) {
-        team1_name = existing.team1_name;
-        team1_id = existing.team1_id;
+      } else {
+        team1_name = def.team1_seed ? `[${def.team1_seed}]` : 'Menunggu Tim';
       }
 
       // 2. Cek apakah match sudah memiliki data Tim 2 tersimpan (dari Supabase / LocalStorage / Edit Admin)
@@ -467,9 +466,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           team2_name = def.team2_seed ? `[${def.team2_seed}]` : 'Menunggu Tim';
         }
-      } else if (existing && existing.team2_name) {
-        team2_name = existing.team2_name;
-        team2_id = existing.team2_id;
+      } else {
+        team2_name = def.team2_seed ? `[${def.team2_seed}]` : 'Menunggu Tim';
       }
 
       // Pastikan ID tim terisi jika namanya cocok dengan daftar peserta
@@ -874,9 +872,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="champion-members">
           ${championRoster}
         </p>
-        <div class="champion-prize-pill">
-          <span>🎁</span> Hadiah: Rp. 100.000
-        </div>
         <div class="champion-celebrate-hint">
           <span>🎉</span> Rayakan Kemenangan Juara!
         </div>
@@ -897,7 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="rank-team-name">${championName ? escapeHtml(championName) : 'Menunggu Grand Final'}</span>
               ${championName && getTeamPlayerNames(championName) ? `<span class="rank-roster-text">👥 ${escapeHtml(getTeamPlayerNames(championName))}</span>` : ''}
             </div>
-            <span class="rank-prize-badge">Rp. 100.000</span>
+            <span class="rank-status-tag gold" style="color:var(--amber);background:rgba(255,184,77,0.15);border:1px solid rgba(255,184,77,0.35);">Gold</span>
           </div>
 
           <!-- Juara 2 -->
@@ -1873,8 +1868,7 @@ document.addEventListener('DOMContentLoaded', () => {
     teamName: '',
     lineup: '',
     discord: '',
-    gameId: '',
-    prize: 'Rp.150.000 + 1.000.000 Koin'
+    gameId: ''
   };
 
   function openChampionCelebration(isAutoTrigger = false) {
@@ -1889,24 +1883,22 @@ document.addEventListener('DOMContentLoaded', () => {
       currentChampionData.lineup = matchedTeam && matchedTeam.playerNames ? matchedTeam.playerNames : 'Squad Juara';
       currentChampionData.discord = matchedTeam && matchedTeam.discordTag ? matchedTeam.discordTag : '-';
       currentChampionData.gameId = matchedTeam && matchedTeam.gameId ? matchedTeam.gameId : '-';
-      currentChampionData.prize = 'Rp.150.000 + 1.000.000 Koin';
 
       if (celebrationTeamTitle) celebrationTeamTitle.textContent = championName.toUpperCase();
       if (celebrationLineupNames) celebrationLineupNames.innerHTML = `Lineup: <b>${escapeHtml(currentChampionData.lineup)}</b>`;
       if (celebrationStatusBadge) celebrationStatusBadge.innerHTML = `🔥 Status: <b>Grand Champion</b>`;
-      if (celebrationPrizeVal) celebrationPrizeVal.textContent = currentChampionData.prize;
+      if (celebrationPrizeVal) celebrationPrizeVal.textContent = '';
     } else {
       // Demo / Preview Mode jika belum ada juara
       currentChampionData.teamName = 'WOWOK LOVE TEDDY';
       currentChampionData.lineup = 'whisper (C), kayi';
       currentChampionData.discord = 'whisper#1337';
       currentChampionData.gameId = 'WhisperGod, KayiChan';
-      currentChampionData.prize = 'Rp.150.000 + 1.000.000 Koin';
 
       if (celebrationTeamTitle) celebrationTeamTitle.textContent = 'WOWOK LOVE TEDDY';
       if (celebrationLineupNames) celebrationLineupNames.innerHTML = `Lineup: <b>whisper (C), kayi</b> (Simulasi Juara)`;
       if (celebrationStatusBadge) celebrationStatusBadge.innerHTML = `🔥 Status: <b>Simulasi Juara Turnamen</b>`;
-      if (celebrationPrizeVal) celebrationPrizeVal.textContent = currentChampionData.prize;
+      if (celebrationPrizeVal) celebrationPrizeVal.textContent = '';
     }
 
     celebrationModal.classList.add('active');
@@ -1945,7 +1937,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCelebrationShare) {
     btnCelebrationShare.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const shareText = `🏆 JUARA 1 TURNAMEN SAMBUNG KATA 2 VS 2 — YABI DEV 🏆\n\n👑 Tim Pemenang: ${currentChampionData.teamName}\n👥 Lineup: ${currentChampionData.lineup}\n🎁 Total Hadiah: ${currentChampionData.prize}\n⚡ Turnamen: Roblox Sambung Kata Komunitas Yabi Dev\n\nSelamat kepada para pemenang turnamen! 🎉🔥`;
+      const shareText = `🏆 JUARA 1 TURNAMEN SAMBUNG KATA 2 VS 2 — YABI DEV 🏆\n\n👑 Tim Pemenang: ${currentChampionData.teamName}\n👥 Lineup: ${currentChampionData.lineup}\n⚡ Turnamen: Roblox Sambung Kata Komunitas Yabi Dev\n\nSelamat kepada para pemenang turnamen! 🎉🔥`;
 
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
