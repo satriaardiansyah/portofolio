@@ -586,13 +586,13 @@ body.bracket-page #cursor-ring {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 8px 12px 9px 12px;
   background: rgba(14, 12, 27, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 10px;
   transition: all 0.2s ease;
   position: relative;
-  min-height: 48px;
+  min-height: 52px;
   box-sizing: border-box;
 }
 
@@ -634,7 +634,7 @@ body.bracket-page #cursor-ring {
   min-width: 0;
   flex: 1;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
 }
 
 .team-seed-pill {
@@ -660,8 +660,9 @@ body.bracket-page #cursor-ring {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.35;
+  line-height: 1.4;
   display: block;
+  padding-bottom: 1px;
 }
 
 .team-name-text.placeholder {
@@ -677,14 +678,26 @@ body.bracket-page #cursor-ring {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.35;
-  display: block;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 1px;
+  padding-bottom: 2px;
 }
 
 .team-players-text .players-icon {
   font-size: 10px;
   opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.team-players-text .players-names-wrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 
 .team-slot-row.winner .team-players-text {
@@ -1041,8 +1054,9 @@ body.bracket-page #cursor-ring {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.35;
+  line-height: 1.4;
   display: block;
+  padding-bottom: 1px;
 }
 
 .rank-roster-text {
@@ -1052,9 +1066,24 @@ body.bracket-page #cursor-ring {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.35;
+  line-height: 1.4;
   margin-top: 1px;
-  display: block;
+  padding-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rank-roster-text .players-icon {
+  flex-shrink: 0;
+}
+
+.rank-roster-text .players-names-wrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 
 .podium-rank-item.rank-gold .rank-roster-text {
@@ -2059,4 +2088,90 @@ body.bracket-page #cursor-ring {
     width: 100%;
   }
 }
+
+/* ==========================================================================
+   HD POSTER EXPORT OVERRIDES (ELIMINATE CLIPPED TEXT IN DOWNLOADED IMAGE)
+   ========================================================================== */
+#tournamentPosterExport {
+  box-sizing: border-box !important;
+}
+
+#tournamentPosterExport * {
+  box-sizing: border-box !important;
+}
+
+#tournamentPosterExport .team-name-text,
+#tournamentPosterExport .team-players-text,
+#tournamentPosterExport .players-names-wrap,
+#tournamentPosterExport .rank-team-name,
+#tournamentPosterExport .rank-roster-text,
+#tournamentPosterExport .team-seed-pill,
+#tournamentPosterExport .match-status-pill,
+#tournamentPosterExport .match-id-badge,
+#tournamentPosterExport .stage-title,
+#tournamentPosterExport .stage-subtitle,
+#tournamentPosterExport .champion-team-title,
+#tournamentPosterExport .champion-members {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  clip-path: none !important;
+  word-break: keep-all !important;
+}
+
+#tournamentPosterExport .team-name-text {
+  line-height: 1.45 !important;
+  padding-bottom: 2px !important;
+  display: block !important;
+}
+
+#tournamentPosterExport .team-players-text {
+  line-height: 1.5 !important;
+  padding-bottom: 3px !important;
+  margin-top: 2px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  color: #94a3b8 !important;
+}
+
+#tournamentPosterExport .team-slot-row {
+  overflow: visible !important;
+  min-height: 52px !important;
+  padding: 8px 12px 9px 12px !important;
+}
+
+#tournamentPosterExport .team-info-col {
+  overflow: visible !important;
+  gap: 3px !important;
+  justify-content: center !important;
+}
+
+#tournamentPosterExport .team-meta-left {
+  overflow: visible !important;
+  gap: 8px !important;
+}
+
+#tournamentPosterExport .match-card {
+  overflow: visible !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: #141224 !important;
+}
+
+#tournamentPosterExport .podium-rankings-box {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: #0e0c1b !important;
+}
+
+#tournamentPosterExport .podium-rank-item {
+  overflow: visible !important;
+  min-height: 54px !important;
+  padding: 10px 14px !important;
+}
+
+#tournamentPosterExport .quick-edit-hint {
+  display: none !important;
+}
+
 

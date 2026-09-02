@@ -803,7 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </span>
                 ${t1Players ? `
                   <span class="team-players-text" title="Pemain: ${escapeHtml(t1Players)}">
-                    ${rosterSvgIcon} ${escapeHtml(t1Players)}
+                    ${rosterSvgIcon} <span class="players-names-wrap">${escapeHtml(t1Players)}</span>
                   </span>
                 ` : ''}
               </div>
@@ -823,7 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </span>
                 ${t2Players ? `
                   <span class="team-players-text" title="Pemain: ${escapeHtml(t2Players)}">
-                    ${rosterSvgIcon} ${escapeHtml(t2Players)}
+                    ${rosterSvgIcon} <span class="players-names-wrap">${escapeHtml(t2Players)}</span>
                   </span>
                 ` : ''}
               </div>
@@ -906,7 +906,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="rank-team-info">
               <span class="rank-label">JUARA 1</span>
               <span class="rank-team-name">${championName ? escapeHtml(championName) : '<span style="color:var(--muted-2); font-style:italic; font-weight:500;">Menunggu Final</span>'}</span>
-              ${championName && getTeamPlayerNames(championName) ? `<span class="rank-roster-text">${rosterSvgIcon} ${escapeHtml(getTeamPlayerNames(championName))}</span>` : ''}
+              ${championName && getTeamPlayerNames(championName) ? `<span class="rank-roster-text">${rosterSvgIcon} <span class="players-names-wrap">${escapeHtml(getTeamPlayerNames(championName))}</span></span>` : ''}
             </div>
             <span class="rank-status-tag gold" style="color:var(--amber);background:rgba(255,184,77,0.15);border:1px solid rgba(255,184,77,0.35);">Gold</span>
           </div>
@@ -917,7 +917,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="rank-team-info">
               <span class="rank-label">JUARA 2 (RUNNER-UP)</span>
               <span class="rank-team-name">${runnerUpName ? escapeHtml(runnerUpName) : '<span style="color:var(--muted-2); font-style:italic; font-weight:500;">Menunggu Final</span>'}</span>
-              ${runnerUpRoster ? `<span class="rank-roster-text">${rosterSvgIcon} ${escapeHtml(runnerUpRoster)}</span>` : ''}
+              ${runnerUpRoster ? `<span class="rank-roster-text">${rosterSvgIcon} <span class="players-names-wrap">${escapeHtml(runnerUpRoster)}</span></span>` : ''}
             </div>
             <span class="rank-status-tag">Silver</span>
           </div>
@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="rank-team-info">
               <span class="rank-label">JUARA 3 (BRONZE)</span>
               <span class="rank-team-name">${thirdPlaceName ? escapeHtml(thirdPlaceName) : '<span style="color:var(--muted-2); font-style:italic; font-weight:500;">Menunggu Match 3</span>'}</span>
-              ${thirdPlaceRoster ? `<span class="rank-roster-text">${rosterSvgIcon} ${escapeHtml(thirdPlaceRoster)}</span>` : ''}
+              ${thirdPlaceRoster ? `<span class="rank-roster-text">${rosterSvgIcon} <span class="players-names-wrap">${escapeHtml(thirdPlaceRoster)}</span></span>` : ''}
             </div>
             <span class="rank-status-tag bronze">Bronze</span>
           </div>
@@ -2195,8 +2195,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     showToast('📸 Sedang merender bagan bracket dalam resolusi Ultra HD...');
 
+    // Simpan status zoom user saat ini agar bisa dirender pada skala presisi 1.0 murni
+    const prevZoom = currentZoom;
+
     try {
-      // 1. Pastikan html2canvas dimuat
+      // 1. Pastikan zoom kanvas direset ke 1.0 agar ukuran scrollWidth & SVG tidak skew / terdistorsi
+      if (currentZoom !== 1) {
+        setZoom(1);
+      }
+
+      // 2. Pastikan html2canvas dimuat
       if (typeof html2canvas === 'undefined') {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
@@ -2207,7 +2215,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      // Pastikan semua Google Web Fonts telah termuat 100% sempurna sebelum snapshot
+      // 3. Pastikan semua Google Web Fonts telah termuat 100% sempurna sebelum snapshot
       if (document.fonts && document.fonts.ready) {
         try {
           await document.fonts.ready;
@@ -2217,15 +2225,22 @@ document.addEventListener('DOMContentLoaded', () => {
       const sourceCanvas = document.getElementById('bracketCanvas');
       if (!sourceCanvas) throw new Error('Elemen bagan bracket tidak ditemukan.');
 
-      // Pastikan SVG lines terkini
+      // Pastikan SVG lines terkini pada skala 1.0
       drawConnectorLines();
 
-      // 2. Buat container poster turnamen profesional
+      // Beri jeda 50ms agar browser menyelesaikan repaint garis SVG
+      await new Promise((r) => setTimeout(r, 50));
+
+      const canvasW = Math.ceil(Math.max(sourceCanvas.scrollWidth, sourceCanvas.offsetWidth));
+      const canvasH = Math.ceil(Math.max(sourceCanvas.scrollHeight, sourceCanvas.offsetHeight));
+      const totalPosterWidth = canvasW + 100; // 50px padding kiri + 50px padding kanan
+
+      // 4. Buat container poster turnamen profesional
       const poster = document.createElement('div');
       poster.id = 'tournamentPosterExport';
       poster.style.position = 'fixed';
       poster.style.top = '0';
-      poster.style.left = '-12000px';
+      poster.style.left = '-15000px';
       poster.style.zIndex = '-9999';
       poster.style.opacity = '1';
       poster.style.pointerEvents = 'none';
@@ -2233,10 +2248,12 @@ document.addEventListener('DOMContentLoaded', () => {
       poster.style.padding = '44px 50px';
       poster.style.borderRadius = '24px';
       poster.style.boxSizing = 'border-box';
-      poster.style.fontFamily = "'Inter', sans-serif";
+      poster.style.fontFamily = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
       poster.style.color = '#fff';
-      poster.style.display = 'inline-block';
-      poster.style.minWidth = 'max-content';
+      poster.style.display = 'block';
+      poster.style.width = totalPosterWidth + 'px';
+      poster.style.minWidth = totalPosterWidth + 'px';
+      poster.style.maxWidth = totalPosterWidth + 'px';
 
       // Header Poster
       const activeSize = getActiveBracketSize();
@@ -2257,6 +2274,8 @@ document.addEventListener('DOMContentLoaded', () => {
       headerBox.style.paddingBottom = '22px';
       headerBox.style.marginBottom = '32px';
       headerBox.style.gap = '30px';
+      headerBox.style.width = '100%';
+      headerBox.style.boxSizing = 'border-box';
 
       headerBox.innerHTML = `
         <div>
@@ -2286,22 +2305,19 @@ document.addEventListener('DOMContentLoaded', () => {
       clone.style.transform = 'none';
       clone.style.margin = '0 auto';
       clone.style.position = 'relative';
-      clone.style.width = sourceCanvas.scrollWidth + 'px';
-      clone.style.height = sourceCanvas.scrollHeight + 'px';
-      clone.style.minWidth = sourceCanvas.scrollWidth + 'px';
+      clone.style.width = canvasW + 'px';
+      clone.style.height = canvasH + 'px';
+      clone.style.minWidth = canvasW + 'px';
 
       // Pastikan SVG garis terklon dengan ukuran & atribut viewBox yang valid
       const origSvg = sourceCanvas.querySelector('#bracketSvg');
       const cloneSvg = clone.querySelector('#bracketSvg');
       if (origSvg && cloneSvg) {
-        const svgW = sourceCanvas.scrollWidth;
-        const svgH = sourceCanvas.scrollHeight;
-
-        cloneSvg.setAttribute('width', String(svgW));
-        cloneSvg.setAttribute('height', String(svgH));
-        cloneSvg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
-        cloneSvg.style.width = svgW + 'px';
-        cloneSvg.style.height = svgH + 'px';
+        cloneSvg.setAttribute('width', String(canvasW));
+        cloneSvg.setAttribute('height', String(canvasH));
+        cloneSvg.setAttribute('viewBox', `0 0 ${canvasW} ${canvasH}`);
+        cloneSvg.style.width = canvasW + 'px';
+        cloneSvg.style.height = canvasH + 'px';
         cloneSvg.style.position = 'absolute';
         cloneSvg.style.top = '0';
         cloneSvg.style.left = '0';
@@ -2343,6 +2359,8 @@ document.addEventListener('DOMContentLoaded', () => {
       footerBox.style.marginTop = '32px';
       footerBox.style.fontSize = '12px';
       footerBox.style.color = '#64748b';
+      footerBox.style.width = '100%';
+      footerBox.style.boxSizing = 'border-box';
 
       footerBox.innerHTML = `
         <div>Diselenggarakan secara resmi oleh <b>Komunitas Yabi Dev</b> • Single Elimination System</div>
@@ -2355,23 +2373,136 @@ document.addEventListener('DOMContentLoaded', () => {
       // Jeda singkat agar layout poster clone terkomputasi
       await new Promise((r) => setTimeout(r, 120));
 
-      // Render menggunakan html2canvas (Skala 2x untuk resolusi Ultra HD tajam tanpa melebihi batas canvas GPU)
+      const posterRect = poster.getBoundingClientRect();
+      const posterH = Math.ceil(poster.scrollHeight || posterRect.height);
+
+      // Render menggunakan html2canvas (Skala 2x untuk resolusi Ultra HD tajam tanpa batas canvas GPU terlampaui)
       const renderedCanvas = await html2canvas(poster, {
         scale: 2.0,
         backgroundColor: '#080614',
         useCORS: true,
         logging: false,
         allowTaint: true,
+        width: totalPosterWidth,
+        height: posterH,
+        windowWidth: totalPosterWidth + 200,
+        windowHeight: posterH + 200,
         onclone: (clonedDoc) => {
           const clonedPoster = clonedDoc.getElementById('tournamentPosterExport');
-          if (clonedPoster) {
-            clonedPoster.style.position = 'static';
-            clonedPoster.style.left = '0';
-            clonedPoster.style.top = '0';
-            clonedPoster.style.margin = '0';
-            clonedPoster.style.opacity = '1';
-            clonedPoster.style.visibility = 'visible';
-            clonedPoster.style.display = 'inline-block';
+          if (!clonedPoster) return;
+
+          clonedDoc.documentElement.style.width = (totalPosterWidth + 200) + 'px';
+          clonedDoc.body.style.width = (totalPosterWidth + 200) + 'px';
+          clonedDoc.body.style.minWidth = (totalPosterWidth + 200) + 'px';
+          clonedDoc.body.style.overflow = 'visible';
+
+          clonedPoster.style.position = 'static';
+          clonedPoster.style.left = '0';
+          clonedPoster.style.top = '0';
+          clonedPoster.style.margin = '0';
+          clonedPoster.style.opacity = '1';
+          clonedPoster.style.visibility = 'visible';
+          clonedPoster.style.display = 'block';
+          clonedPoster.style.width = totalPosterWidth + 'px';
+          clonedPoster.style.minWidth = totalPosterWidth + 'px';
+          clonedPoster.style.maxWidth = totalPosterWidth + 'px';
+          clonedPoster.style.margin = '0';
+          clonedPoster.style.opacity = '1';
+          clonedPoster.style.visibility = 'visible';
+          clonedPoster.style.display = 'inline-block';
+
+          // Inject stylesheet khusus untuk memastikan font & elemen teks tidak terpotong (descenders safe)
+          const exportStyle = clonedDoc.createElement('style');
+          exportStyle.textContent = `
+            #tournamentPosterExport * {
+              box-sizing: border-box !important;
+            }
+            #tournamentPosterExport .team-name-text,
+            #tournamentPosterExport .team-players-text,
+            #tournamentPosterExport .players-names-wrap,
+            #tournamentPosterExport .rank-team-name,
+            #tournamentPosterExport .rank-roster-text,
+            #tournamentPosterExport .team-seed-pill,
+            #tournamentPosterExport .match-status-pill,
+            #tournamentPosterExport .match-id-badge,
+            #tournamentPosterExport .stage-title,
+            #tournamentPosterExport .stage-subtitle,
+            #tournamentPosterExport .champion-team-title,
+            #tournamentPosterExport .champion-members {
+              overflow: visible !important;
+              text-overflow: clip !important;
+              clip-path: none !important;
+              word-break: keep-all !important;
+            }
+            #tournamentPosterExport .team-name-text {
+              line-height: 1.45 !important;
+              padding-bottom: 2px !important;
+              display: block !important;
+            }
+            #tournamentPosterExport .team-players-text {
+              line-height: 1.5 !important;
+              padding-bottom: 3px !important;
+              margin-top: 2px !important;
+              display: flex !important;
+              align-items: center !important;
+              gap: 4px !important;
+              color: #94a3b8 !important;
+            }
+            #tournamentPosterExport .team-slot-row {
+              overflow: visible !important;
+              min-height: 52px !important;
+              padding: 8px 12px 9px 12px !important;
+            }
+            #tournamentPosterExport .team-info-col {
+              overflow: visible !important;
+              gap: 3px !important;
+              justify-content: center !important;
+            }
+            #tournamentPosterExport .team-meta-left {
+              overflow: visible !important;
+              gap: 8px !important;
+            }
+            #tournamentPosterExport .match-card {
+              overflow: visible !important;
+              backdrop-filter: none !important;
+              -webkit-backdrop-filter: none !important;
+              background: #141224 !important;
+            }
+            #tournamentPosterExport .podium-rankings-box {
+              backdrop-filter: none !important;
+              -webkit-backdrop-filter: none !important;
+              background: #0e0c1b !important;
+            }
+            #tournamentPosterExport .podium-rank-item {
+              overflow: visible !important;
+              min-height: 54px !important;
+            }
+            #tournamentPosterExport .quick-edit-hint {
+              display: none !important;
+            }
+          `;
+          clonedDoc.head.appendChild(exportStyle);
+
+          // Bersihkan tombol/hint admin interaktif di poster gambar agar rapi & profesional
+          const hintFoots = clonedPoster.querySelectorAll('.match-hint-foot');
+          hintFoots.forEach((hf) => {
+            if (hf.textContent.includes('Klik untuk edit')) {
+              hf.innerHTML = '<span style="color:#64748b; font-size:10.5px; font-weight:600; font-family:\'JetBrains Mono\',monospace;">⏳ Menunggu Match</span>';
+            }
+          });
+
+          // Rapikan tombol perayaan jika juara belum ditentukan
+          const finalMatch = matchesState['final'];
+          if (!finalMatch || !finalMatch.winner_name) {
+            const celBtn = clonedPoster.querySelector('.champion-celebrate-hint');
+            if (celBtn) {
+              celBtn.style.background = 'rgba(255, 184, 77, 0.12)';
+              celBtn.style.border = '1px solid rgba(255, 184, 77, 0.35)';
+              celBtn.style.color = '#ffb84d';
+              celBtn.style.boxShadow = 'none';
+              celBtn.style.animation = 'none';
+              celBtn.innerHTML = '<span>🏆</span> Menunggu Juara 1 Turnamen';
+            }
           }
         }
       });
@@ -2384,7 +2515,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const filename = `bracket-turnamen-sambung-kata-${timestamp}.png`;
       const link = document.createElement('a');
       link.download = filename;
-      link.href = renderedCanvas.toDataURL('image/png', 1.0);
+      const dataUrl = renderedCanvas.toDataURL('image/png', 1.0);
+      link.href = dataUrl;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -2394,6 +2526,10 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Error saat download bagan HD:', err);
       showToast('⚠️ Gagal membuat gambar: ' + (err.message || 'Terjadi kesalahan'));
     } finally {
+      // Kembalikan zoom kanvas ke zoom user sebelumnya
+      if (prevZoom !== 1) {
+        setZoom(prevZoom);
+      }
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = originalHtml;
