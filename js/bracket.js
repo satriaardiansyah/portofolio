@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentZoom = 1;
   let activeEditingMatchId = null;
 
+  // Mode Deteksi (Publik / Penonton vs Admin Manajemen)
+  const isPublicMode = document.body.classList.contains('bracket-public-page') || window.location.pathname.includes('bracket-public');
+  const ADMIN_PASSWORD = 'hirosaurus';
+
   // Mock Fallback Participants
   const defaultFallbackParticipants = [
     { id: 'p-1', teamName: 'CYBER VIPERS', playerNames: 'Satria (C), Vanya' },
@@ -836,11 +840,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="match-card-foot">
           <span class="match-hint-foot">
-            ${team1IsWinner ? `${winnerLabelPrefix} <b>${escapeHtml(match.team1_name)}</b>` : team2IsWinner ? `${winnerLabelPrefix} <b>${escapeHtml(match.team2_name)}</b>` : 'Klik untuk edit skor'}
+            ${team1IsWinner ? `${winnerLabelPrefix} <b>${escapeHtml(match.team1_name)}</b>` : team2IsWinner ? `${winnerLabelPrefix} <b>${escapeHtml(match.team2_name)}</b>` : (isPublicMode ? (match.status === 'BERLANGSUNG' ? '🔴 Sedang Berlangsung' : '⏳ Menunggu Pertandingan') : 'Klik untuk edit skor')}
           </span>
+          ${isPublicMode ? '' : `
           <span class="quick-edit-hint">
             <span>⚙️</span> Edit Skor
-          </span>
+          </span>`}
         </div>
       </div>
     `;
@@ -1581,6 +1586,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function attachCardEventListeners() {
+    if (isPublicMode) {
+      // Pada mode publik/penonton, kartu pertandingan bersifat read-only
+      return;
+    }
     const cards = document.querySelectorAll('.match-card');
     cards.forEach((card) => {
       card.addEventListener('click', () => {
@@ -2788,8 +2797,151 @@ document.addEventListener('DOMContentLoaded', () => {
     if (stagesGrid) ro.observe(stagesGrid);
   }
 
+  // --- ADMIN PASSWORD GATEWAY (PASSWORD: hirosaurus) ---
+  function setupAdminPasswordGateway() {
+    if (isPublicMode) return;
+
+    const overlay = document.getElementById('adminLockOverlay');
+    const form = document.getElementById('adminLockForm');
+    const input = document.getElementById('adminPasswordInput');
+    const errorBox = document.getElementById('adminLockError');
+    const card = document.getElementById('adminLockCard');
+    const icon = document.getElementById('adminLockIcon');
+    const btnToggle = document.getElementById('btnTogglePassword');
+    const btnLock = document.getElementById('btnLockAdmin');
+
+    const isAuthenticated = sessionStorage.getItem('yabidev_admin_authenticated') === 'true';
+
+    if (isAuthenticated) {
+      if (overlay) overlay.classList.add('unlocked');
+      document.body.classList.remove('admin-locked');
+    } else {
+      document.body.classList.add('admin-locked');
+      if (overlay) overlay.classList.remove('unlocked');
+      setTimeout(() => {
+        if (input) input.focus();
+      }, 150);
+    }
+
+    function attemptUnlock() {
+      if (!input) return;
+      const val = input.value.trim();
+      if (val === ADMIN_PASSWORD) {
+        sessionStorage.setItem('yabidev_admin_authenticated', 'true');
+        if (errorBox) errorBox.style.display = 'none';
+        if (icon) icon.textContent = '🔓';
+        input.classList.remove('is-error');
+        if (overlay) overlay.classList.add('unlocked');
+        document.body.classList.remove('admin-locked');
+        showToast('🔓 Akses Admin berhasil dibuka! Selamat mengelola bracket.', 'success');
+      } else {
+        input.classList.add('is-error');
+        if (errorBox) {
+          errorBox.style.display = 'flex';
+          errorBox.innerHTML = '<span>⚠️</span> Password salah! Silakan coba lagi.';
+        }
+        if (card) {
+          card.classList.remove('shake');
+          void card.offsetWidth;
+          card.classList.add('shake');
+        }
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        attemptUnlock();
+      });
+    }
+
+    if (input) {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          attemptUnlock();
+        }
+      });
+    }
+
+    if (btnToggle) {
+      btnToggle.addEventListener('click', () => {
+        if (!input) return;
+        if (input.type === 'password') {
+          input.type = 'text';
+          btnToggle.textContent = '🙈';
+        } else {
+          input.type = 'password';
+          btnToggle.textContent = '👁️';
+        }
+      });
+    }
+
+    if (btnLock) {
+      btnLock.addEventListener('click', () => {
+        sessionStorage.removeItem('yabidev_admin_authenticated');
+        document.body.classList.add('admin-locked');
+        if (overlay) overlay.classList.remove('unlocked');
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+        showToast('🔒 Halaman admin berhasil dikunci.', 'info');
+      });
+    }
+  }
+
+  // --- SPECTATOR PUBLIC MODE FEATURES ---
+  function setupPublicSpectatorFeatures() {
+    if (!isPublicMode) return;
+
+    function updatePublicSyncTime() {
+      const syncEl = document.getElementById('publicSyncTime');
+      if (syncEl) {
+        const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        syncEl.textContent = `Update: ${timeStr} WIB`;
+      }
+    }
+
+    const btnRefresh = document.getElementById('btnRefreshPublicBracket');
+    if (btnRefresh) {
+      btnRefresh.addEventListener('click', async () => {
+        btnRefresh.disabled = true;
+        const origText = btnRefresh.innerHTML;
+        btnRefresh.innerHTML = '<span>🔄</span> Menyinkronkan...';
+        try {
+          await loadParticipants();
+          await loadBracketMatches();
+          renderBracket();
+          updatePublicSyncTime();
+          showToast('Data bagan berhasil diperbarui dari server!', 'success');
+        } catch (e) {
+          showToast('Gagal memuat pembaruan data dari server.', 'error');
+        } finally {
+          btnRefresh.disabled = false;
+          btnRefresh.innerHTML = origText;
+        }
+      });
+    }
+
+    // Auto-polling pembaruan pertandingan tiap 25 detik agar penonton selalu dapat skor real-time
+    setInterval(async () => {
+      try {
+        await loadBracketMatches();
+        renderBracket();
+        updatePublicSyncTime();
+      } catch (e) {}
+    }, 25000);
+
+    updatePublicSyncTime();
+  }
+
   // --- INITIALIZATION ---
   async function init() {
+    setupAdminPasswordGateway();
+    setupPublicSpectatorFeatures();
     try {
       await loadParticipants();
       await loadBracketMatches();

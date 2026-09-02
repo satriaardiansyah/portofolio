@@ -2174,4 +2174,351 @@ body.bracket-page #cursor-ring {
   display: none !important;
 }
 
+/* ==========================================================================
+   ADMIN PASSWORD GATEWAY & LOCK SCREEN STYLES
+   ========================================================================== */
+body.admin-locked {
+  overflow: hidden !important;
+}
+
+body.admin-locked main,
+body.admin-locked header,
+body.admin-locked footer,
+body.admin-locked .blob {
+  filter: blur(12px) brightness(0.5);
+  pointer-events: none !important;
+  user-select: none !important;
+  transition: filter 0.4s ease;
+}
+
+.admin-lock-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: radial-gradient(circle at 50% 30%, rgba(30, 24, 54, 0.94) 0%, rgba(7, 5, 16, 0.98) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.admin-lock-overlay.unlocked {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.admin-lock-card {
+  width: 100%;
+  max-width: 460px;
+  background: rgba(20, 18, 36, 0.92);
+  border: 1px solid rgba(255, 92, 138, 0.3);
+  border-radius: 28px;
+  padding: 38px 32px 32px;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(155, 107, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  animation: lockCardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-lock-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+}
+
+@keyframes lockCardEntrance {
+  0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.admin-lock-card.shake {
+  animation: lockShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes lockShake {
+  10%, 90% { transform: translate3d(-3px, 0, 0); }
+  20%, 80% { transform: translate3d(5px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-7px, 0, 0); }
+  40%, 60% { transform: translate3d(7px, 0, 0); }
+}
+
+.admin-lock-icon-wrap {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-lock-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 92, 138, 0.35) 0%, transparent 70%);
+  animation: lockGlowPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes lockGlowPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.3); opacity: 0.9; }
+}
+
+.admin-lock-icon {
+  font-size: 40px;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 14px rgba(255, 92, 138, 0.6));
+  transition: transform 0.3s ease;
+}
+
+.admin-lock-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #ff5c8a;
+  background: rgba(255, 92, 138, 0.12);
+  border: 1px solid rgba(255, 92, 138, 0.35);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.admin-lock-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.admin-lock-desc {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+
+.admin-lock-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-lock-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.admin-lock-input-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 15px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.admin-lock-input {
+  width: 100%;
+  background: rgba(10, 8, 20, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 13px 44px 13px 40px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #fff;
+  outline: none;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.admin-lock-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 18px rgba(69, 232, 212, 0.25);
+  background: rgba(14, 12, 27, 0.95);
+}
+
+.admin-lock-input.is-error {
+  border-color: #ff5c8a !important;
+  box-shadow: 0 0 16px rgba(255, 92, 138, 0.3) !important;
+}
+
+.admin-lock-eye-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 15px;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.admin-lock-eye-btn:hover {
+  opacity: 1;
+}
+
+.admin-lock-error {
+  background: rgba(255, 92, 138, 0.15);
+  border: 1px solid rgba(255, 92, 138, 0.35);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #ff80a5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 500;
+  animation: fadeIn 0.25s ease;
+}
+
+.admin-lock-submit-btn {
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #9333ea 0%, #e11d48 55%, #f43f5e 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.35);
+  transition: all 0.25s ease;
+}
+
+.admin-lock-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(225, 29, 72, 0.5);
+  filter: brightness(1.08);
+}
+
+.admin-lock-footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-lock-footer-text {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.admin-lock-public-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cyan);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(69, 232, 212, 0.08);
+  border: 1px solid rgba(69, 232, 212, 0.25);
+  transition: all 0.2s ease;
+}
+
+.admin-lock-public-link:hover {
+  background: rgba(69, 232, 212, 0.16);
+  border-color: rgba(69, 232, 212, 0.45);
+  transform: translateY(-1px);
+}
+
+/* ---------- SPECTATOR PUBLIC VIEW OVERRIDES ---------- */
+.bracket-public-page .match-card {
+  cursor: default !important;
+}
+
+.bracket-public-page .match-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(155, 107, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.bracket-public-page .quick-edit-hint {
+  display: none !important;
+}
+
+.bracket-public-page .champion-showcase-card {
+  cursor: pointer !important;
+}
+
+.spectator-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 30px;
+  background: rgba(69, 232, 212, 0.12);
+  border: 1px solid rgba(69, 232, 212, 0.35);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.06em;
+}
+
+.spectator-sync-time {
+  font-size: 11px;
+  color: #64748b;
+  font-family: 'JetBrains Mono', monospace;
+  margin-left: 8px;
+}
+
+.tool-btn-public-link {
+  border-color: rgba(69, 232, 212, 0.35);
+  color: var(--cyan);
+  background: rgba(69, 232, 212, 0.08);
+}
+
+.tool-btn-public-link:hover {
+  background: rgba(69, 232, 212, 0.18);
+  border-color: var(--cyan);
+}
+
+.tool-btn-lock {
+  border-color: rgba(255, 92, 138, 0.35);
+  color: #ff5c8a;
+  background: rgba(255, 92, 138, 0.08);
+}
+
+.tool-btn-lock:hover {
+  background: rgba(255, 92, 138, 0.2);
+  border-color: #ff5c8a;
+}
+
+
 

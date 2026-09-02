@@ -18,7 +18,43 @@
   <link rel="stylesheet" href="css/bracket.css">
 </head>
 
-<body class="bracket-page">
+<body class="bracket-page admin-locked">
+
+  <!-- ADMIN PASSWORD GATEWAY MODAL (PASSWORD: hirosaurus) -->
+  <div id="adminLockOverlay" class="admin-lock-overlay">
+    <div class="admin-lock-card" id="adminLockCard">
+      <div class="admin-lock-icon-wrap">
+        <div class="admin-lock-pulse"></div>
+        <span class="admin-lock-icon" id="adminLockIcon">🔒</span>
+      </div>
+      <div class="admin-lock-badge">RESTRICTED ACCESS • ADMIN ONLY</div>
+      <h2 class="admin-lock-title">Autentikasi Akses Admin</h2>
+      <p class="admin-lock-desc">
+        Halaman ini memiliki kendali penuh atas bagan turnamen (pengaturan skor, acak bagan, sinkronisasi Supabase, & seeding). Masukkan password admin untuk membuka halaman.
+      </p>
+
+      <form id="adminLockForm" class="admin-lock-form" onsubmit="return false;">
+        <div class="admin-lock-input-group">
+          <span class="admin-lock-input-icon">🔑</span>
+          <input type="password" id="adminPasswordInput" class="admin-lock-input" placeholder="Ketik password admin..." autocomplete="current-password" autofocus required>
+          <button type="button" id="btnTogglePassword" class="admin-lock-eye-btn" title="Lihat/Sembunyikan password" aria-label="Lihat password">👁️</button>
+        </div>
+        <div id="adminLockError" class="admin-lock-error" style="display:none;">
+          <span>⚠️</span> Password salah! Silakan coba lagi.
+        </div>
+        <button type="submit" id="btnSubmitAdminPassword" class="admin-lock-submit-btn">
+          <span>🔓</span> Buka Akses Halaman
+        </button>
+      </form>
+
+      <div class="admin-lock-footer">
+        <span class="admin-lock-footer-text">Bukan admin atau hanya ingin memantau turnamen?</span>
+        <a href="bracket-public.html" class="admin-lock-public-link">
+          <span>👁️</span> Buka Bagan Publik (Tanpa Password) ↗
+        </a>
+      </div>
+    </div>
+  </div>
 
   <!-- Ambient Background Blobs -->
   <div class="blob blob1"></div>
@@ -35,6 +71,8 @@
         <a href="index.html#work">Proyek</a>
         <a href="index.html#stream">Blog</a>
         <a href="turnamen.html">Turnamen <span class="nav-tag">HOT</span></a>
+        <a href="bracket-public.html">Bracket <span class="nav-tag" style="background:rgba(69,232,212,0.2);color:var(--cyan);">LIVE</span></a>
+        <a href="bracket.html" class="active-link" style="color:#ff5c8a;">Admin 🔒</a>
         <a href="index.html#contact">Kontak</a>
       </nav>
       <button class="burger" id="burger" aria-label="Buka menu">
@@ -142,6 +180,11 @@
           </div>
 
           <div class="toolbar-right">
+            <!-- Link ke Halaman Publik -->
+            <a href="bracket-public.html" class="tool-btn tool-btn-public-link" title="Buka bagan tampilan penonton / publik">
+              <span>👁️</span> Bagan Publik
+            </a>
+
             <!-- Export HD Image Button -->
             <button type="button" class="tool-btn tool-btn-export" id="btnDownloadBracketImg" title="Download bagan bracket turnamen format gambar Ultra HD (PNG)">
               <span>📸</span> Download Bagan HD
@@ -152,6 +195,11 @@
             <span class="zoom-badge" id="zoomBadge">100%</span>
             <button type="button" class="tool-btn" id="zoomInBtn" aria-label="Zoom In">🔍+</button>
             <button type="button" class="tool-btn" id="zoomResetBtn" title="Reset Zoom">Fit 100%</button>
+
+            <!-- Tombol Kunci Halaman Admin -->
+            <button type="button" class="tool-btn tool-btn-lock" id="btnLockAdmin" title="Kunci kembali akses halaman admin">
+              <span>🔒</span> Kunci
+            </button>
           </div>
         </div>
       </div>
