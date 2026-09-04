@@ -173,26 +173,69 @@
     </section>
   </main>
 
-  <!-- CHAMPION CELEBRATION MODAL -->
-  <div class="champion-modal-overlay" id="championModalOverlay" style="display:none;">
-    <div class="champion-modal-card" id="championModalCard">
-      <div class="champion-modal-trophy">🏆</div>
-      <div class="champion-modal-badge">OFFICIAL TOURNAMENT CHAMPION</div>
-      <h2 class="champion-modal-title" id="champModalTitle">SELAMAT KEPADA JUARA!</h2>
-      <div class="champion-modal-team" id="champModalTeam">NAMA TIM JUARA</div>
-      <div class="champion-modal-roster" id="champModalRoster">Pemain 1 &amp; Pemain 2</div>
-      
-      <p class="champion-modal-desc">
-        Tampil luar biasa menaklukkan seluruh babak eliminasi dan resmi dinobatkan sebagai Penguasa Turnamen Sambung Kata 2 VS 2 Yabi Dev Season Ini!
-      </p>
+  <!-- EPIC CHAMPION CELEBRATION MODAL OVERLAY -->
+  <div class="champion-celebration-overlay" id="championCelebrationModal" role="dialog" aria-modal="true" aria-labelledby="celebrationTeamTitle">
+    <div class="celebration-sunburst"></div>
+    <div class="celebration-ambient-glow"></div>
+    <canvas class="celebration-canvas" id="celebrationCanvas"></canvas>
 
-      <div class="champion-modal-actions">
-        <button type="button" class="champ-btn-primary" id="btnChampConfettiMore">
-          🎉 Ledakkan Konfeti Lagi!
-        </button>
-        <button type="button" class="champ-btn-ghost" id="btnChampModalClose">
-          Tutup
-        </button>
+    <div class="celebration-stage-container">
+      <div class="celebration-stage-card">
+        <!-- Top Bar with Sound & Close -->
+        <div class="celebration-top-bar">
+          <button type="button" class="celebration-sound-toggle" id="celebrationSoundToggle" aria-label="Toggle Musik Juara" title="Nyalakan / Matikan Musik Juara">
+            <span id="celebrationSoundIcon">🔊</span> <span id="celebrationSoundText">Musik: ON</span>
+          </button>
+          <button type="button" class="celebration-close-icon-btn" id="celebrationCloseIcon" aria-label="Tutup Perayaan" title="Tutup (ESC)">✕</button>
+        </div>
+
+        <!-- 3D Floating Trophy with Halos -->
+        <div class="celebration-trophy-stage">
+          <div class="celebration-trophy-glow"></div>
+          <div class="celebration-halo-ring"></div>
+          <div class="celebration-halo-ring-2"></div>
+          <div class="celebration-trophy-icon">🏆</div>
+        </div>
+
+        <!-- Grand Crown Tag -->
+        <div class="celebration-crown-wrap">
+          <span class="celebration-crown-icon">👑</span>
+          <span class="celebration-crown-text">THE ULTIMATE GRAND CHAMPION</span>
+        </div>
+
+        <!-- Team Name (Glowing Gold) -->
+        <h2 class="celebration-team-title" id="celebrationTeamTitle">WOWOK LOVE TEDDY</h2>
+
+        <!-- Lineup & Roster -->
+        <div class="celebration-lineup-box">
+          <span class="celebration-lineup-label">Lineup Sang Juara</span>
+          <span class="celebration-lineup-names" id="celebrationLineupNames">Lineup: <b>whisper (C), kayi</b></span>
+        </div>
+
+        <!-- Extra Badges -->
+        <div class="celebration-meta-strip" id="celebrationMetaStrip">
+          <span class="celebration-pill-badge">🎮 Game: <b>Roblox Sambung Kata</b></span>
+          <span class="celebration-pill-badge">⚔️ Format: <b>2 VS 2 Brutal</b></span>
+          <span class="celebration-pill-badge" id="celebrationStatusBadge">🔥 Status: <b>Undefeated</b></span>
+        </div>
+
+        <!-- Interactive Action Buttons -->
+        <div class="celebration-actions-row">
+          <button type="button" class="celebration-btn celebration-btn-firework" id="btnCelebrationFirework">
+            <span>🎆</span> Tembakkan Kembang Api!
+          </button>
+          <button type="button" class="celebration-btn celebration-btn-audio" id="btnCelebrationReplayAudio">
+            <span>🎵</span> Putar Musik Juara
+          </button>
+          <button type="button" class="celebration-btn celebration-btn-share" id="btnCelebrationShare">
+            <span>📋</span> Salin Info Juara
+          </button>
+          <button type="button" class="celebration-btn celebration-btn-close" id="btnCelebrationClose">
+            Tutup
+          </button>
+        </div>
+
+        <div class="celebration-hint-tap">✨ Klik di mana saja di layar untuk ledakan kembang api baru! • Tekan ESC untuk tutup</div>
       </div>
     </div>
   </div>

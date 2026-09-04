@@ -700,11 +700,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     stagesGrid.innerHTML = stagesHtml;
 
-    // Attach Champion Event
+    // Attach Champion Events (Card & Juara 1 Podium Row)
     const podiumCard = document.getElementById('championPodiumCard');
     if (podiumCard) {
       podiumCard.addEventListener('click', () => openChampionCelebration());
       podiumCard.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openChampionCelebration();
+        }
+      });
+    }
+
+    const podiumGoldRow = document.getElementById('podiumGoldRow');
+    if (podiumGoldRow) {
+      podiumGoldRow.addEventListener('click', () => openChampionCelebration());
+      podiumGoldRow.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           openChampionCelebration();
@@ -906,7 +917,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         <div class="podium-rank-list">
           <!-- Juara 1 -->
-          <div class="podium-rank-item rank-gold ${championName ? 'has-winner' : ''}">
+          <div class="podium-rank-item rank-gold ${championName ? 'has-winner' : ''}" id="podiumGoldRow" role="button" tabindex="0" title="Klik untuk Merayakan Kemenangan Juara 1!">
             <div class="rank-badge rank-badge-gold">🥇 1st</div>
             <div class="rank-team-info">
               <span class="rank-label">JUARA 1</span>
@@ -1588,6 +1599,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function attachCardEventListeners() {
     if (isPublicMode) {
       // Pada mode publik/penonton, kartu pertandingan bersifat read-only
+      // Namun jika Grand Final sudah ada pemenang, kartu dapat diklik untuk merayakan Juara 1
+      const finalCard = document.getElementById('card-final');
+      if (finalCard && matchesState['final'] && matchesState['final'].winner_name) {
+        finalCard.style.cursor = 'pointer';
+        finalCard.setAttribute('title', 'Klik untuk Merayakan Kemenangan Juara 1!');
+        finalCard.addEventListener('click', () => openChampionCelebration());
+      }
       return;
     }
     const cards = document.querySelectorAll('.match-card');
@@ -1603,11 +1621,45 @@ document.addEventListener('DOMContentLoaded', () => {
   // EPIC CHAMPION VICTORY CELEBRATION ENGINE (WEB AUDIO & CANVAS PARTICLES)
   // ==========================================================================
 
-  // --- 1. Web Audio API Sound Synthesizer (Fanfare & Fireworks) ---
+  // --- 1. Sound & Music Controller (Victory Music & Fireworks Audio) ---
   class CelebrationAudioSynthesizer {
     constructor() {
       this.ctx = null;
       this.isMuted = false;
+      this.musicAudio = null;
+      this.initMusic();
+    }
+
+    getSoundSrc() {
+      const pathname = window.location.pathname.replace(/\\/g, '/');
+      if (pathname.includes('/bracket/') && !pathname.endsWith('bracket.html')) {
+        return '../assets/sound/sound.mp3';
+      }
+      return 'assets/sound/sound.mp3';
+    }
+
+    initMusic() {
+      try {
+        const src = this.getSoundSrc();
+        this.musicAudio = new Audio(src);
+        this.musicAudio.preload = 'auto';
+        this.musicAudio.volume = 0.85;
+
+        // Fallback retry jika path relatif berbeda (misal direktori subfolder)
+        this.musicAudio.addEventListener('error', () => {
+          if (!this.musicAudio._hasRetried) {
+            this.musicAudio._hasRetried = true;
+            const currentSrc = this.musicAudio.src;
+            if (currentSrc.includes('../assets/')) {
+              this.musicAudio.src = 'assets/sound/sound.mp3';
+            } else {
+              this.musicAudio.src = '../assets/sound/sound.mp3';
+            }
+          }
+        });
+      } catch (err) {
+        console.warn('Gagal inisialisasi musik juara:', err);
+      }
     }
 
     init() {
@@ -1624,10 +1676,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
     toggleMute() {
       this.isMuted = !this.isMuted;
+      if (this.musicAudio) {
+        this.musicAudio.muted = this.isMuted;
+        if (this.isMuted) {
+          this.musicAudio.pause();
+        } else {
+          const celebrationModal = document.getElementById('championCelebrationModal');
+          if (celebrationModal && celebrationModal.classList.contains('active')) {
+            this.musicAudio.play().catch(() => {});
+          }
+        }
+      }
       return !this.isMuted;
     }
 
+    playMusic() {
+      if (this.isMuted) return;
+      if (!this.musicAudio) {
+        this.initMusic();
+      }
+      if (this.musicAudio) {
+        try {
+          this.musicAudio.currentTime = 0;
+          this.musicAudio.muted = false;
+          const playPromise = this.musicAudio.play();
+          if (playPromise !== undefined) {
+            playPromise.catch((err) => {
+              console.warn('Autoplay dicegah browser, fallback synthesizer:', err);
+              this.playFanfareFallback();
+            });
+          }
+        } catch (e) {
+          console.warn('Gagal memutar file mp3:', e);
+          this.playFanfareFallback();
+        }
+      } else {
+        this.playFanfareFallback();
+      }
+    }
+
+    stopMusic() {
+      if (this.musicAudio) {
+        try {
+          this.musicAudio.pause();
+          this.musicAudio.currentTime = 0;
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+
     playFanfare() {
+      // Putar lagu kemenangan juara 1: assets/sound/sound.mp3
+      this.playMusic();
+    }
+
+    playFanfareFallback() {
       if (this.isMuted) return;
       this.init();
       if (!this.ctx) return;
@@ -2049,9 +2153,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     celebrationModal.classList.add('active');
 
-    // Start Particles & Play Victory Audio
+    // Start Particles & Play Victory Audio (assets/sound/sound.mp3)
     particleEngine.start();
-    celebrationAudio.playFanfare();
+    celebrationAudio.playMusic();
 
     if (isAutoTrigger) {
       showToast(`🏆 Selamat kepada ${currentChampionData.teamName} atas kemenangan Juara 1 Turnamen!`);
@@ -2062,6 +2166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!celebrationModal) return;
     celebrationModal.classList.remove('active');
     particleEngine.stop();
+    celebrationAudio.stopMusic();
   }
 
   // Button Listeners for Celebration Stage
@@ -2075,8 +2180,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCelebrationReplayAudio) {
     btnCelebrationReplayAudio.addEventListener('click', (e) => {
       e.stopPropagation();
-      celebrationAudio.playFanfare();
-      showToast('🎺 Memutar kembali Fanfare Kemenangan!');
+      celebrationAudio.playMusic();
+      showToast('🎵 Memutar kembali musik juara (Safe and Sound)!');
     });
   }
 
@@ -2103,8 +2208,8 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       const isSoundOn = celebrationAudio.toggleMute();
       if (celebrationSoundIcon) celebrationSoundIcon.textContent = isSoundOn ? '🔊' : '🔇';
-      if (celebrationSoundText) celebrationSoundText.textContent = isSoundOn ? 'Suara: ON' : 'Suara: MUTED';
-      showToast(isSoundOn ? '🔊 Suara Fanfare diaktifkan' : '🔇 Suara Fanfare dimatikan');
+      if (celebrationSoundText) celebrationSoundText.textContent = isSoundOn ? 'Musik: ON' : 'Musik: MUTED';
+      showToast(isSoundOn ? '🔊 Musik Juara diaktifkan' : '🔇 Musik Juara dimatikan');
     });
   }
 
