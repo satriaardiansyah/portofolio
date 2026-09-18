@@ -592,7 +592,7 @@
             <!-- <span class="widget-badge neon-pink"><span class="blink">●</span> LIVE</span> -->
           </div>
 
-          <div class="leaderboard-list">
+          <div class="leaderboard-list" id="leaderboardListContainer">
             <!-- Rank 1 -->
             <div class="lb-item rank-1">
               <div class="lb-left">
@@ -644,7 +644,7 @@
           </div>
 
           <div class="widget-footer-link">
-            <a href="https://saweria.co/YabiDev" target="_blank" rel="noopener" class="lb-action-btn">
+            <a href="https://saweria.co/YabiDev" target="_blank" rel="noopener" class="lb-action-btn" id="lbActionBtn">
               <span>♥</span> Jadi Donatur Berikutnya ↗
             </a>
           </div>
@@ -652,7 +652,7 @@
       </div>
 
       <!-- Goal Box -->
-      <div class="goal-box reveal">
+      <div class="goal-box reveal" id="goalBoxContainer">
         <div class="goal-top">
           <h4>Target Goal Donasi Stream & Tooling</h4>
           <span class="pct">45%</span>
@@ -799,6 +799,7 @@
               <a href="#about">Tentang</a>
               <a href="#stream">Blog</a>
               <a href="turnamen.html">Turnamen <span class="nav-tag">HOT</span></a>
+              <a href="dashboard-donasi.html" style="color:rgba(255,92,138,0.9);">Admin Donasi 🔒</a>
               <a href="#contact">Kontak</a>
             </div>
 
@@ -875,12 +876,14 @@
   </div>
 
   <!-- JavaScript Modules -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/cursor.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/reveal.js"></script>
   <script src="js/terminal.js"></script>
   <script src="js/contact.js"></script>
   <script src="js/modal.js"></script>
+  <script src="js/donation.js"></script>
   <script src="js/main.js"></script>
 </body>
 

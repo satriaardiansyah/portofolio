@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Dashboard Admin Donasi & Leaderboard — Yabi Dev</title>
+  <meta name="description"
+    content="Panel kendali dinamis untuk memperbarui Target Goal Donasi dan Leaderboard Donatur Yabi Dev tanpa perlu ubah kode.">
+  <link rel="icon" type="image/png" href="assets/icon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tournament.css">
+  <link rel="stylesheet" href="css/bracket.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body class="dash-body admin-locked">
+
+  <!-- ADMIN PASSWORD GATEWAY MODAL (Default: hirosaurus) -->
+  <div id="adminLockOverlay" class="admin-lock-overlay">
+    <div class="admin-lock-card" id="adminLockCard">
+      <div class="admin-lock-icon-wrap">
+        <div class="admin-lock-pulse"></div>
+        <span class="admin-lock-icon" id="adminLockIcon">🔒</span>
+      </div>
+      <div class="admin-lock-badge">RESTRICTED ACCESS • DONATION ADMIN</div>
+      <h2 class="admin-lock-title">Autentikasi Dashboard Donasi</h2>
+      <p class="admin-lock-desc">
+        Halaman ini memiliki kendali penuh atas <strong>Leaderboard Donatur</strong> dan <strong>Target Goal Donasi</strong> di website utama. Masukkan password admin untuk membuka dashboard.
+      </p>
+
+      <form id="adminLockForm" class="admin-lock-form" onsubmit="return false;">
+        <div class="admin-lock-input-group">
+          <span class="admin-lock-input-icon">🔑</span>
+          <input type="password" id="adminPasswordInput" class="admin-lock-input" placeholder="Ketik password admin..."
+            autocomplete="current-password" autofocus required>
+          <button type="button" id="btnTogglePassword" class="admin-lock-eye-btn" title="Lihat/Sembunyikan password"
+            aria-label="Lihat password">👁️</button>
+        </div>
+        <div id="adminLockError" class="admin-lock-error" style="display:none;">
+          <span>⚠️</span> Password salah! Silakan coba lagi.
+        </div>
+        <button type="submit" id="btnSubmitAdminPassword" class="admin-lock-submit-btn">
+          <span>🔓</span> Buka Akses Dashboard
+        </button>
+      </form>
+
+      <div class="admin-lock-footer">
+        <span class="admin-lock-footer-text">Hanya ingin melihat tampilan donasi di website?</span>
+        <a href="index.html#support" class="admin-lock-public-link">
+          <span>🌐</span> Buka Halaman Utama (Publik) ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ambient Decorative Background Blobs -->
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Hidden File Input for JSON Import -->
+  <input type="file" id="importJsonInput" accept=".json" style="display:none;">
+
+  <!-- Header / Navigation Bar -->
+  <header class="dash-header">
+    <div class="dash-brand">
+      <a href="index.html" class="dash-logo">YABI<span>.</span>DEV</a>
+      <span class="dash-tag">⚡ DONATION DASHBOARD</span>
+    </div>
+
+    <div class="dash-header-actions">
+      <a href="index.html#support" target="_blank" class="btn-header-action cyan" title="Buka tampilan live di website">
+        <span>👁️</span> Lihat Website Live ↗
+      </a>
+      <a href="bracket.html" class="btn-header-action" title="Buka Bracket Tournament Admin">
+        <span>🏆</span> Bracket Admin
+      </a>
+      <button type="button" id="btnLockDashboard" class="btn-header-action" title="Kunci Dashboard">
+        <span>🔒</span> Kunci
+      </button>
+    </div>
+  </header>
+
+  <!-- Status & Quick Metrics Bar -->
+  <div class="dash-status-bar">
+    <div class="sync-status-indicator" id="syncStatusBadge">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="syncStatusText">Memeriksa sinkronisasi...</span>
+    </div>
+
+    <div class="dash-main-actions">
+      <button type="button" id="btnExportJson" class="btn-dash-secondary" title="Simpan backup ke file JSON">
+        <span>📥</span> Export Backup
+      </button>
+      <button type="button" id="btnImportJsonTrigger" class="btn-dash-secondary" title="Pulihkan data dari file JSON">
+        <span>📤</span> Import Backup
+      </button>
+      <button type="button" id="btnResetDefault" class="btn-dash-secondary" title="Kembalikan ke data bawaan awal">
+        <span>🔄</span> Reset Default
+      </button>
+      <button type="button" id="btnSaveMaster" class="btn-save-master" title="Simpan perubahan ke Web & Database">
+        <span>💾</span> Simpan Perubahan
+      </button>
+    </div>
+  </div>
+
+  <!-- Metric Summary Cards -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon-wrap orange">👑</div>
+      <div class="metric-info">
+        <span class="metric-label">Total Donatur</span>
+        <span class="metric-val" id="metricTotalDonors">4 Donatur</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap cyan">💰</div>
+      <div class="metric-info">
+        <span class="metric-label">Dana Terkumpul</span>
+        <span class="metric-val" id="metricCurrentAmount">Rp 450.000</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap pink">🎯</div>
+      <div class="metric-info">
+        <span class="metric-label">Target Goal</span>
+        <span class="metric-val" id="metricTargetAmount">Rp 1.000.000</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap purple">📊</div>
+      <div class="metric-info">
+        <span class="metric-label">Pencapaian Goal</span>
+        <span class="metric-val" id="metricPercentage">45%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-Column Workspace -->
+  <main class="dash-workspace">
+    <!-- LEFT PANEL: CONFIGURATION TABS -->
+    <section class="dash-panel">
+      <!-- Tab Navigation Buttons -->
+      <div class="dash-tabs-bar">
+        <button type="button" class="dash-tab-btn active" data-tab="tab-goal">
+          <span>🎯</span> Target Goal Donasi
+        </button>
+        <button type="button" class="dash-tab-btn" data-tab="tab-leaderboard">
+          <span>🏆</span> Leaderboard Donatur
+        </button>
+        <button type="button" class="dash-tab-btn" data-tab="tab-cta">
+          <span>🔗</span> Link & Tombol Donasi
+        </button>
+        <button type="button" class="dash-tab-btn" data-tab="tab-settings">
+          <span>⚙️</span> Pengaturan & Database
+        </button>
+      </div>
+
+      <!-- TAB 1: TARGET GOAL DONASI -->
+      <div class="dash-tab-content active" id="tab-goal">
+        <!-- Toggle Status Tampil -->
+        <div class="form-group" style="padding: 14px 18px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+          <div class="switch-wrap" style="justify-content: space-between;">
+            <div>
+              <div class="switch-label-text" style="font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700;">
+                Tampilkan Target Goal di Website
+              </div>
+              <div class="form-sublabel">Jika dinonaktifkan, bilah progres Target Goal akan disembunyikan di halaman utama.</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="goalEnabledSwitch" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Judul Goal -->
+        <div class="form-group">
+          <label class="form-label" for="goalTitleInput">
+            <span>Judul Target Goal</span>
+            <span class="mono" style="font-size:11px; color:var(--muted);">Teks Utama</span>
+          </label>
+          <input type="text" id="goalTitleInput" class="input-control" placeholder="Contoh: Target Goal Donasi Stream & Tooling" value="Target Goal Donasi Stream & Tooling">
+        </div>
+
+        <!-- Target Dana & Dana Terkumpul -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+          <div class="form-group">
+            <label class="form-label" for="goalTargetInput">
+              <span>Target Dana (Rp)</span>
+            </label>
+            <input type="number" id="goalTargetInput" class="input-control mono" placeholder="1000000" value="1000000" min="0" step="10000">
+            <div class="form-sublabel" id="goalTargetFormatted">Rp 1.000.000</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="goalCurrentInput">
+              <span>Dana Terkumpul (Rp)</span>
+            </label>
+            <input type="number" id="goalCurrentInput" class="input-control mono" placeholder="450000" value="450000" min="0" step="10000">
+            <div class="form-sublabel" id="goalCurrentFormatted">Rp 450.000</div>
+          </div>
+        </div>
+
+        <!-- Quick Increment Buttons (Streamer Friendly) -->
+        <div class="form-group">
+          <label class="form-label">
+            <span>⚡ Tambah Nominal Cepat (Live Stream Quick Add)</span>
+            <span class="mono" style="font-size:11px; color:var(--cyan);">1-Klik</span>
+          </label>
+          <div class="quick-btns-row">
+            <button type="button" class="btn-quick-add" data-add="10000">+10K</button>
+            <button type="button" class="btn-quick-add" data-add="25000">+25K</button>
+            <button type="button" class="btn-quick-add" data-add="50000">+50K</button>
+            <button type="button" class="btn-quick-add" data-add="100000">+100K</button>
+            <button type="button" class="btn-quick-add" data-add="250000">+250K</button>
+            <button type="button" class="btn-quick-add" data-add="500000">+500K</button>
+            <button type="button" class="btn-quick-add" data-add="-10000" style="color:var(--pink); border-color:rgba(255,92,138,0.3); background:rgba(255,92,138,0.08);">-10K</button>
+            <button type="button" class="btn-quick-add" data-add="reset" style="color:var(--muted); border-color:rgba(255,255,255,0.15); background:rgba(255,255,255,0.05);">Reset 0</button>
+          </div>
+        </div>
+
+        <!-- Persentase Pengaturan -->
+        <div class="form-group" style="padding: 12px 16px; background: rgba(255,255,255,0.02); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
+          <div class="switch-wrap" style="justify-content: space-between; margin-bottom: 8px;">
+            <span class="switch-label-text">Hitung Persentase Otomatis (Dana Terkumpul ÷ Target Dana)</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="goalAutoCalcSwitch" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div id="manualPercentageWrap" style="display:none; margin-top:10px;">
+            <label class="form-label" for="goalManualPctInput">Persentase Manual (%)</label>
+            <input type="number" id="goalManualPctInput" class="input-control mono" min="0" max="100" value="45">
+          </div>
+        </div>
+
+        <!-- Catatan / Teks Ucapan Terima Kasih -->
+        <div class="form-group">
+          <label class="form-label" for="goalNoteInput">
+            <span>Catatan / Teks Ucapan Terima Kasih</span>
+          </label>
+          <textarea id="goalNoteInput" class="input-control" rows="3" placeholder="Tuliskan ucapan terima kasih...">Rp {current} terkumpul dari target Rp {target} — terima kasih banyak buat semua dukungannya! 🙏</textarea>
+          <div class="form-sublabel">
+            💡 Variabel dinamis yang bisa dipakai: <code class="mono" style="color:var(--cyan);">{current}</code> untuk dana terkumpul, <code class="mono" style="color:var(--cyan);">{target}</code> untuk target, <code class="mono" style="color:var(--cyan);">{pct}</code> untuk persentase.
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: LEADERBOARD DONATUR -->
+      <div class="dash-tab-content" id="tab-leaderboard">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3 style="font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; margin:0;">
+              Daftar Donatur Teratas
+            </h3>
+            <div class="form-sublabel">Atur peringkat donatur yang tampil di widget leaderboard website.</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button type="button" id="btnSortDonorsDesc" class="btn-dash-secondary" title="Urutkan dari nominal donasi terbesar">
+              <span>⚡</span> Urutkan Tertinggi
+            </button>
+            <button type="button" id="btnAddDonor" class="btn-header-action cyan">
+              <span>+</span> Tambah Donatur
+            </button>
+          </div>
+        </div>
+
+        <!-- Donor Items List Container -->
+        <div id="adminDonorsList" class="admin-donors-list">
+          <!-- Item donatur akan dirender secara dinamis di sini -->
+        </div>
+      </div>
+
+      <!-- TAB 3: LINK & TOMBOL DONASI -->
+      <div class="dash-tab-content" id="tab-cta">
+        <div class="form-group">
+          <label class="form-label" for="ctaButtonTextInput">
+            <span>Teks Tombol Aksi Leaderboard</span>
+          </label>
+          <input type="text" id="ctaButtonTextInput" class="input-control" value="Jadi Donatur Berikutnya ↗" placeholder="Jadi Donatur Berikutnya ↗">
+          <div class="form-sublabel">Teks tombol yang berada di bagian bawah widget Leaderboard Donatur.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="ctaButtonUrlInput">
+            <span>URL Tautan Donasi Saweria</span>
+          </label>
+          <input type="url" id="ctaButtonUrlInput" class="input-control mono" value="https://saweria.co/YabiDev" placeholder="https://saweria.co/YabiDev">
+          <div class="form-sublabel">Tautan ke halaman Saweria milik Anda saat pengunjung menekan tombol donasi.</div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 16px; border-radius: 12px; background: rgba(69,232,212,0.05); border: 1px solid rgba(69,232,212,0.2);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:600; color:var(--cyan); font-family:'Space Grotesk',sans-serif;">Uji Coba Tautan Saweria</div>
+              <div class="form-sublabel">Buka URL di tab baru untuk memastikan link Saweria Anda aktif & benar.</div>
+            </div>
+            <button type="button" id="btnTestSaweriaLink" class="btn-dash-secondary">
+              <span>🔗</span> Buka Tautan ↗
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: PENGATURAN & KEAMANAN -->
+      <div class="dash-tab-content" id="tab-settings">
+        <!-- Ganti Password Admin -->
+        <div style="margin-bottom: 24px; padding: 18px; border-radius: 14px; background: rgba(7,5,16,0.5); border: 1px solid rgba(255,255,255,0.08);">
+          <h4 style="font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; margin:0 0 8px;">
+            🔑 Ganti Password Akses Dashboard
+          </h4>
+          <div class="form-sublabel" style="margin-bottom:14px;">
+            Password saat ini tersimpan di browser ini (Default: <code class="mono" style="color:var(--amber);">hirosaurus</code>).
+          </div>
+          <div style="display:flex; gap:10px; max-width:400px;">
+            <input type="password" id="newAdminPasswordInput" class="input-control" placeholder="Ketik password baru...">
+            <button type="button" id="btnChangeAdminPassword" class="btn-header-action cyan" style="white-space:nowrap;">
+              Ubah Password
+            </button>
+          </div>
+        </div>
+
+        <!-- Supabase Cloud Integration Info -->
+        <div style="margin-bottom: 24px; padding: 18px; border-radius: 14px; background: rgba(7,5,16,0.5); border: 1px solid rgba(255,255,255,0.08);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; margin:0;">
+              ⚡ Supabase Cloud Database & Realtime Sync
+            </h4>
+            <span class="widget-badge neon-green" id="dbStatusBadge">Terhubung</span>
+          </div>
+          <p style="font-size:12.5px; color:var(--muted); line-height:1.6; margin:0 0 12px;">
+            Aplikasi ini dirancang dengan sistem dual-layer. Data akan selalu tersimpan di <strong>LocalStorage</strong> secara instan, dan bila tabel <code class="mono" style="color:var(--cyan);">donation_settings</code> sudah dijalankan di Supabase SQL Editor, data akan tersinkronisasi otomatis ke seluruh perangkat dan penonton secara realtime!
+          </p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" id="btnCopySqlMigration" class="btn-dash-secondary">
+              <span>📋</span> Salin Skrip SQL Supabase
+            </button>
+            <a href="https://supabase.com/dashboard" target="_blank" rel="noopener" class="btn-dash-secondary">
+              <span>↗</span> Buka Supabase Dashboard
+            </a>
+          </div>
+        </div>
+
+        <!-- Reset / Cache Clear -->
+        <div style="padding: 18px; border-radius: 14px; background: rgba(255,92,138,0.04); border: 1px solid rgba(255,92,138,0.2);">
+          <h4 style="font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; margin:0 0 8px; color:var(--pink);">
+            ⚠️ Zona Berbahaya
+          </h4>
+          <p style="font-size:12.5px; color:var(--muted); margin:0 0 12px;">
+            Mengembalikan seluruh data donasi ke data bawaan awal dan menghapus data yang tersimpan di local browser ini.
+          </p>
+          <button type="button" id="btnForceResetCache" class="btn-del-donor" style="width:auto; height:auto; padding:8px 16px;">
+            <span>🗑️</span> Reset & Hapus Data Lokal
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL: REALTIME LIVE PREVIEW -->
+    <aside class="dash-preview-panel">
+      <div class="preview-header">
+        <div class="preview-title">
+          <span>👁️</span>
+          <span>LIVE PREVIEW</span>
+          <span class="preview-live-badge">REALTIME</span>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button type="button" id="btnViewDesktop" class="btn-header-action cyan" style="padding:4px 10px; font-size:11px;" title="Tampilan Lebar (Desktop)">
+            🖥️ Desktop
+          </button>
+          <button type="button" id="btnViewMobile" class="btn-header-action" style="padding:4px 10px; font-size:11px;" title="Tampilan Smartphone (Mobile)">
+            📱 Mobile
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Rendering Canvas (Exact Match to index.html) -->
+      <div class="preview-stage" id="previewStage">
+        <!-- Leaderboard Box Preview -->
+        <div class="widget-card leaderboard-card" style="margin-bottom: 20px;">
+          <div class="widget-header">
+            <div class="widget-title-wrap">
+              <span class="widget-icon">🏆</span>
+              <div>
+                <h4>Leaderboard Donatur</h4>
+              </div>
+            </div>
+            <span class="widget-badge neon-pink" style="font-size:10px;"><span class="blink">●</span> LIVE</span>
+          </div>
+
+          <div class="leaderboard-list" id="previewLeaderboardList">
+            <!-- Will be dynamically hydrated by JS -->
+          </div>
+
+          <div class="widget-footer-link">
+            <a href="https://saweria.co/YabiDev" target="_blank" rel="noopener" class="lb-action-btn" id="previewLbActionBtn">
+              <span>♥</span> Jadi Donatur Berikutnya ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- Goal Box Preview -->
+        <div class="goal-box" id="previewGoalBox" style="margin-top:0;">
+          <div class="goal-top">
+            <h4 class="goal-title">Target Goal Donasi Stream & Tooling</h4>
+            <span class="pct goal-pct">45%</span>
+          </div>
+          <div class="goal-bar">
+            <div class="goal-fill" style="width: 45%;"></div>
+          </div>
+          <div class="goal-note">Rp 450.000 terkumpul dari target Rp 1.000.000 — terima kasih banyak buat semua dukungannya! 🙏</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- External Supabase SDK & Donation Core Script -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/donation.js"></script>
+
+  <!-- Dashboard Admin Specific Logic -->
+  <script>
+    (function () {
+      'use strict';
+
+      // --- ADMIN AUTHENTICATION GATEWAY ---
+      const PWD_STORAGE_KEY = 'yabidev_admin_pwd';
+      const AUTH_SESSION_KEY = 'yabidev_admin_auth_donasi';
+      const DEFAULT_PASSWORD = 'hirosaurus';
+
+      function getStoredPassword() {
+        return localStorage.getItem(PWD_STORAGE_KEY) || DEFAULT_PASSWORD;
+      }
+
+      function checkAuth() {
+        const isAuth = sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
+        if (isAuth) {
+          document.body.classList.remove('admin-locked');
+          const overlay = document.getElementById('adminLockOverlay');
+          if (overlay) overlay.style.display = 'none';
+        } else {
+          document.body.classList.add('admin-locked');
+          const overlay = document.getElementById('adminLockOverlay');
+          if (overlay) overlay.style.display = 'flex';
+          setTimeout(() => {
+            const pwdInput = document.getElementById('adminPasswordInput');
+            if (pwdInput) pwdInput.focus();
+          }, 100);
+        }
+      }
+
+      // Handle Password Submit
+      const adminLockForm = document.getElementById('adminLockForm');
+      const adminPasswordInput = document.getElementById('adminPasswordInput');
+      const adminLockError = document.getElementById('adminLockError');
+      const btnTogglePassword = document.getElementById('btnTogglePassword');
+
+      if (btnTogglePassword && adminPasswordInput) {
+        btnTogglePassword.addEventListener('click', () => {
+          const type = adminPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          adminPasswordInput.setAttribute('type', type);
+          btnTogglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+      }
+
+      if (adminLockForm) {
+        adminLockForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const entered = (adminPasswordInput.value || '').trim();
+          if (entered === getStoredPassword()) {
+            sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
+            if (adminLockError) adminLockError.style.display = 'none';
+            document.body.classList.remove('admin-locked');
+            const overlay = document.getElementById('adminLockOverlay');
+            if (overlay) overlay.style.display = 'none';
+            showToast('🔓 Akses Dashboard Terbuka!', 'success');
+          } else {
+            if (adminLockError) adminLockError.style.display = 'flex';
+            adminPasswordInput.classList.add('error-shake');
+            setTimeout(() => adminPasswordInput.classList.remove('error-shake'), 400);
+          }
+        });
+      }
+
+      // Lock Dashboard Button
+      const btnLockDashboard = document.getElementById('btnLockDashboard');
+      if (btnLockDashboard) {
+        btnLockDashboard.addEventListener('click', () => {
+          sessionStorage.removeItem(AUTH_SESSION_KEY);
+          location.reload();
+        });
+      }
+
+      // Change Password Button
+      const btnChangeAdminPassword = document.getElementById('btnChangeAdminPassword');
+      const newAdminPasswordInput = document.getElementById('newAdminPasswordInput');
+      if (btnChangeAdminPassword && newAdminPasswordInput) {
+        btnChangeAdminPassword.addEventListener('click', () => {
+          const val = newAdminPasswordInput.value.trim();
+          if (!val || val.length < 4) {
+            showToast('⚠️ Password baru minimal 4 karakter!', 'error');
+            return;
+          }
+          localStorage.setItem(PWD_STORAGE_KEY, val);
+          newAdminPasswordInput.value = '';
+          showToast('🔑 Password admin berhasil diperbarui!', 'success');
+        });
+      }
+
+      // --- TOAST NOTIFICATIONS ---
+      function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast-item ${type === 'error' ? 'error' : ''}`;
+        toast.innerHTML = `
+          <span>${type === 'error' ? '❌' : '⚡'}</span>
+          <span>${escapeHtml(message)}</span>
+        `;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.animation = 'toastSlideOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+          setTimeout(() => toast.remove(), 300);
+        }, 3200);
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      // --- TAB SWITCHING ---
+      const tabButtons = document.querySelectorAll('.dash-tab-btn');
+      const tabContents = document.querySelectorAll('.dash-tab-content');
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetTabId = btn.getAttribute('data-tab');
+          tabButtons.forEach(b => b.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
+
+          btn.classList.add('active');
+          const targetContent = document.getElementById(targetTabId);
+          if (targetContent) targetContent.classList.add('active');
+        });
+      });
+
+      // --- PREVIEW SIZE TOGGLE (DESKTOP / MOBILE) ---
+      const btnViewDesktop = document.getElementById('btnViewDesktop');
+      const btnViewMobile = document.getElementById('btnViewMobile');
+      const previewStage = document.getElementById('previewStage');
+
+      if (btnViewDesktop && btnViewMobile && previewStage) {
+        btnViewDesktop.addEventListener('click', () => {
+          previewStage.classList.remove('mobile-frame');
+          btnViewDesktop.classList.add('cyan');
+          btnViewMobile.classList.remove('cyan');
+        });
+        btnViewMobile.addEventListener('click', () => {
+          previewStage.classList.add('mobile-frame');
+          btnViewMobile.classList.add('cyan');
+          btnViewDesktop.classList.remove('cyan');
+        });
+      }
+
+      // --- STATE & FORM CONTROLLER ---
+      let workingData = null;
+
+      function initDashboardData() {
+        if (!window.DonationManager) return;
+        workingData = JSON.parse(JSON.stringify(window.DonationManager.getData()));
+        populateFormFields(workingData);
+        renderDonorListEditor();
+        updatePreviewAndMetrics();
+        updateSyncStatus();
+      }
+
+      function updateSyncStatus() {
+        const syncStatusText = document.getElementById('syncStatusText');
+        const statusDot = document.getElementById('statusDot');
+        const dbStatusBadge = document.getElementById('dbStatusBadge');
+
+        const isSupabase = window.DonationManager && window.DonationManager.isSupabaseConnected();
+        if (isSupabase) {
+          if (syncStatusText) syncStatusText.textContent = 'Supabase Cloud & Realtime Siap';
+          if (statusDot) statusDot.className = 'status-dot';
+          if (dbStatusBadge) {
+            dbStatusBadge.textContent = 'Terhubung ⚡';
+            dbStatusBadge.className = 'widget-badge neon-green';
+          }
+        } else {
+          if (syncStatusText) syncStatusText.textContent = 'Mode Offline (LocalStorage Aktif)';
+          if (statusDot) statusDot.className = 'status-dot offline';
+          if (dbStatusBadge) {
+            dbStatusBadge.textContent = 'Lokal Saja';
+            dbStatusBadge.className = 'widget-badge';
+          }
+        }
+      }
+
+      // Populate Input Fields
+      function populateFormFields(data) {
+        if (!data) return;
+
+        // Target Goal
+        const goal = data.targetGoal || {};
+        const goalEnabledSwitch = document.getElementById('goalEnabledSwitch');
+        const goalTitleInput = document.getElementById('goalTitleInput');
+        const goalTargetInput = document.getElementById('goalTargetInput');
+        const goalCurrentInput = document.getElementById('goalCurrentInput');
+        const goalAutoCalcSwitch = document.getElementById('goalAutoCalcSwitch');
+        const goalManualPctInput = document.getElementById('goalManualPctInput');
+        const manualPercentageWrap = document.getElementById('manualPercentageWrap');
+        const goalNoteInput = document.getElementById('goalNoteInput');
+
+        if (goalEnabledSwitch) goalEnabledSwitch.checked = goal.enabled !== false;
+        if (goalTitleInput) goalTitleInput.value = goal.title || '';
+        if (goalTargetInput) goalTargetInput.value = goal.targetAmount || 0;
+        if (goalCurrentInput) goalCurrentInput.value = goal.currentAmount || 0;
+        if (goalAutoCalcSwitch) {
+          goalAutoCalcSwitch.checked = goal.autoCalc !== false;
+          if (manualPercentageWrap) {
+            manualPercentageWrap.style.display = goal.autoCalc !== false ? 'none' : 'block';
+          }
+        }
+        if (goalManualPctInput) goalManualPctInput.value = goal.percentage || 0;
+        if (goalNoteInput) goalNoteInput.value = goal.customNote || '';
+
+        // CTA Settings
+        const cta = data.ctaSettings || {};
+        const ctaButtonTextInput = document.getElementById('ctaButtonTextInput');
+        const ctaButtonUrlInput = document.getElementById('ctaButtonUrlInput');
+
+        if (ctaButtonTextInput) ctaButtonTextInput.value = cta.buttonText || '';
+        if (ctaButtonUrlInput) ctaButtonUrlInput.value = cta.buttonUrl || '';
+
+        updateFormattedAmounts();
+      }
+
+      function updateFormattedAmounts() {
+        const goalTargetInput = document.getElementById('goalTargetInput');
+        const goalCurrentInput = document.getElementById('goalCurrentInput');
+        const goalTargetFormatted = document.getElementById('goalTargetFormatted');
+        const goalCurrentFormatted = document.getElementById('goalCurrentFormatted');
+
+        if (goalTargetFormatted && goalTargetInput) {
+          goalTargetFormatted.textContent = window.DonationManager.formatRupiah(goalTargetInput.value);
+        }
+        if (goalCurrentFormatted && goalCurrentInput) {
+          goalCurrentFormatted.textContent = window.DonationManager.formatRupiah(goalCurrentInput.value);
+        }
+      }
+
+      // Collect data from inputs into workingData
+      function syncFormToWorkingData() {
+        if (!workingData) return;
+
+        const goalEnabledSwitch = document.getElementById('goalEnabledSwitch');
+        const goalTitleInput = document.getElementById('goalTitleInput');
+        const goalTargetInput = document.getElementById('goalTargetInput');
+        const goalCurrentInput = document.getElementById('goalCurrentInput');
+        const goalAutoCalcSwitch = document.getElementById('goalAutoCalcSwitch');
+        const goalManualPctInput = document.getElementById('goalManualPctInput');
+        const goalNoteInput = document.getElementById('goalNoteInput');
+
+        const cur = Number(goalCurrentInput ? goalCurrentInput.value : 0) || 0;
+        const tar = Number(goalTargetInput ? goalTargetInput.value : 1000000) || 1;
+        const autoCalc = goalAutoCalcSwitch ? goalAutoCalcSwitch.checked : true;
+        const pct = autoCalc ? window.DonationManager.calculatePercentage(cur, tar) : (Number(goalManualPctInput.value) || 0);
+
+        workingData.targetGoal = {
+          enabled: goalEnabledSwitch ? goalEnabledSwitch.checked : true,
+          title: goalTitleInput ? goalTitleInput.value.trim() : 'Target Goal Donasi',
+          currentAmount: cur,
+          targetAmount: tar,
+          autoCalc: autoCalc,
+          percentage: pct,
+          customNote: goalNoteInput ? goalNoteInput.value : ''
+        };
+
+        const ctaButtonTextInput = document.getElementById('ctaButtonTextInput');
+        const ctaButtonUrlInput = document.getElementById('ctaButtonUrlInput');
+
+        workingData.ctaSettings = {
+          buttonText: ctaButtonTextInput ? ctaButtonTextInput.value.trim() : 'Jadi Donatur Berikutnya ↗',
+          buttonUrl: ctaButtonUrlInput ? ctaButtonUrlInput.value.trim() : 'https://saweria.co/YabiDev',
+          saweriaUsername: 'YabiDev'
+        };
+      }
+
+      // Render the Editor UI for Donors in Tab 2
+      function renderDonorListEditor() {
+        const container = document.getElementById('adminDonorsList');
+        if (!container || !workingData) return;
+
+        const donors = workingData.leaderboard || [];
+
+        if (donors.length === 0) {
+          container.innerHTML = `
+            <div style="text-align:center; padding:32px 20px; background:rgba(255,255,255,0.02); border-radius:12px; border:1px dashed rgba(255,255,255,0.1); color:var(--muted);">
+              Belum ada donatur. Klik tombol <strong>+ Tambah Donatur</strong> di atas untuk menambahkan!
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+        donors.forEach((donor, idx) => {
+          const rank = idx + 1;
+          donor.rank = rank; // sinkronkan rank
+
+          let defaultTheme = 'gray';
+          if (rank === 1) defaultTheme = 'orange';
+          else if (rank === 2) defaultTheme = 'cyan';
+          else if (rank === 3) defaultTheme = 'pink';
+
+          const activeTheme = donor.colorTheme || defaultTheme;
+
+          html += `
+            <div class="donor-card-item" data-index="${idx}">
+              <div class="donor-card-top">
+                <div class="donor-rank-badge-editor">
+                  <span class="donor-rank-num">#${rank}</span>
+                  <span style="font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:700; color:#fff;">
+                    ${escapeHtml(donor.name || 'Donatur Tanpa Nama')}
+                  </span>
+                </div>
+                <div class="donor-order-controls">
+                  <button type="button" class="btn-order-arrow btn-move-up" data-index="${idx}" title="Pindah ke atas" ${idx === 0 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>▲</button>
+                  <button type="button" class="btn-order-arrow btn-move-down" data-index="${idx}" title="Pindah ke bawah" ${idx === donors.length - 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>▼</button>
+                  <button type="button" class="btn-del-donor btn-delete-donor" data-index="${idx}" title="Hapus donatur">✕</button>
+                </div>
+              </div>
+
+              <div class="donor-fields-grid">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label" style="font-size:11px; margin-bottom:4px;">Nama Donatur</label>
+                  <input type="text" class="input-control donor-name-input" data-index="${idx}" value="${escapeHtml(donor.name || '')}" placeholder="Contoh: Sambung kata">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label" style="font-size:11px; margin-bottom:4px;">Nominal Donasi (Rp)</label>
+                  <input type="number" class="input-control mono donor-amount-input" data-index="${idx}" value="${donor.amount || 0}" step="1000" min="0">
+                </div>
+              </div>
+
+              <div class="donor-extra-grid">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label" style="font-size:11px; margin-bottom:4px;">Inisial Avatar</label>
+                  <input type="text" maxlength="3" class="input-control mono donor-initials-input" data-index="${idx}" value="${escapeHtml(donor.initials || '')}" placeholder="SK">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label" style="font-size:11px; margin-bottom:4px;">Lencana / Badge</label>
+                  <input type="text" class="input-control donor-badge-input" data-index="${idx}" value="${escapeHtml(donor.badgeText || '')}" placeholder="👑 Top 1">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label" style="font-size:11px; margin-bottom:4px;">Tema Warna</label>
+                  <div class="color-pill-selector">
+                    <label>
+                      <input type="radio" name="theme-${idx}" class="color-option-radio donor-theme-radio" data-index="${idx}" value="orange" ${activeTheme === 'orange' ? 'checked' : ''}>
+                      <span class="color-option-label theme-orange" title="Gold / Orange"></span>
+                    </label>
+                    <label>
+                      <input type="radio" name="theme-${idx}" class="color-option-radio donor-theme-radio" data-index="${idx}" value="cyan" ${activeTheme === 'cyan' ? 'checked' : ''}>
+                      <span class="color-option-label theme-cyan" title="Cyan"></span>
+                    </label>
+                    <label>
+                      <input type="radio" name="theme-${idx}" class="color-option-radio donor-theme-radio" data-index="${idx}" value="pink" ${activeTheme === 'pink' ? 'checked' : ''}>
+                      <span class="color-option-label theme-pink" title="Pink"></span>
+                    </label>
+                    <label>
+                      <input type="radio" name="theme-${idx}" class="color-option-radio donor-theme-radio" data-index="${idx}" value="gray" ${activeTheme === 'gray' ? 'checked' : ''}>
+                      <span class="color-option-label theme-gray" title="Abu-abu"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+        attachDonorItemEvents();
+      }
+
+      function attachDonorItemEvents() {
+        // Inputs change
+        document.querySelectorAll('.donor-name-input').forEach(inp => {
+          inp.addEventListener('input', (e) => {
+            const idx = Number(e.target.getAttribute('data-index'));
+            if (workingData.leaderboard[idx]) {
+              workingData.leaderboard[idx].name = e.target.value;
+              // Auto generate initials if empty or 2 letters
+              const currentInit = workingData.leaderboard[idx].initials;
+              if (!currentInit || currentInit.length <= 2) {
+                workingData.leaderboard[idx].initials = window.DonationManager.generateInitials(e.target.value);
+                const initInp = document.querySelector(`.donor-initials-input[data-index="${idx}"]`);
+                if (initInp) initInp.value = workingData.leaderboard[idx].initials;
+              }
+              updatePreviewAndMetrics();
+            }
+          });
+        });
+
+        document.querySelectorAll('.donor-amount-input').forEach(inp => {
+          inp.addEventListener('input', (e) => {
+            const idx = Number(e.target.getAttribute('data-index'));
+            if (workingData.leaderboard[idx]) {
+              workingData.leaderboard[idx].amount = Number(e.target.value) || 0;
+              updatePreviewAndMetrics();
+            }
+          });
+        });
+
+        document.querySelectorAll('.donor-initials-input').forEach(inp => {
+          inp.addEventListener('input', (e) => {
+            const idx = Number(e.target.getAttribute('data-index'));
+            if (workingData.leaderboard[idx]) {
+              workingData.leaderboard[idx].initials = (e.target.value || '').toUpperCase();
+              updatePreviewAndMetrics();
+            }
+          });
+        });
+
+        document.querySelectorAll('.donor-badge-input').forEach(inp => {
+          inp.addEventListener('input', (e) => {
+            const idx = Number(e.target.getAttribute('data-index'));
+            if (workingData.leaderboard[idx]) {
+              workingData.leaderboard[idx].badgeText = e.target.value;
+              updatePreviewAndMetrics();
+            }
+          });
+        });
+
+        document.querySelectorAll('.donor-theme-radio').forEach(radio => {
+          radio.addEventListener('change', (e) => {
+            const idx = Number(e.target.getAttribute('data-index'));
+            if (workingData.leaderboard[idx]) {
+              workingData.leaderboard[idx].colorTheme = e.target.value;
+              updatePreviewAndMetrics();
+            }
+          });
+        });
+
+        // Move Up
+        document.querySelectorAll('.btn-move-up').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = Number(e.currentTarget.getAttribute('data-index'));
+            if (idx > 0 && workingData.leaderboard[idx]) {
+              const temp = workingData.leaderboard[idx];
+              workingData.leaderboard[idx] = workingData.leaderboard[idx - 1];
+              workingData.leaderboard[idx - 1] = temp;
+              renderDonorListEditor();
+              updatePreviewAndMetrics();
+            }
+          });
+        });
+
+        // Move Down
+        document.querySelectorAll('.btn-move-down').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = Number(e.currentTarget.getAttribute('data-index'));
+            if (idx < workingData.leaderboard.length - 1 && workingData.leaderboard[idx]) {
+              const temp = workingData.leaderboard[idx];
+              workingData.leaderboard[idx] = workingData.leaderboard[idx + 1];
+              workingData.leaderboard[idx + 1] = temp;
+              renderDonorListEditor();
+              updatePreviewAndMetrics();
+            }
+          });
+        });
+
+        // Delete Donor
+        document.querySelectorAll('.btn-delete-donor').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const idx = Number(e.currentTarget.getAttribute('data-index'));
+            const donorName = workingData.leaderboard[idx]?.name || 'Donatur';
+            if (confirm(`Yakin ingin menghapus "${donorName}" dari leaderboard?`)) {
+              workingData.leaderboard.splice(idx, 1);
+              renderDonorListEditor();
+              updatePreviewAndMetrics();
+              showToast(`🗑️ ${donorName} dihapus dari leaderboard`, 'error');
+            }
+          });
+        });
+      }
+
+      // Add Donor Button
+      const btnAddDonor = document.getElementById('btnAddDonor');
+      if (btnAddDonor) {
+        btnAddDonor.addEventListener('click', () => {
+          const newIdx = (workingData.leaderboard || []).length + 1;
+          const newDonor = {
+            id: 'lb-' + Date.now(),
+            rank: newIdx,
+            name: 'Donatur Baru',
+            amount: 50000,
+            initials: 'DB',
+            colorTheme: newIdx === 1 ? 'orange' : (newIdx === 2 ? 'cyan' : (newIdx === 3 ? 'pink' : 'gray')),
+            badgeText: newIdx === 1 ? '👑 Top 1' : ''
+          };
+          if (!workingData.leaderboard) workingData.leaderboard = [];
+          workingData.leaderboard.push(newDonor);
+          renderDonorListEditor();
+          updatePreviewAndMetrics();
+          showToast('✨ Donatur baru ditambahkan!', 'success');
+
+          // Scroll ke bawah tab
+          setTimeout(() => {
+            const list = document.getElementById('adminDonorsList');
+            if (list && list.lastElementChild) {
+              list.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 100);
+        });
+      }
+
+      // Auto Sort Donors Descending
+      const btnSortDonorsDesc = document.getElementById('btnSortDonorsDesc');
+      if (btnSortDonorsDesc) {
+        btnSortDonorsDesc.addEventListener('click', () => {
+          if (!workingData.leaderboard || workingData.leaderboard.length < 2) return;
+          workingData.leaderboard.sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0));
+
+          // Otomatis update rank & tema warna top 3
+          workingData.leaderboard.forEach((d, i) => {
+            d.rank = i + 1;
+            if (i === 0) {
+              d.colorTheme = 'orange';
+              if (!d.badgeText) d.badgeText = '👑 Top 1';
+            } else if (i === 1) {
+              d.colorTheme = 'cyan';
+              if (d.badgeText === '👑 Top 1') d.badgeText = '';
+            } else if (i === 2) {
+              d.colorTheme = 'pink';
+              if (d.badgeText === '👑 Top 1') d.badgeText = '';
+            } else {
+              d.colorTheme = 'gray';
+              if (d.badgeText === '👑 Top 1') d.badgeText = '';
+            }
+          });
+
+          renderDonorListEditor();
+          updatePreviewAndMetrics();
+          showToast('⚡ Leaderboard berhasil diurutkan dari nominal tertinggi!', 'success');
+        });
+      }
+
+      // Quick Increment Buttons on Goal
+      document.querySelectorAll('.btn-quick-add').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const addVal = btn.getAttribute('data-add');
+          const goalCurrentInput = document.getElementById('goalCurrentInput');
+          if (!goalCurrentInput) return;
+
+          let current = Number(goalCurrentInput.value) || 0;
+          if (addVal === 'reset') {
+            current = 0;
+          } else {
+            current = Math.max(0, current + Number(addVal));
+          }
+
+          goalCurrentInput.value = current;
+          syncFormToWorkingData();
+          updateFormattedAmounts();
+          updatePreviewAndMetrics();
+          showToast(`💰 Dana terkumpul disesuaikan: ${window.DonationManager.formatRupiah(current)}`, 'success');
+        });
+      });
+
+      // Form input change listeners to update live preview
+      const formInputs = [
+        'goalEnabledSwitch', 'goalTitleInput', 'goalTargetInput', 'goalCurrentInput',
+        'goalAutoCalcSwitch', 'goalManualPctInput', 'goalNoteInput',
+        'ctaButtonTextInput', 'ctaButtonUrlInput'
+      ];
+
+      formInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', () => {
+            syncFormToWorkingData();
+            updateFormattedAmounts();
+            updatePreviewAndMetrics();
+          });
+          el.addEventListener('change', () => {
+            if (id === 'goalAutoCalcSwitch') {
+              const manualWrap = document.getElementById('manualPercentageWrap');
+              if (manualWrap) manualWrap.style.display = el.checked ? 'none' : 'block';
+            }
+            syncFormToWorkingData();
+            updateFormattedAmounts();
+            updatePreviewAndMetrics();
+          });
+        }
+      });
+
+      // Test Saweria link
+      const btnTestSaweriaLink = document.getElementById('btnTestSaweriaLink');
+      if (btnTestSaweriaLink) {
+        btnTestSaweriaLink.addEventListener('click', () => {
+          const urlInput = document.getElementById('ctaButtonUrlInput');
+          const url = urlInput ? urlInput.value.trim() : 'https://saweria.co/YabiDev';
+          window.open(url, '_blank', 'noopener');
+        });
+      }
+
+      // Update Right Panel Live Preview and Top Metrics
+      function updatePreviewAndMetrics() {
+        if (!workingData) return;
+
+        // Top Metrics
+        const donors = workingData.leaderboard || [];
+        const goal = workingData.targetGoal || {};
+
+        const metricTotalDonors = document.getElementById('metricTotalDonors');
+        const metricCurrentAmount = document.getElementById('metricCurrentAmount');
+        const metricTargetAmount = document.getElementById('metricTargetAmount');
+        const metricPercentage = document.getElementById('metricPercentage');
+
+        const cur = Number(goal.currentAmount) || 0;
+        const tar = Number(goal.targetAmount) || 1;
+        let pct = goal.percentage;
+        if (goal.autoCalc !== false || pct === undefined) {
+          pct = window.DonationManager.calculatePercentage(cur, tar);
+        }
+
+        if (metricTotalDonors) metricTotalDonors.textContent = `${donors.length} Donatur`;
+        if (metricCurrentAmount) metricCurrentAmount.textContent = window.DonationManager.formatRupiah(cur);
+        if (metricTargetAmount) metricTargetAmount.textContent = window.DonationManager.formatRupiah(tar);
+        if (metricPercentage) metricPercentage.textContent = `${pct}%`;
+
+        // Render Preview Target Goal
+        const previewGoalBox = document.getElementById('previewGoalBox');
+        if (previewGoalBox) {
+          if (goal.enabled === false) {
+            previewGoalBox.style.display = 'none';
+          } else {
+            previewGoalBox.style.display = '';
+            const titleEl = previewGoalBox.querySelector('.goal-title');
+            const pctEl = previewGoalBox.querySelector('.goal-pct');
+            const fillEl = previewGoalBox.querySelector('.goal-fill');
+            const noteEl = previewGoalBox.querySelector('.goal-note');
+
+            if (titleEl) titleEl.textContent = goal.title || 'Target Goal Donasi Stream & Tooling';
+            if (pctEl) pctEl.textContent = `${pct}%`;
+            if (fillEl) fillEl.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+
+            if (noteEl) {
+              let note = goal.customNote || 'Rp {current} terkumpul dari target Rp {target} — terima kasih banyak buat semua dukungannya! 🙏';
+              note = note
+                .replace(/\{current\}/g, cur.toLocaleString('id-ID'))
+                .replace(/\{target\}/g, tar.toLocaleString('id-ID'))
+                .replace(/\{pct\}/g, `${pct}%`);
+              noteEl.textContent = note;
+            }
+          }
+        }
+
+        // Render Preview Leaderboard
+        const previewList = document.getElementById('previewLeaderboardList');
+        if (previewList) {
+          let html = '';
+          donors.forEach((donor, idx) => {
+            const rank = idx + 1;
+            const name = donor.name || 'Anonim';
+            const amountStr = window.DonationManager.formatRupiah(donor.amount || 0);
+            const initials = donor.initials || window.DonationManager.generateInitials(name);
+            const badgeText = donor.badgeText || '';
+
+            let rankClass = `rank-${Math.min(rank, 4)}`;
+            let badgeIcon = `${rank}`;
+            if (rank === 1) badgeIcon = '🥇 1';
+            else if (rank === 2) badgeIcon = '🥈 2';
+            else if (rank === 3) badgeIcon = '🥉 3';
+
+            let avatarClass = `rank-${rank}-avatar`;
+            let amountClass = `rank-${rank}-amount`;
+            let itemClass = `rank-${rank}`;
+
+            if (rank > 3) {
+              avatarClass = 'rank-4-avatar';
+              amountClass = 'rank-4-amount';
+              itemClass = 'rank-4';
+            }
+
+            if (donor.colorTheme === 'orange') avatarClass = 'rank-1-avatar';
+            else if (donor.colorTheme === 'cyan') avatarClass = 'rank-2-avatar';
+            else if (donor.colorTheme === 'pink') avatarClass = 'rank-3-avatar';
+            else if (donor.colorTheme === 'gray') avatarClass = 'rank-4-avatar';
+
+            const crownHtml = badgeText ? `<span class="lb-crown-badge">${escapeHtml(badgeText)}</span>` : '';
+
+            html += `
+              <div class="lb-item ${itemClass}">
+                <div class="lb-left">
+                  <span class="rank-badge rank-${Math.min(rank, 4)}-badge">${badgeIcon}</span>
+                  <div class="lb-avatar ${avatarClass}">${escapeHtml(initials)}</div>
+                  <div class="lb-user-details">
+                    <span class="lb-name" title="${escapeHtml(name)}">${escapeHtml(name)}</span>
+                    ${crownHtml}
+                  </div>
+                </div>
+                <span class="lb-amount ${amountClass}">${amountStr}</span>
+              </div>
+            `;
+          });
+
+          if (donors.length === 0) {
+            html = `
+              <div class="lb-item empty-state" style="justify-content:center; padding: 24px; color: var(--muted); font-size:13px;">
+                Belum ada donatur. Tambahkan di tab pengaturan! ✨
+              </div>
+            `;
+          }
+
+          previewList.innerHTML = html;
+        }
+
+        // Render Preview CTA button
+        const previewLbActionBtn = document.getElementById('previewLbActionBtn');
+        if (previewLbActionBtn && workingData.ctaSettings) {
+          previewLbActionBtn.setAttribute('href', workingData.ctaSettings.buttonUrl || '#');
+          previewLbActionBtn.innerHTML = `<span>♥</span> ${escapeHtml(workingData.ctaSettings.buttonText || 'Jadi Donatur Berikutnya ↗')}`;
+        }
+      }
+
+      // --- SAVE ACTIONS ---
+      const btnSaveMaster = document.getElementById('btnSaveMaster');
+      if (btnSaveMaster) {
+        btnSaveMaster.addEventListener('click', async () => {
+          syncFormToWorkingData();
+
+          btnSaveMaster.disabled = true;
+          btnSaveMaster.innerHTML = '<span>⏳</span> Menyimpan...';
+
+          try {
+            const res = await window.DonationManager.saveData(workingData);
+            if (res.cloudSynced) {
+              showToast('✅ Berhasil disimpan & tersinkron ke Supabase Cloud!', 'success');
+            } else {
+              showToast('✅ Berhasil disimpan ke LocalStorage & tersiar ke website!', 'success');
+            }
+            updateSyncStatus();
+          } catch (err) {
+            console.error('Save error:', err);
+            showToast('⚠️ Gagal menyimpan data: ' + err.message, 'error');
+          } finally {
+            btnSaveMaster.disabled = false;
+            btnSaveMaster.innerHTML = '<span>💾</span> Simpan Perubahan';
+          }
+        });
+      }
+
+      // Reset to Default Data
+      const btnResetDefault = document.getElementById('btnResetDefault');
+      const btnForceResetCache = document.getElementById('btnForceResetCache');
+
+      function handleResetDefault() {
+        if (confirm('Kembalikan semua data ke data bawaan awal? Perubahan saat ini akan diganti.')) {
+          const defaultData = window.DonationManager.getDefaultData();
+          workingData = JSON.parse(JSON.stringify(defaultData));
+          populateFormFields(workingData);
+          renderDonorListEditor();
+          updatePreviewAndMetrics();
+          window.DonationManager.saveData(workingData);
+          showToast('🔄 Data berhasil di-reset ke nilai default!', 'success');
+        }
+      }
+
+      if (btnResetDefault) btnResetDefault.addEventListener('click', handleResetDefault);
+      if (btnForceResetCache) btnForceResetCache.addEventListener('click', handleResetDefault);
+
+      // Export JSON Backup
+      const btnExportJson = document.getElementById('btnExportJson');
+      if (btnExportJson) {
+        btnExportJson.addEventListener('click', () => {
+          syncFormToWorkingData();
+          const jsonStr = JSON.stringify(workingData, null, 2);
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          const dateStr = new Date().toISOString().slice(0, 10);
+          a.href = url;
+          a.download = `yabidev_donation_backup_${dateStr}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('📥 File backup JSON berhasil diunduh!', 'success');
+        });
+      }
+
+      // Import JSON Backup
+      const btnImportJsonTrigger = document.getElementById('btnImportJsonTrigger');
+      const importJsonInput = document.getElementById('importJsonInput');
+
+      if (btnImportJsonTrigger && importJsonInput) {
+        btnImportJsonTrigger.addEventListener('click', () => importJsonInput.click());
+
+        importJsonInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const parsed = JSON.parse(event.target.result);
+              if (!parsed.targetGoal || !Array.isArray(parsed.leaderboard)) {
+                throw new Error('Format file JSON tidak valid untuk konfigurasi donasi.');
+              }
+              workingData = parsed;
+              populateFormFields(workingData);
+              renderDonorListEditor();
+              updatePreviewAndMetrics();
+              window.DonationManager.saveData(workingData);
+              showToast('📤 Data berhasil di-import dari file JSON!', 'success');
+            } catch (err) {
+              alert('Gagal mengimpor file JSON: ' + err.message);
+              showToast('❌ Gagal mengimpor JSON: Format tidak sesuai', 'error');
+            } finally {
+              importJsonInput.value = '';
+            }
+          };
+          reader.readAsText(file);
+        });
+      }
+
+      // Copy SQL Script Button
+      const btnCopySqlMigration = document.getElementById('btnCopySqlMigration');
+      if (btnCopySqlMigration) {
+        btnCopySqlMigration.addEventListener('click', () => {
+          const sqlScript = `-- Salin dan jalankan skrip ini di SQL Editor Supabase Anda:\nCREATE TABLE IF NOT EXISTS public.donation_settings (\n    id TEXT PRIMARY KEY DEFAULT 'main_config',\n    data JSONB NOT NULL,\n    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),\n    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()\n);\nALTER TABLE public.donation_settings ENABLE ROW LEVEL SECURITY;\nDROP POLICY IF EXISTS "Public read access for donation_settings" ON public.donation_settings;\nCREATE POLICY "Public read access for donation_settings" ON public.donation_settings FOR SELECT USING (true);\nDROP POLICY IF EXISTS "Public insert access for donation_settings" ON public.donation_settings;\nCREATE POLICY "Public insert access for donation_settings" ON public.donation_settings FOR INSERT WITH CHECK (true);\nDROP POLICY IF EXISTS "Public update access for donation_settings" ON public.donation_settings;\nCREATE POLICY "Public update access for donation_settings" ON public.donation_settings FOR UPDATE USING (true) WITH CHECK (true);\nDO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'donation_settings') THEN ALTER PUBLICATION supabase_realtime ADD TABLE public.donation_settings; END IF; END $$;`;
+          navigator.clipboard.writeText(sqlScript).then(() => {
+            showToast('📋 Skrip SQL berhasil disalin ke clipboard!', 'success');
+          }).catch(() => {
+            alert('Silakan buka file supabase_donasi.sql untuk menyalin skrip SQL.');
+          });
+        });
+      }
+
+      // Inisialisasi awal saat load
+      document.addEventListener('DOMContentLoaded', () => {
+        checkAuth();
+        initDashboardData();
+      });
+
+      // Handle custom update event jika ada tab lain yang menyimpan
+      window.addEventListener('yabi:donation-updated', (e) => {
+        if (e.detail) {
+          workingData = JSON.parse(JSON.stringify(e.detail));
+          populateFormFields(workingData);
+          renderDonorListEditor();
+          updatePreviewAndMetrics();
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
