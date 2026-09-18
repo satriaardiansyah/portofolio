@@ -55,15 +55,16 @@
       <a href="../index.html#work">Proyek <span class="mono" style="font-size:14px;opacity:.6;">02</span></a>
       <a href="../index.html#about">Tentang <span class="mono" style="font-size:14px;opacity:.6;">03</span></a>
       <a href="../index.html#stream">Blog <span class="mono" style="font-size:14px;opacity:.6;">04</span></a>
-      <a href="../turnamen.html" style="color:var(--cyan);">Turnamen 🏆 <span class="mono" style="font-size:14px;opacity:.8;">HOT</span></a>
+      <a href="../turnamen.html" style="color:var(--cyan);">Turnamen 🏆 <span class="mono"
+          style="font-size:14px;opacity:.8;">HOT</span></a>
       <a href="../index.html#contact">Kontak <span class="mono" style="font-size:14px;opacity:.6;">05</span></a>
     </nav>
     <div class="m-foot">
-      <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="donate-btn"><span
+      <a href="https://saweria.co/YabiDev" target="_blank" rel="noopener" class="donate-btn"><span
           class="heart">♥</span> Kirim Donasi</a>
       <div class="m-social">
         <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord</a>
+        <a href="https://discord.com/invite/sv3rhs5x5" target="_blank" rel="noopener">Discord</a>
         <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok</a>
         <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram</a>
         <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube</a>
@@ -92,7 +93,8 @@
         </h1>
 
         <p class="bracket-desc">
-          Bagan eliminasi resmi 10 slot turnamen Yabi Dev. Dilengkapi babak Play-In pendahuluan, Quarter Final, Semi Final, hingga Grand Final perebutan takhta Juara!
+          Bagan eliminasi resmi 10 slot turnamen Yabi Dev. Dilengkapi babak Play-In pendahuluan, Quarter Final, Semi
+          Final, hingga Grand Final perebutan takhta Juara!
         </p>
 
         <!-- Stats Counter Strip -->
@@ -134,20 +136,24 @@
                 <option value="32">32 Tim (Round of 32)</option>
               </select>
             </div>
-            <button type="button" class="tool-btn" id="btnSyncParticipants" title="Ambil tim terbaru dari database Supabase">
+            <button type="button" class="tool-btn" id="btnSyncParticipants"
+              title="Ambil tim terbaru dari database Supabase">
               <span>🔄</span> Sinkron Peserta
             </button>
-            <button type="button" class="tool-btn tool-btn-shuffle" id="btnShuffleBracket" title="Acak penempatan tim secara acak (Undian Bagan / Shuffle Bracket)">
+            <button type="button" class="tool-btn tool-btn-shuffle" id="btnShuffleBracket"
+              title="Acak penempatan tim secara acak (Undian Bagan / Shuffle Bracket)">
               <span>🎲</span> Acak Bagan
             </button>
-            <button type="button" class="tool-btn tool-btn-danger" id="btnResetBracket" title="Reset skor & pertandingan ke posisi awal">
+            <button type="button" class="tool-btn tool-btn-danger" id="btnResetBracket"
+              title="Reset skor & pertandingan ke posisi awal">
               <span>🗑️</span> Reset Bracket
             </button>
           </div>
 
           <div class="toolbar-right">
             <!-- Export HD Image Button -->
-            <button type="button" class="tool-btn tool-btn-export" id="btnDownloadBracketImg" title="Download bagan bracket turnamen format gambar Ultra HD (PNG)">
+            <button type="button" class="tool-btn tool-btn-export" id="btnDownloadBracketImg"
+              title="Download bagan bracket turnamen format gambar Ultra HD (PNG)">
               <span>📸</span> Download Bagan HD
             </button>
 
@@ -164,13 +170,13 @@
       <div class="bracket-viewport-wrapper">
         <div class="bracket-scroll-container" id="bracketScrollContainer">
           <div class="bracket-canvas" id="bracketCanvas">
-            
+
             <!-- SVG Overlay for Connecting Lines -->
             <svg class="bracket-svg-overlay" id="bracketSvg"></svg>
 
             <!-- 5 Columns Stage Grid -->
             <div class="bracket-stages-grid">
-              
+
               <!-- 1. Babak Pendahuluan / Play-In -->
               <div class="bracket-stage-col stage-playin">
                 <div class="stage-header">
@@ -217,7 +223,8 @@
 
               <!-- 5. Champion Podium -->
               <div class="bracket-stage-col stage-champion">
-                <div class="stage-header" style="border-color:rgba(255, 184, 77, 0.5); background:rgba(255, 184, 77, 0.15);">
+                <div class="stage-header"
+                  style="border-color:rgba(255, 184, 77, 0.5); background:rgba(255, 184, 77, 0.15);">
                   <div class="stage-title" style="color:var(--amber);">🏆 Champion</div>
                   <div class="stage-subtitle">Pemenang Turnamen</div>
                 </div>
@@ -233,11 +240,13 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="site-footer wrap" style="border-top:1px solid rgba(255,255,255,0.06); padding:40px 0; margin-top:40px;">
+    <footer class="site-footer wrap"
+      style="border-top:1px solid rgba(255,255,255,0.06); padding:40px 0; margin-top:40px;">
       <div class="footer-top">
         <div class="footer-brand">
           <div class="logo">YABI<span>.</span>DEV</div>
-          <p class="footer-desc">Komunitas gamer dan developer Indonesia. Pantau jalannya bracket dan live streaming turnamen.</p>
+          <p class="footer-desc">Komunitas gamer dan developer Indonesia. Pantau jalannya bracket dan live streaming
+            turnamen.</p>
           <div class="footer-status">
             <span class="status-dot"></span> Turnamen Komunitas Aktif
           </div>
@@ -256,11 +265,13 @@
 
           <div class="footer-col">
             <h4>Komunitas & Sosmed</h4>
-            <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord Community ↗</a>
+            <a href="https://discord.com/invite/sv3rhs5x5" target="_blank" rel="noopener">Discord Community ↗</a>
             <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok @yabidev ↗</a>
-            <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram @satriaardiansyah_ ↗</a>
-            <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube @satriaardiansyah2265 ↗</a>
-            <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener">Saweria Donasi ↗</a>
+            <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram
+              @satriaardiansyah_ ↗</a>
+            <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube
+              @satriaardiansyah2265 ↗</a>
+            <a href="https://saweria.co/YabiDev" target="_blank" rel="noopener">Saweria Donasi ↗</a>
           </div>
         </div>
       </div>
@@ -269,7 +280,7 @@
         <div class="credit">© 2026 <b>Yabi Dev</b> — Tournament Bracket Hub. All rights reserved.</div>
         <div class="footer-social-links">
           <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord</a>
+          <a href="https://discord.com/invite/sv3rhs5x5" target="_blank" rel="noopener">Discord</a>
           <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram</a>
           <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok</a>
           <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube</a>
@@ -342,7 +353,8 @@
       </div>
 
       <div class="modal-actions-row">
-        <button type="button" class="tool-btn" onclick="document.getElementById('modalEditClose').click();">Batal</button>
+        <button type="button" class="tool-btn"
+          onclick="document.getElementById('modalEditClose').click();">Batal</button>
         <button type="button" class="tool-btn tool-btn-primary" id="btnSaveMatchEdit">
           <span>💾</span> Simpan & Update Bracket
         </button>
@@ -351,7 +363,8 @@
   </div>
 
   <!-- EPIC CHAMPION CELEBRATION MODAL OVERLAY -->
-  <div class="champion-celebration-overlay" id="championCelebrationModal" role="dialog" aria-modal="true" aria-labelledby="celebrationTeamTitle">
+  <div class="champion-celebration-overlay" id="championCelebrationModal" role="dialog" aria-modal="true"
+    aria-labelledby="celebrationTeamTitle">
     <div class="celebration-sunburst"></div>
     <div class="celebration-ambient-glow"></div>
     <canvas class="celebration-canvas" id="celebrationCanvas"></canvas>
@@ -360,10 +373,12 @@
       <div class="celebration-stage-card">
         <!-- Top Bar with Sound & Close -->
         <div class="celebration-top-bar">
-          <button type="button" class="celebration-sound-toggle" id="celebrationSoundToggle" aria-label="Toggle Musik Juara" title="Nyalakan / Matikan Musik Juara">
+          <button type="button" class="celebration-sound-toggle" id="celebrationSoundToggle"
+            aria-label="Toggle Musik Juara" title="Nyalakan / Matikan Musik Juara">
             <span id="celebrationSoundIcon">🔊</span> <span id="celebrationSoundText">Musik: ON</span>
           </button>
-          <button type="button" class="celebration-close-icon-btn" id="celebrationCloseIcon" aria-label="Tutup Perayaan" title="Tutup (ESC)">✕</button>
+          <button type="button" class="celebration-close-icon-btn" id="celebrationCloseIcon" aria-label="Tutup Perayaan"
+            title="Tutup (ESC)">✕</button>
         </div>
 
         <!-- 3D Floating Trophy with Halos -->
@@ -412,7 +427,8 @@
           </button>
         </div>
 
-        <div class="celebration-hint-tap">✨ Klik di mana saja di layar untuk ledakan kembang api baru! • Tekan ESC untuk tutup</div>
+        <div class="celebration-hint-tap">✨ Klik di mana saja di layar untuk ledakan kembang api baru! • Tekan ESC untuk
+          tutup</div>
       </div>
     </div>
   </div>

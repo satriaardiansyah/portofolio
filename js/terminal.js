@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { out: '✓ Live Broadcast Active — 1080p60 FPS Game Stream' },
     { p: 'satria@live', t: '~/schedule', o: 'echo "Jadwal Stream Harian: 19:30 - 21:00 WIB"' },
     { out: '✓ Live Game Stream setiap hari pukul 19:30 - 21:00 WIB' },
-    { p: 'satria@live', t: '~/community', o: 'join https://discord.com/invite/6DZVuFBm9' },
+    { p: 'satria@live', t: '~/community', o: 'join https://discord.com/invite/sv3rhs5x5' },
     { out: '✓ Terhubung ke Discord Komunitas & TikTok @yabidev' },
     { p: 'satria@live', t: '~/gaming', o: 'echo "Makasih udah nonton & mabar!"' }
   ];

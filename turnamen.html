@@ -38,7 +38,8 @@
         <a href="index.html#work">Proyek</a>
         <a href="index.html#stream">Blog</a>
         <a href="turnamen.html" class="active active-link">Turnamen <span class="nav-tag">HOT</span></a>
-        <a href="bracket-public.html">Bracket <span class="nav-tag" style="background:rgba(69,232,212,0.2);color:var(--cyan);">LIVE</span></a>
+        <a href="bracket-public.html">Bracket <span class="nav-tag"
+            style="background:rgba(69,232,212,0.2);color:var(--cyan);">LIVE</span></a>
         <a href="index.html#contact">Kontak</a>
       </nav>
       <button class="burger" id="burger" aria-label="Buka menu">
@@ -55,16 +56,18 @@
       <a href="index.html#work">Proyek <span class="mono" style="font-size:14px;opacity:.6;">02</span></a>
       <a href="index.html#about">Tentang <span class="mono" style="font-size:14px;opacity:.6;">03</span></a>
       <a href="index.html#stream">Blog <span class="mono" style="font-size:14px;opacity:.6;">04</span></a>
-      <a href="turnamen.html" style="color:var(--cyan);">Turnamen 🏆 <span class="mono" style="font-size:14px;opacity:.8;">HOT</span></a>
-      <a href="bracket-public.html" style="color:var(--cyan);">Bracket ⚡ <span class="mono" style="font-size:14px;opacity:.8;">LIVE</span></a>
+      <a href="turnamen.html" style="color:var(--cyan);">Turnamen 🏆 <span class="mono"
+          style="font-size:14px;opacity:.8;">HOT</span></a>
+      <a href="bracket-public.html" style="color:var(--cyan);">Bracket ⚡ <span class="mono"
+          style="font-size:14px;opacity:.8;">LIVE</span></a>
       <a href="index.html#contact">Kontak <span class="mono" style="font-size:14px;opacity:.6;">05</span></a>
     </nav>
     <div class="m-foot">
-      <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="donate-btn"><span
+      <a href="https://saweria.co/YabiDev" target="_blank" rel="noopener" class="donate-btn"><span
           class="heart">♥</span> Kirim Donasi</a>
       <div class="m-social">
         <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord</a>
+        <a href="https://discord.com/invite/sv3rhs5x5" target="_blank" rel="noopener">Discord</a>
         <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok</a>
         <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram</a>
         <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube</a>
@@ -79,7 +82,8 @@
         <div>
           <div class="tourney-badge-row">
             <span class="status-badge-open" id="tourneyStatusBadge">
-              <span class="status-dot-pulse" id="tourneyStatusDot"></span> <span id="tourneyStatusText">REGISTRASI DIBUKA</span>
+              <span class="status-dot-pulse" id="tourneyStatusDot"></span> <span id="tourneyStatusText">REGISTRASI
+                DIBUKA</span>
             </span>
             <span class="season-tag mono">2VS2 MODE BRUTAL</span>
           </div>
@@ -89,14 +93,17 @@
           </h1>
 
           <p class="tourney-desc">
-            Ajang kompetisi esports & gaming bagi seluruh komunitas Yabi Dev! Daftarkan squad terbaikmu, raih total hadiah, dan unjuk kebolehan live di streaming.
+            Ajang kompetisi esports & gaming bagi seluruh komunitas Yabi Dev! Daftarkan squad terbaikmu, raih total
+            hadiah, dan unjuk kebolehan live di streaming.
           </p>
 
           <div style="display:flex; gap:16px; flex-wrap:wrap;">
-            <a href="#tab-register" class="donate-btn" id="heroDaftarBtn" onclick="document.querySelector('[data-target=\'tab-register\']').click();">
+            <a href="#tab-register" class="donate-btn" id="heroDaftarBtn"
+              onclick="document.querySelector('[data-target=\'tab-register\']').click();">
               <span>✍️</span> Daftar Sekarang
             </a>
-            <a href="#tab-participants" class="btn-ghost" onclick="document.querySelector('[data-target=\'tab-participants\']').click();">
+            <a href="#tab-participants" class="btn-ghost"
+              onclick="document.querySelector('[data-target=\'tab-participants\']').click();">
               <span>🏆</span> Lihat Tim
             </a>
             <a href="bracket-public.html" class="btn-ghost" style="border-color:rgba(69,232,212,0.4); color:#a7f3d0;">
@@ -151,13 +158,14 @@
       <!-- ================= TAB 1: FORM REGISTRASI ================= -->
       <div class="tab-content active" id="tab-register" role="tabpanel">
         <div class="reg-container">
-          
+
           <!-- Banner Notifikasi Jika Slot Penuh (Dikontrol otomatis oleh JS) -->
           <div id="slotFullBanner" class="slot-full-banner" style="display: none;">
             <div class="slot-full-banner-icon">🔒</div>
             <div class="slot-full-banner-content">
               <h4>Pendaftaran Ditutup — Slot Sudah Penuh</h4>
-              <p>Kuota pendaftaran turnamen telah terpenuhi. Tombol pendaftaran telah dinonaktifkan. Anda masih dapat memantau daftar peserta terdaftar atau memantau bagan bracket untuk pertandingan berikutnya!</p>
+              <p>Kuota pendaftaran turnamen telah terpenuhi. Tombol pendaftaran telah dinonaktifkan. Anda masih dapat
+                memantau daftar peserta terdaftar atau memantau bagan bracket untuk pertandingan berikutnya!</p>
               <button type="button" class="slot-full-banner-btn" id="btnViewFullParticipants">
                 <span>🏆</span> Lihat Peserta Terdaftar
               </button>
@@ -169,7 +177,8 @@
               <span class="stat-pill" id="regSlotIndicator">Slot Terisi: <b id="regSlotCountText">0 / 10 Tim</b></span>
             </div>
             <h2>Pendaftaran Tim Turnamen</h2>
-            <p id="regHeaderDesc">Silakan isi data tim dan kontak Anda secara lengkap. Tim harus beranggotakan 1 Laki-laki dan 1 Perempuan.</p>
+            <p id="regHeaderDesc">Silakan isi data tim dan kontak Anda secara lengkap. Tim harus beranggotakan 1
+              Laki-laki dan 1 Perempuan.</p>
           </div>
 
           <form id="tournamentForm" class="reg-form" novalidate>
@@ -178,7 +187,8 @@
               <label for="teamName">Nama Tim <span class="req">*</span></label>
               <div class="input-with-icon">
                 <span class="input-icon">🛡️</span>
-                <input type="text" id="teamName" class="form-input" placeholder="Contoh: EVOS MIAW" required autocomplete="off">
+                <input type="text" id="teamName" class="form-input" placeholder="Contoh: EVOS MIAW" required
+                  autocomplete="off">
               </div>
               <span class="form-hint">Nama tim</span>
             </div>
@@ -188,9 +198,11 @@
               <label for="playerNames">Peserta / Lineup Tim <span class="req">*</span></label>
               <div class="input-with-icon">
                 <span class="input-icon">👥</span>
-                <input type="text" id="playerNames" class="form-input" placeholder="Contoh: Yabi (C), Vanya" required autocomplete="off">
+                <input type="text" id="playerNames" class="form-input" placeholder="Contoh: Yabi (C), Vanya" required
+                  autocomplete="off">
               </div>
-              <span class="form-hint">Sebutkan nama anggota/pemain (1 laki-laki & 1 perempuan, beri tanda (C) untuk Kapten tim).</span>
+              <span class="form-hint">Sebutkan nama anggota/pemain (1 laki-laki & 1 perempuan, beri tanda (C) untuk
+                Kapten tim).</span>
             </div>
 
             <div class="form-grid-2">
@@ -199,7 +211,8 @@
                 <label for="gameId">Usn Game / In-Game ID <span class="req">*</span></label>
                 <div class="input-with-icon">
                   <span class="input-icon">🎮</span>
-                  <input type="text" id="gameId" class="form-input" placeholder="Contoh: Yabi2304, Vaerelaa" required autocomplete="off">
+                  <input type="text" id="gameId" class="form-input" placeholder="Contoh: Yabi2304, Vaerelaa" required
+                    autocomplete="off">
                 </div>
                 <span class="form-hint">In-game nickname.</span>
               </div>
@@ -209,7 +222,8 @@
                 <label for="discordTag">Usn Discord <span class="req">*</span></label>
                 <div class="input-with-icon">
                   <span class="input-icon">💬</span>
-                  <input type="text" id="discordTag" class="form-input" placeholder="Contoh: satria_viper" required autocomplete="off">
+                  <input type="text" id="discordTag" class="form-input" placeholder="Contoh: satria_viper" required
+                    autocomplete="off">
                 </div>
                 <span class="form-hint">Untuk undangan ke Discord room koordinasi match.</span>
               </div>
@@ -218,7 +232,8 @@
             <!-- Saran untuk YabiDev -->
             <div class="form-group">
               <label for="suggestions">Saran untuk YabiDev</label>
-              <textarea id="suggestions" class="form-textarea" placeholder="Tuliskan saran, masukan, ide game berikutnya, atau pesan penyemangat untuk YabiDev..."></textarea>
+              <textarea id="suggestions" class="form-textarea"
+                placeholder="Tuliskan saran, masukan, ide game berikutnya, atau pesan penyemangat untuk YabiDev..."></textarea>
               <span class="form-hint">Opsional — Masukan Anda sangat berharga untuk kemajuan stream & turnamen!</span>
             </div>
 
@@ -229,7 +244,8 @@
                 <li>Pendaftaran gratis tanpa dipungut biaya apapun (Free Entry).</li>
                 <li>Satu tim harus beranggotakan 1 laki-laki dan 1 perempuan.</li>
                 <li>Dilarang menggunakan cheat/script.</li>
-                <li>Keputusan wasit tidak dapat diganggu gugat, mendaftar berarti menyetujui peraturan yang berlaku.</li>
+                <li>Keputusan wasit tidak dapat diganggu gugat, mendaftar berarti menyetujui peraturan yang berlaku.
+                </li>
               </ul>
             </div>
 
@@ -244,12 +260,13 @@
       <!-- ================= TAB 2: DAFTAR PESERTA TERDAFTAR ================= -->
       <div class="tab-content" id="tab-participants" role="tabpanel">
         <div class="participants-container">
-          
+
           <!-- Toolbar (Search & Stats) -->
           <div class="participants-toolbar">
             <div class="search-box-wrap">
               <span class="search-icon">🔍</span>
-              <input type="text" id="participantSearch" class="search-input" placeholder="Cari nama tim, peserta, ID game, discord...">
+              <input type="text" id="participantSearch" class="search-input"
+                placeholder="Cari nama tim, peserta, ID game, discord...">
             </div>
 
             <!-- <div class="participants-stats-pills">
@@ -269,11 +286,13 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="site-footer wrap" style="border-top:1px solid rgba(255,255,255,0.06); padding:40px 0; margin-top:60px;">
+    <footer class="site-footer wrap"
+      style="border-top:1px solid rgba(255,255,255,0.06); padding:40px 0; margin-top:60px;">
       <div class="footer-top">
         <div class="footer-brand">
           <div class="logo">YABI<span>.</span>DEV</div>
-          <p class="footer-desc">Komunitas gamer dan developer Indonesia. Gabung dan bertanding bersama di turnamen berkala Yabi Dev.</p>
+          <p class="footer-desc">Komunitas gamer dan developer Indonesia. Gabung dan bertanding bersama di turnamen
+            berkala Yabi Dev.</p>
           <div class="footer-status">
             <span class="status-dot"></span> Turnamen Komunitas Aktif
           </div>
@@ -292,11 +311,13 @@
 
           <div class="footer-col">
             <h4>Komunitas & Sosmed</h4>
-            <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord Community ↗</a>
+            <a href="https://discord.com/invite/sv3rhs5x5" target="_blank" rel="noopener">Discord Community ↗</a>
             <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok @yabidev ↗</a>
-            <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram @satriaardiansyah_ ↗</a>
-            <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube @satriaardiansyah2265 ↗</a>
-            <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener">Saweria Donasi ↗</a>
+            <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram
+              @satriaardiansyah_ ↗</a>
+            <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube
+              @satriaardiansyah2265 ↗</a>
+            <a href="https://saweria.co/YabiDev" target="_blank" rel="noopener">Saweria Donasi ↗</a>
             <a href="mailto:hirosayurus@gmail.com">Email Direct ↗</a>
           </div>
         </div>
@@ -306,7 +327,7 @@
         <div class="credit">© 2026 <b>Yabi Dev</b> — Tournament Hub. All rights reserved.</div>
         <div class="footer-social-links">
           <a href="https://github.com/satriaardiansyah" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://discord.com/invite/6DZVuFBm9" target="_blank" rel="noopener">Discord</a>
+          <a href="https://discord.com/invite/sv3rhs5x5" target="_blank" rel="noopener">Discord</a>
           <a href="https://www.instagram.com/satriaardiansyah_/" target="_blank" rel="noopener">Instagram</a>
           <a href="https://www.tiktok.com/@yabidev" target="_blank" rel="noopener">TikTok</a>
           <a href="https://www.youtube.com/@satriaardiansyah2265" target="_blank" rel="noopener">YouTube</a>
@@ -350,8 +371,7 @@
   </div>
 
   <!-- Floating Mobile Donate Button -->
-  <a href="https://saweria.co/hirosayurus133" target="_blank" rel="noopener" class="float-donate"
-    aria-label="Donasi Saweria">
+  <a href="https://saweria.co/YabiDev" target="_blank" rel="noopener" class="float-donate" aria-label="Donasi Saweria">
     <img src="assets/icon.png" alt="Donasi Saweria" class="float-donate-img" width="56" height="56">
   </a>
 
